@@ -1,17 +1,68 @@
 import { StatusBar } from "expo-status-bar";
-import React from "react";
+import React, { Component } from "react";
+
 import { StyleSheet, Text, View } from "react-native";
+
+import { AppLoading } from "expo";
+import { Asset } from "expo-asset";
+import * as SplashScreen from "expo-splash-screen";
 
 import AppNavigator from "./AppNavigator";
 
-export default function App() {
-  return (
-    // <View style={styles.container}>
-    //    <Text>Open up App.js to start working on your app!</Text>
-    //    <StatusBar style="auto" />
-    // </View>
-    <AppNavigator></AppNavigator>
-  );
+function cacheImages(images) {
+  return images.map((image) => {
+    if (typeof image === "string") {
+      return Image.prefetch(image);
+    } else {
+      return Asset.fromModule(image).downloadAsync();
+    }
+  });
+}
+
+async function downloadAssets() {
+  const imageAssets = cacheImages([require("./assets/logo.jpg")]);
+
+  await Promise.all([...imageAssets]);
+}
+
+export default class App extends Component {
+  state = {
+    isReady: false,
+  };
+
+  async componentDidMount() {
+    // Prevent native splash screen from autohiding
+    try {
+      await SplashScreen.preventAutoHideAsync();
+    } catch (e) {
+      console.warn(e);
+    }
+    this.prepareResources();
+  }
+
+  prepareResources = async () => {
+    try {
+      await downloadAssets();
+    } catch (e) {
+      console.warn(e);
+    } finally {
+      this.setState({ isReady: true }, async () => {
+        await SplashScreen.hideAsync();
+      });
+    }
+  };
+
+  render() {
+    if (!this.state.isReady) {
+      return (
+        <AppLoading
+          startAsync={this.downloadAssets}
+          onFinish={() => this.setState({ isReady: true })}
+        />
+      );
+    }
+    return <AppNavigator></AppNavigator>;
+  }
 }
 
 const styles = StyleSheet.create({
