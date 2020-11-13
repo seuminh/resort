@@ -10,34 +10,36 @@ import Sidebar from "../components/Sidebar";
 import { Ionicons } from "@expo/vector-icons";
 
 const drawerOptions = {
-   Room: {
-      screen: RoomStack,
-      navigationOptions: {
-         title: "Room",
-         drawerIcon: ({ tintColor }) => (
-            <Ionicons name="ios-bed" size={18} color={tintColor} />
-         ),
-      },
-   },
-   Booking: {
-      screen: BookingStack,
-      navigationOptions: {
-         title: "Booking",
-         drawerIcon: ({ tintColor }) => (
-            <Ionicons name="ios-bed" size={18} color={tintColor} />
-         ),
-      },
-   },
+  Room: {
+    screen: RoomStack,
+    navigationOptions: {
+      title: "Room",
+      drawerIcon: ({ tintColor }) => (
+        <Ionicons name="ios-bed" size={18} color={tintColor} />
+      ),
+    },
+  },
+  Booking: {
+    screen: BookingStack,
+    navigationOptions: {
+      title: "Booking",
+      drawerIcon: ({ tintColor }) => (
+        <Ionicons name="ios-bed" size={18} color={tintColor} />
+      ),
+    },
+  },
 };
 
 const drawer = createDrawerNavigator(drawerOptions, {
-   contentComponent: (props) => {
-      return <Sidebar {...props}></Sidebar>;
-   },
-   contentOptions: {
-      activeBackgroundColor: "#6A0E00",
-      activeTintColor: "#fff",
-   },
+  contentComponent: (props) => {
+    return (
+      <Sidebar {...props} signOut={() => props.screenProps.signOut()}></Sidebar>
+    );
+  },
+  contentOptions: {
+    activeBackgroundColor: "#6A0E00",
+    activeTintColor: "#fff",
+  },
 });
 
 export default createAppContainer(drawer);
