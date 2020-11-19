@@ -15,7 +15,7 @@ export default class index extends Component {
     super(props);
     this.state = {
       dateModal: false,
-      date: null,
+      date: new Date(),
     };
   }
 
@@ -43,11 +43,9 @@ export default class index extends Component {
             <Text>Select Date</Text>
           </TouchableOpacity>
         </View>
-        {date !== null && (
-          <View style={styles.selectedDate}>
-            <Text>{date.toLocaleDateString()}</Text>
-          </View>
-        )}
+        <View style={styles.selectDateButton}>
+          <Text>{date.toLocaleDateString()}</Text>
+        </View>
 
         <View style={styles.cardContainer}>
           <Card navigation={this.props.navigation}></Card>
@@ -92,7 +90,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: "#6A0E00",
   },
-  selectedDate: {
+  selectDateButton: {
     paddingHorizontal: 7,
     alignSelf: "flex-end",
   },

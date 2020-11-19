@@ -20,7 +20,7 @@ export default class AppNavigator extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      isAdmin: false,
+      isAdmin: true,
       isAuthed: false,
       modalLogin: true,
       loginSuccess: true,
