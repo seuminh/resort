@@ -33,7 +33,7 @@ const styles = StyleSheet.create({
    },
    headerText: {
       color: "#fff",
-      fontSize: 17,
+      fontSize: 20,
       letterSpacing: 1,
    },
    iconLeft: {
