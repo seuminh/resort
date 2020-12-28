@@ -7,11 +7,14 @@ import {
   ActivityIndicator,
   TouchableOpacity,
   FlatList,
+  SafeAreaView,
 } from "react-native";
 
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { Form, Item, Input, Label, Picker, Icon } from "native-base";
-import CheckBox from "@react-native-community/checkbox";
+import Unorderedlist from "react-native-unordered-list";
+// import CheckBox from "@react-native-community/checkbox";
+import { Checkbox } from "react-native-paper";
 
 export default class checkIn extends Component {
   state = {
@@ -23,7 +26,7 @@ export default class checkIn extends Component {
     rooms: [
       {
         number: "101",
-        status: "available",
+        status: "busy",
       },
       {
         number: "102",
@@ -35,9 +38,34 @@ export default class checkIn extends Component {
       },
       {
         number: "104",
-        status: "busy",
+        status: "available",
       },
     ],
+  };
+
+  componentDidMount() {
+    this.getRooms();
+  }
+
+  getRooms = () => {
+    const { rooms } = this.state;
+    const filterRooms = rooms.map((room) => {
+      if (room.status === "available") {
+        return {
+          ...room,
+          selected: false,
+          available: true,
+        };
+      }
+      return {
+        ...room,
+        selected: false,
+        available: false,
+      };
+    });
+    this.setState({
+      rooms: filterRooms,
+    });
   };
 
   toggleCheckInDateModal = () => {
@@ -68,17 +96,46 @@ export default class checkIn extends Component {
 
   onPaymentChange = (value) => {
     this.setState({
-      selected: value,
+      paid: value,
     });
   };
 
   onCheckboxChange = (item, index) => {
-    alert("hi");
+    const { rooms } = this.state;
+    const newRoomData = rooms.map((room) => {
+      if (room.status !== "available") {
+        return {
+          ...room,
+        };
+      }
+      if (room.number == item.number) {
+        return {
+          ...room,
+          selected: !room.selected,
+        };
+      }
+      return {
+        ...room,
+        selected: room.selected,
+      };
+    });
+    this.setState({
+      rooms: newRoomData,
+    });
   };
 
   renderItem = ({ item, index }) => {
+    let dotColor =
+      item.status === "available"
+        ? "#2CC990"
+        : item.status === "busy"
+        ? "#FC6042"
+        : "#FCB941";
     return (
-      <TouchableOpacity>
+      <TouchableOpacity
+        style={styles.roomList}
+        onPress={() => this.onCheckboxChange(item, index)}
+      >
         {/* <CheckBox
           style={styles.checkBox}
           disabled={false}
@@ -88,7 +145,21 @@ export default class checkIn extends Component {
           boxType="square"
           onValueChange={() => this.onCheckboxChange(item, index)}
         /> */}
-        <Text>123</Text>
+        <View style={{ flexDirection: "row" }}>
+          <Checkbox
+            disabled={!item.available ? true : false}
+            status={!item.selected ? "checked" : "unchecked"}
+            // onPress={() => this.onCheckboxChange(item, index)}
+          />
+          <Text style={[styles.biggerText, { paddingTop: 7 }]}>
+            {item.number}
+          </Text>
+        </View>
+        <Unorderedlist
+          bulletUnicode={0x2022}
+          color={dotColor}
+          style={styles.dot}
+        ></Unorderedlist>
       </TouchableOpacity>
     );
   };
@@ -125,6 +196,10 @@ export default class checkIn extends Component {
             </Item>
             <Item floatingLabel last>
               <Label>ID Number</Label>
+              <Input />
+            </Item>
+            <Item floatingLabel>
+              <Label>Phone Number</Label>
               <Input />
             </Item>
             {/* Check In */}
@@ -166,12 +241,16 @@ export default class checkIn extends Component {
             <View style={styles.roomContainer}>
               <Text style={styles.biggerText}>Room :</Text>
               <FlatList
+                style={{ marginTop: -10, paddingLeft: 14 }}
                 data={rooms}
                 renderItem={this.renderItem}
                 keyExtractor={(item) => item.number}
               />
             </View>
           </Form>
+          <TouchableOpacity>
+            <Text>Check</Text>
+          </TouchableOpacity>
         </View>
 
         {/* Modal */}
@@ -203,6 +282,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingTop: 10,
   },
+  dot: {
+    fontSize: 30,
+    marginTop: -2,
+  },
   biggerText: {
     fontSize: 17,
   },
@@ -221,28 +304,40 @@ const styles = StyleSheet.create({
     paddingTop: 8,
     marginVertical: 5,
     flex: 1,
+    paddingBottom: 50,
   },
   checkInContainer: {
     flexDirection: "row",
-    marginTop: 15,
+    marginTop: 20,
     paddingLeft: 14,
   },
   checkOutContainer: {
     flexDirection: "row",
     paddingLeft: 14,
-    marginTop: 13,
+    marginTop: 20,
   },
   paymentContainer: {
     paddingLeft: 14,
-    marginTop: 13,
+    marginTop: 20,
     flexDirection: "row",
   },
   roomContainer: {
+    marginTop: 10,
     paddingLeft: 14,
+    flexDirection: "row",
   },
-  checkbox: {
-    width: 20,
-    height: 20,
-    marginTop: 4,
+  roomList: {
+    flexDirection: "row",
+    paddingHorizontal: 20,
+    paddingVertical: 3,
+    backgroundColor: "white",
+    borderRadius: 8,
+    // elevation: 5,
+    // shadowColor: "darkslateblue",
+    // shadowOffset: { width: 0, height: 2 },
+    // shadowOpacity: 0.3,
+    marginVertical: 10,
+    marginHorizontal: 5,
+    justifyContent: "space-between",
   },
 });
