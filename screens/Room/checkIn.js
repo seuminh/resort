@@ -6,10 +6,12 @@ import {
   ScrollView,
   ActivityIndicator,
   TouchableOpacity,
+  FlatList,
 } from "react-native";
 
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { Form, Item, Input, Label, Picker, Icon } from "native-base";
+import CheckBox from "@react-native-community/checkbox";
 
 export default class checkIn extends Component {
   state = {
@@ -18,6 +20,24 @@ export default class checkIn extends Component {
     checkInDate: new Date(),
     checkOutDate: new Date(),
     paid: "paid",
+    rooms: [
+      {
+        number: "101",
+        status: "available",
+      },
+      {
+        number: "102",
+        status: "available",
+      },
+      {
+        number: "103",
+        status: "reserved",
+      },
+      {
+        number: "104",
+        status: "busy",
+      },
+    ],
   };
 
   toggleCheckInDateModal = () => {
@@ -46,10 +66,31 @@ export default class checkIn extends Component {
     });
   };
 
-  onValueChange = (value) => {
+  onPaymentChange = (value) => {
     this.setState({
       selected: value,
     });
+  };
+
+  onCheckboxChange = (item, index) => {
+    alert("hi");
+  };
+
+  renderItem = ({ item, index }) => {
+    return (
+      <TouchableOpacity>
+        {/* <CheckBox
+          style={styles.checkBox}
+          disabled={false}
+          value={true}
+          onAnimationType="fill"
+          offAnimationType="fade"
+          boxType="square"
+          onValueChange={() => this.onCheckboxChange(item, index)}
+        /> */}
+        <Text>123</Text>
+      </TouchableOpacity>
+    );
   };
 
   render() {
@@ -59,6 +100,7 @@ export default class checkIn extends Component {
       checkInDateModal,
       checkOutDateModal,
       paid,
+      rooms,
     } = this.state;
 
     return (
@@ -114,15 +156,20 @@ export default class checkIn extends Component {
                   marginTop: -11,
                 }}
                 selectedValue={paid}
-                onValueChange={this.onValueChange}
+                onValueChange={this.onPaymentChange}
               >
                 <Picker.Item label="Paid" value="paid" />
                 <Picker.Item label="Not yet pay" value="notPaid" />
               </Picker>
             </View>
             {/* Room */}
-            <View>
-              <Text>Room</Text>
+            <View style={styles.roomContainer}>
+              <Text style={styles.biggerText}>Room :</Text>
+              <FlatList
+                data={rooms}
+                renderItem={this.renderItem}
+                keyExtractor={(item) => item.number}
+              />
             </View>
           </Form>
         </View>
@@ -189,5 +236,13 @@ const styles = StyleSheet.create({
     paddingLeft: 14,
     marginTop: 13,
     flexDirection: "row",
+  },
+  roomContainer: {
+    paddingLeft: 14,
+  },
+  checkbox: {
+    width: 20,
+    height: 20,
+    marginTop: 4,
   },
 });
