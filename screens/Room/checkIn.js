@@ -13,7 +13,6 @@ import {
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { Form, Item, Input, Label, Picker, Icon } from "native-base";
 import Unorderedlist from "react-native-unordered-list";
-// import CheckBox from "@react-native-community/checkbox";
 import { Checkbox } from "react-native-paper";
 
 export default class checkIn extends Component {
@@ -22,6 +21,8 @@ export default class checkIn extends Component {
     checkOutDateModal: false,
     checkInDate: new Date(),
     checkOutDate: new Date(),
+    loadingRooms: true,
+    length: 1,
     paid: "paid",
     rooms: [
       {
@@ -44,10 +45,36 @@ export default class checkIn extends Component {
   };
 
   componentDidMount() {
-    this.getRooms();
+    this.state.checkOutDate.setDate(this.state.checkInDate.getDate() + 1);
+    this.fetchRooms();
+    this.getFilterdRooms();
+    this.calculateLength();
   }
 
-  getRooms = () => {
+  fetchRooms = () => {
+    setTimeout(() => {
+      this.setState({
+        loadingRooms: false,
+      });
+    }, 500);
+  };
+
+  calculateLength = () => {
+    const { checkInDate, checkOutDate } = this.state;
+    var diffTime = checkOutDate.getTime() - checkInDate.getTime();
+    var diffDay = diffTime / (1000 * 3600 * 24);
+    if (Math.round(diffDay) <= 0) {
+      this.setState({
+        length: "Error",
+      });
+      return;
+    }
+    this.setState({
+      length: Math.round(diffDay),
+    });
+  };
+
+  getFilterdRooms = () => {
     const { rooms } = this.state;
     const filterRooms = rooms.map((room) => {
       if (room.status === "available") {
@@ -81,17 +108,26 @@ export default class checkIn extends Component {
   };
 
   handleCheckInConfirm = (date) => {
-    this.setState({
-      checkInDate: new Date(date),
-      checkInDateModal: !this.state.checkInDateModal,
-    });
+    this.setState(
+      {
+        checkInDate: new Date(date),
+        checkInDateModal: !this.state.checkInDateModal,
+      },
+      () => {
+        this.state.checkOutDate.setDate(this.state.checkInDate.getDate() + 1);
+        this.calculateLength();
+      }
+    );
   };
 
   handleCheckOutConfirm = (date) => {
-    this.setState({
-      checkOutDate: new Date(date),
-      checkOutDateModal: !this.state.checkOutDateModal,
-    });
+    this.setState(
+      {
+        checkOutDate: new Date(date),
+        checkOutDateModal: !this.state.checkOutDateModal,
+      },
+      () => this.calculateLength()
+    );
   };
 
   onPaymentChange = (value) => {
@@ -136,15 +172,6 @@ export default class checkIn extends Component {
         style={styles.roomList}
         onPress={() => this.onCheckboxChange(item, index)}
       >
-        {/* <CheckBox
-          style={styles.checkBox}
-          disabled={false}
-          value={true}
-          onAnimationType="fill"
-          offAnimationType="fade"
-          boxType="square"
-          onValueChange={() => this.onCheckboxChange(item, index)}
-        /> */}
         <View style={{ flexDirection: "row" }}>
           <Checkbox
             disabled={!item.available ? true : false}
@@ -172,6 +199,8 @@ export default class checkIn extends Component {
       checkOutDateModal,
       paid,
       rooms,
+      length,
+      loadingRooms,
     } = this.state;
 
     return (
@@ -220,6 +249,13 @@ export default class checkIn extends Component {
                 </Text>
               </TouchableOpacity>
             </View>
+            {/* Length */}
+            <View style={styles.lengthContainer}>
+              <Text style={styles.biggerText}>Length :</Text>
+              <Text style={[styles.biggerText, { marginLeft: 47 }]}>
+                {length}
+              </Text>
+            </View>
             {/* Payment */}
             <View style={styles.paymentContainer}>
               <Text style={styles.biggerText}>Payment :</Text>
@@ -240,12 +276,21 @@ export default class checkIn extends Component {
             {/* Room */}
             <View style={styles.roomContainer}>
               <Text style={styles.biggerText}>Room :</Text>
-              <FlatList
-                style={{ marginTop: -10, paddingLeft: 14 }}
-                data={rooms}
-                renderItem={this.renderItem}
-                keyExtractor={(item) => item.number}
-              />
+              {loadingRooms && (
+                <ActivityIndicator
+                  color="red"
+                  size="large"
+                  style={{ marginLeft: 50 }}
+                ></ActivityIndicator>
+              )}
+              {!loadingRooms && (
+                <FlatList
+                  style={{ marginTop: -10, paddingLeft: 14 }}
+                  data={rooms}
+                  renderItem={this.renderItem}
+                  keyExtractor={(item) => item.number}
+                />
+              )}
             </View>
           </Form>
           <TouchableOpacity>
@@ -255,20 +300,20 @@ export default class checkIn extends Component {
 
         {/* Modal */}
         <DateTimePickerModal
+          date={checkInDate}
           isVisible={checkInDateModal}
           mode="date"
           onConfirm={this.handleCheckInConfirm}
           onCancel={this.toggleCheckInDateModal}
-          date={new Date()}
           isDarkModeEnabled={false}
         />
 
         <DateTimePickerModal
+          date={checkOutDate}
           isVisible={checkOutDateModal}
           mode="date"
           onConfirm={this.handleCheckOutConfirm}
           onCancel={this.toggleCheckOutDateModal}
-          date={new Date()}
           isDarkModeEnabled={false}
         />
       </ScrollView>
@@ -312,6 +357,11 @@ const styles = StyleSheet.create({
     paddingLeft: 14,
   },
   checkOutContainer: {
+    flexDirection: "row",
+    paddingLeft: 14,
+    marginTop: 20,
+  },
+  lengthContainer: {
     flexDirection: "row",
     paddingLeft: 14,
     marginTop: 20,
