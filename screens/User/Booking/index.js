@@ -5,6 +5,7 @@ import {
   View,
   ScrollView,
   ActivityIndicator,
+  TouchableOpacity,
 } from "react-native";
 
 import { DataTable } from "react-native-paper";
@@ -19,18 +20,21 @@ export default class index extends Component {
         phone: "012233211",
         room: [101, 102],
         checkIn: new Date("12/29/2020"),
+        length: 1,
       },
       {
         name: "Hello",
         phone: "0977009000",
         room: [103],
         checkIn: new Date("12/29/2020"),
+        length: 1,
       },
       {
         name: "Hi",
         phone: "0977009000",
         room: [104],
-        checkIn: new Date("12/30/2020"),
+        checkIn: new Date("01/07/2021"),
+        length: 2,
       },
     ],
   };
@@ -43,28 +47,33 @@ export default class index extends Component {
     }, 500);
   }
 
+  goAddBooking = () => {
+    this.props.navigation.navigate("AddBooking");
+  };
+
   getRoomList() {
     const { reservedRoom, date } = this.state;
     return (
       <View>
         {reservedRoom.map((r, i) => {
           let backgroundColor = null;
-          console.log(r.checkIn.getTime());
-          console.log(date.getTime());
           if (r.checkIn.getTime() - date.getTime() < 0)
             backgroundColor = "#FCB941";
 
           return (
-            <DataTable.Row
-              style={{ backgroundColor: backgroundColor, marginBottom: 3 }}
-            >
-              {r.name && <DataTable.Cell>{r.name}</DataTable.Cell>}
-              <DataTable.Cell numeric>{r.phone}</DataTable.Cell>
-              <DataTable.Cell numeric>{r.room.toString()}</DataTable.Cell>
-              <DataTable.Cell numeric>
-                {r.checkIn.toLocaleDateString()}
-              </DataTable.Cell>
-            </DataTable.Row>
+            <TouchableOpacity>
+              <DataTable.Row
+                style={{ backgroundColor: backgroundColor, marginBottom: 3 }}
+              >
+                {r.name && <DataTable.Cell>{r.name}</DataTable.Cell>}
+                <DataTable.Cell numeric>{r.phone}</DataTable.Cell>
+                <DataTable.Cell numeric>{r.room.toString()}</DataTable.Cell>
+                <DataTable.Cell numeric>
+                  {r.checkIn.toLocaleDateString()}
+                </DataTable.Cell>
+                <DataTable.Cell numeric>{r.length}</DataTable.Cell>
+              </DataTable.Row>
+            </TouchableOpacity>
           );
         })}
       </View>
@@ -98,6 +107,7 @@ export default class index extends Component {
               <DataTable.Title numeric>Phone</DataTable.Title>
               <DataTable.Title numeric>Room</DataTable.Title>
               <DataTable.Title numeric>Check In</DataTable.Title>
+              <DataTable.Title numeric>Length</DataTable.Title>
             </DataTable.Header>
 
             {loading && (
@@ -110,6 +120,10 @@ export default class index extends Component {
 
             {!loading && this.getRoomList()}
           </DataTable>
+
+          <TouchableOpacity style={styles.btnAdd} onPress={this.goAddBooking}>
+            <Text style={{ color: "#fff" }}>Add Booking</Text>
+          </TouchableOpacity>
         </View>
       </ScrollView>
     );
@@ -142,5 +156,12 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     marginVertical: 8,
+  },
+  btnAdd: {
+    padding: 10,
+    backgroundColor: "darkslateblue",
+    alignSelf: "center",
+    marginTop: 20,
+    paddingHorizontal: 60,
   },
 });

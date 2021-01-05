@@ -9,7 +9,7 @@ import {
 } from "react-native";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 
-import Card from "../../components/RoomCard";
+import Card from "../../../components/RoomCard";
 
 export default class index extends Component {
   constructor(props) {
