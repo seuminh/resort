@@ -175,7 +175,7 @@ export default class checkIn extends Component {
         <View style={{ flexDirection: "row" }}>
           <Checkbox
             disabled={!item.available ? true : false}
-            status={!item.selected ? "checked" : "unchecked"}
+            status={item.selected ? "checked" : "unchecked"}
             // onPress={() => this.onCheckboxChange(item, index)}
           />
           <Text style={[styles.biggerText, { paddingTop: 7 }]}>
@@ -189,6 +189,15 @@ export default class checkIn extends Component {
         ></Unorderedlist>
       </TouchableOpacity>
     );
+  };
+
+  onPrint = () => {
+    const { rooms } = this.state;
+    let selectedRooms = rooms.filter((r) => {
+      return r.selected === true;
+    });
+    if (selectedRooms.length === 0) alert("Please select any available room");
+    console.log(selectedRooms);
   };
 
   render() {
@@ -229,7 +238,11 @@ export default class checkIn extends Component {
             </Item>
             <Item floatingLabel>
               <Label>Phone Number</Label>
-              <Input />
+              <Input keyboardType="numeric" />
+            </Item>
+            <Item floatingLabel>
+              <Label>Number of Guest</Label>
+              <Input keyboardType="numeric" />
             </Item>
             {/* Check In */}
             <View style={styles.checkInContainer}>
@@ -293,8 +306,8 @@ export default class checkIn extends Component {
               )}
             </View>
           </Form>
-          <TouchableOpacity>
-            <Text>Check</Text>
+          <TouchableOpacity style={styles.btnPrint} onPress={this.onPrint}>
+            <Text style={[styles.biggerText, { color: "#fff" }]}>Print</Text>
           </TouchableOpacity>
         </View>
 
@@ -389,5 +402,12 @@ const styles = StyleSheet.create({
     marginVertical: 10,
     marginHorizontal: 5,
     justifyContent: "space-between",
+  },
+  btnPrint: {
+    padding: 10,
+    backgroundColor: "darkslateblue",
+    alignSelf: "center",
+    marginTop: 20,
+    paddingHorizontal: 60,
   },
 });

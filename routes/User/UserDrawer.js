@@ -5,7 +5,7 @@ import React from "react";
 import RoomStack from "./RoomStack";
 import BookingStack from "./BookingStack";
 
-import Sidebar from "../components/Sidebar";
+import Sidebar from "../../components/Sidebar";
 
 import { Ionicons } from "@expo/vector-icons";
 
@@ -33,7 +33,11 @@ const drawerOptions = {
 const drawer = createDrawerNavigator(drawerOptions, {
   contentComponent: (props) => {
     return (
-      <Sidebar {...props} signOut={() => props.screenProps.signOut()}></Sidebar>
+      <Sidebar
+        {...props}
+        signOut={() => props.screenProps.signOut()}
+        username={props.screenProps.username}
+      ></Sidebar>
     );
   },
   contentOptions: {
