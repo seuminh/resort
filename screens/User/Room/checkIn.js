@@ -24,22 +24,27 @@ export default class checkIn extends Component {
     loadingRooms: true,
     length: 1,
     paid: "paid",
+    total: 0,
     rooms: [
       {
         number: "101",
         status: "busy",
+        price: 20,
       },
       {
         number: "102",
         status: "available",
+        price: 20,
       },
       {
         number: "103",
         status: "reserved",
+        price: 20,
       },
       {
         number: "104",
         status: "available",
+        price: 20,
       },
     ],
   };
@@ -155,8 +160,15 @@ export default class checkIn extends Component {
         selected: room.selected,
       };
     });
+    let selectedRooms = newRoomData.filter((r) => {
+      return r.selected === true;
+    });
+    let totalPrice = selectedRooms.reduce((acc, room) => {
+      return acc + room.price;
+    }, 0);
     this.setState({
       rooms: newRoomData,
+      total: totalPrice,
     });
   };
 
@@ -200,6 +212,10 @@ export default class checkIn extends Component {
     console.log(selectedRooms);
   };
 
+  onCheckIn = () => {
+    alert("Check In");
+  };
+
   render() {
     const {
       checkInDate,
@@ -210,6 +226,7 @@ export default class checkIn extends Component {
       rooms,
       length,
       loadingRooms,
+      total,
     } = this.state;
 
     return (
@@ -269,21 +286,28 @@ export default class checkIn extends Component {
                 {length}
               </Text>
             </View>
+            {/* Total */}
+            <View style={styles.totalContainer}>
+              <Text style={styles.biggerText}>Total price :</Text>
+              <Text style={[styles.biggerText, { marginLeft: 22 }]}>
+                $ {total}
+              </Text>
+            </View>
             {/* Payment */}
             <View style={styles.paymentContainer}>
-              <Text style={styles.biggerText}>Payment :</Text>
+              <Text style={styles.biggerText}>Pay :</Text>
               <Picker
                 mode="dropdown"
                 iosIcon={<Icon name="arrow-down" />}
                 style={{
-                  marginLeft: 17,
+                  marginLeft: 57,
                   marginTop: -11,
                 }}
                 selectedValue={paid}
                 onValueChange={this.onPaymentChange}
               >
                 <Picker.Item label="Paid" value="paid" />
-                <Picker.Item label="Not yet pay" value="notPaid" />
+                <Picker.Item label="Not pay" value="notPaid" />
               </Picker>
             </View>
             {/* Room */}
@@ -306,9 +330,21 @@ export default class checkIn extends Component {
               )}
             </View>
           </Form>
-          <TouchableOpacity style={styles.btnPrint} onPress={this.onPrint}>
-            <Text style={[styles.biggerText, { color: "#fff" }]}>Print</Text>
-          </TouchableOpacity>
+          <View
+            style={{ flexDirection: "row", justifyContent: "space-around" }}
+          >
+            <TouchableOpacity style={styles.btnPrint} onPress={this.onPrint}>
+              <Text style={[styles.biggerText, { color: "#fff" }]}>Print</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.btnCheckIn}
+              onPress={this.onCheckIn}
+            >
+              <Text style={[styles.biggerText, { color: "#fff" }]}>
+                Check In
+              </Text>
+            </TouchableOpacity>
+          </View>
         </View>
 
         {/* Modal */}
@@ -379,6 +415,11 @@ const styles = StyleSheet.create({
     paddingLeft: 14,
     marginTop: 20,
   },
+  totalContainer: {
+    flexDirection: "row",
+    paddingLeft: 14,
+    marginTop: 20,
+  },
   paymentContainer: {
     paddingLeft: 14,
     marginTop: 20,
@@ -409,5 +450,12 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     marginTop: 20,
     paddingHorizontal: 60,
+  },
+  btnCheckIn: {
+    padding: 10,
+    backgroundColor: "darkslateblue",
+    alignSelf: "center",
+    marginTop: 20,
+    paddingHorizontal: 45,
   },
 });

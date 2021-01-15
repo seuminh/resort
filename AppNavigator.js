@@ -11,6 +11,7 @@ import {
 } from "react-native";
 
 import { Form, Item, Input, Label, Spinner } from "native-base";
+import { Checkbox } from "react-native-paper";
 
 // import Drawer
 import AdminDrawer from "./routes/Admin/AdminDrawer";
@@ -42,7 +43,7 @@ export default class AppNavigator extends Component {
   };
 
   renderLogin() {
-    const { loginSuccess } = this.state;
+    const { loginSuccess, isAdmin } = this.state;
     return (
       <KeyboardAvoidingView
         style={styles.containerLogin}
@@ -72,6 +73,18 @@ export default class AppNavigator extends Component {
               // onChangeText={this.passwordLoginChange}
             />
           </Item>
+
+          <View style={{ flexDirection: "row" }}>
+            <Checkbox
+              status={isAdmin ? "checked" : "unchecked"}
+              onPress={() =>
+                this.setState({
+                  isAdmin: !isAdmin,
+                })
+              }
+            />
+            <Text style={{ paddingTop: 7 }}>Admin</Text>
+          </View>
           {!loginSuccess && <Text style={styles.loginFail}>No user found</Text>}
           <TouchableOpacity onPress={this.login} style={styles.btnLogin}>
             <Text style={styles.btnLoginText}>Login</Text>
