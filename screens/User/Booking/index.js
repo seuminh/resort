@@ -6,14 +6,17 @@ import {
   ScrollView,
   ActivityIndicator,
   TouchableOpacity,
+  RefreshControl,
 } from "react-native";
 
 import { DataTable } from "react-native-paper";
+import { NavigationEvents } from "react-navigation";
 
 export default class index extends Component {
   state = {
     date: new Date(),
     loading: true,
+    refreshing: false,
     reservedRoom: [
       {
         name: "Unknown",
@@ -40,15 +43,34 @@ export default class index extends Component {
   };
 
   componentDidMount() {
+    this.fetchAPI();
+  }
+
+  fetchAPI = () => {
     setTimeout(() => {
       this.setState({
         loading: false,
+        refreshing: false,
       });
     }, 500);
-  }
+  };
+
+  onRefresh = () => {
+    this.setState(
+      {
+        refreshing: true,
+      },
+      () => this.fetchAPI()
+    );
+  };
 
   goAddBooking = () => {
     this.props.navigation.navigate("AddBooking");
+  };
+
+  goCheckIn = (r) => {
+    // console.log(r);
+    this.props.navigation.navigate("CheckIn", { bookingInfo: r });
   };
 
   getRoomList() {
@@ -61,7 +83,7 @@ export default class index extends Component {
             backgroundColor = "#FCB941";
 
           return (
-            <TouchableOpacity>
+            <TouchableOpacity onPress={() => this.goCheckIn(r)}>
               <DataTable.Row
                 style={{ backgroundColor: backgroundColor, marginBottom: 3 }}
               >
@@ -81,9 +103,21 @@ export default class index extends Component {
   }
 
   render() {
-    const { date, loading } = this.state;
+    const { date, loading, refreshing } = this.state;
     return (
-      <ScrollView style={styles.container}>
+      <ScrollView
+        style={styles.container}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={this.onRefresh}
+          ></RefreshControl>
+        }
+      >
+        <NavigationEvents
+          onWillFocus={() => this.setState({ loading: true })}
+          onDidFocus={this.fetchAPI}
+        />
         <Text style={styles.headerText}> Star Light Resort </Text>
         <View style={styles.subHeaderContainer}>
           <Text style={styles.branchText}>SK branch</Text>

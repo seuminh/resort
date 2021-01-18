@@ -64,6 +64,10 @@ export default class index extends Component {
     );
   };
 
+  goCheckOut = (r) => {
+    console.log(r);
+  };
+
   getRoomList() {
     const { reservedRoom, date } = this.state;
     return (
@@ -74,7 +78,7 @@ export default class index extends Component {
             backgroundColor = "#FCB941";
 
           return (
-            <TouchableOpacity>
+            <TouchableOpacity onPress={() => this.goCheckOut(r)}>
               <DataTable.Row
                 style={{ backgroundColor: backgroundColor, marginBottom: 3 }}
               >
@@ -124,7 +128,7 @@ export default class index extends Component {
               marginBottom: 10,
             }}
           >
-            Reserved Room
+            Check out
           </Text>
           <DataTable>
             <DataTable.Header>

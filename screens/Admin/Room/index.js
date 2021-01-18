@@ -6,10 +6,12 @@ import {
   TouchableOpacity,
   ScrollView,
   ActivityIndicator,
+  RefreshControl,
 } from "react-native";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 
 import Card from "../../../components/RoomCard";
+import { NavigationEvents } from "react-navigation";
 
 export default class index extends Component {
   constructor(props) {
@@ -18,6 +20,7 @@ export default class index extends Component {
       dateModal: false,
       date: new Date(),
       loading: true,
+      refreshing: false,
     };
   }
 
@@ -44,22 +47,40 @@ export default class index extends Component {
     setTimeout(() => {
       this.setState({
         loading: false,
+        refreshing: false,
       });
     }, 500);
   };
 
+  onRefresh = () => {
+    this.setState(
+      {
+        refreshing: true,
+      },
+      () => this.fetchRoom()
+    );
+  };
+
   componentDidMount() {
-    setTimeout(() => {
-      this.setState({
-        loading: false,
-      });
-    }, 100);
+    this.fetchRoom();
   }
 
   render() {
-    const { dateModal, date, loading } = this.state;
+    const { dateModal, date, loading, refreshing } = this.state;
     return (
-      <ScrollView style={styles.container}>
+      <ScrollView
+        style={styles.container}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={this.onRefresh}
+          ></RefreshControl>
+        }
+      >
+        <NavigationEvents
+          onWillFocus={() => this.setState({ loading: true })}
+          onDidFocus={this.fetchRoom}
+        />
         <Text style={styles.headerText}> Star Light Resort </Text>
         <View style={styles.subHeaderContainer}>
           <Text style={styles.branchText}>SK branch</Text>

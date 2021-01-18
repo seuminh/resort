@@ -3,6 +3,7 @@ import React from "react";
 
 import Booking from "../../screens/User/Booking/index";
 import AddBooking from "../../screens/User/Booking/addBooking";
+import CheckIn from "../../screens/User/Booking/checkIn";
 import Header from "../../components/Header";
 
 const screens = {
@@ -20,6 +21,12 @@ const screens = {
     screen: AddBooking,
     navigationOptions: {
       title: "Add Booking",
+    },
+  },
+  CheckIn: {
+    screen: CheckIn,
+    navigationOptions: {
+      title: "Check In",
     },
   },
 };
