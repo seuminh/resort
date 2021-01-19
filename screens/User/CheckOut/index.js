@@ -9,15 +9,30 @@ import {
   RefreshControl,
 } from "react-native";
 
-import { DataTable } from "react-native-paper";
+import {
+  DataTable,
+  Modal,
+  Portal,
+  Provider,
+  DefaultTheme,
+  Button,
+  Dialog,
+} from "react-native-paper";
 import { NavigationEvents } from "react-navigation";
+import { AntDesign } from "@expo/vector-icons";
 
 export default class index extends Component {
   state = {
     date: new Date(),
     loading: true,
     refreshing: false,
-    reservedRoom: [
+    loadingExtend: false,
+    disableExtend: false,
+    loadingCheckOut: false,
+    disableCheckOut: false,
+    action: "",
+    dialog: false,
+    roomList: [
       {
         name: "Unknown",
         phone: "012233211",
@@ -40,6 +55,11 @@ export default class index extends Component {
         length: 2,
       },
     ],
+    modalCheckOut: false,
+    checkOutInfo: {
+      checkIn: new Date(),
+      room: [],
+    },
   };
 
   componentDidMount() {
@@ -64,21 +84,71 @@ export default class index extends Component {
     );
   };
 
-  goCheckOut = (r) => {
-    console.log(r);
+  onToggleModal = () => {
+    this.setState({
+      modalCheckOut: !this.state.modalCheckOut,
+      loadingExtend: false,
+      disableExtend: false,
+      loadingCheckOut: false,
+      disableCheckOut: false,
+    });
+  };
+
+  onExtend = () => {
+    this.setState({
+      dialog: false,
+      loadingExtend: true,
+      disableCheckOut: true,
+      action: "",
+    });
+  };
+
+  onCheckOut = () => {
+    this.setState({
+      dialog: false,
+      disableExtend: true,
+      loadingCheckOut: true,
+      action: "",
+    });
+  };
+
+  onConfirmExtend = () => {
+    this.setState({
+      dialog: true,
+      action: "extend",
+    });
+  };
+
+  onConfirmCheckOut = () => {
+    this.setState({
+      dialog: true,
+      action: "checkout",
+    });
+  };
+
+  onProceed = () => {
+    if (this.state.action === "extend") this.onExtend();
+    else this.onCheckOut();
+  };
+
+  showCheckOutInfo = (r) => {
+    this.onToggleModal();
+    this.setState({
+      checkOutInfo: r,
+    });
   };
 
   getRoomList() {
-    const { reservedRoom, date } = this.state;
+    const { roomList, date } = this.state;
     return (
       <View>
-        {reservedRoom.map((r, i) => {
+        {roomList.map((r, i) => {
           let backgroundColor = null;
           if (r.checkIn.getTime() - date.getTime() < 0)
             backgroundColor = "#FCB941";
 
           return (
-            <TouchableOpacity onPress={() => this.goCheckOut(r)}>
+            <TouchableOpacity onPress={() => this.showCheckOutInfo(r)}>
               <DataTable.Row
                 style={{ backgroundColor: backgroundColor, marginBottom: 3 }}
               >
@@ -98,59 +168,180 @@ export default class index extends Component {
   }
 
   render() {
-    const { date, loading, refreshing } = this.state;
+    const {
+      date,
+      loading,
+      loadingCheckOut,
+      disableCheckOut,
+      disableExtend,
+      loadingExtend,
+      refreshing,
+      modalCheckOut,
+      checkOutInfo,
+      dialog,
+    } = this.state;
+    const theme = {
+      ...DefaultTheme,
+    };
     return (
-      <ScrollView
-        style={styles.container}
-        refreshControl={
-          <RefreshControl
-            refreshing={refreshing}
-            onRefresh={this.onRefresh}
-          ></RefreshControl>
-        }
-      >
-        <NavigationEvents
-          onWillFocus={() => this.setState({ loading: true })}
-          onDidFocus={this.fetchAPI}
-        />
-        <Text style={styles.headerText}> Star Light Resort </Text>
-        <View style={styles.subHeaderContainer}>
-          <Text style={styles.branchText}>SK branch</Text>
-          <Text>{date.toLocaleDateString()}</Text>
-        </View>
-        <View style={styles.bodyContainer}>
-          <Text
-            style={{
-              fontSize: 20,
-              //   borderBottomWidth: 1,
-              //   borderBottomColor: "red",
-              textAlign: "center",
-              marginBottom: 10,
-            }}
-          >
-            Check out
-          </Text>
-          <DataTable>
-            <DataTable.Header>
-              <DataTable.Title>Name</DataTable.Title>
-              <DataTable.Title numeric>Phone</DataTable.Title>
-              <DataTable.Title numeric>Room</DataTable.Title>
-              <DataTable.Title numeric>Check In</DataTable.Title>
-              <DataTable.Title numeric>Length</DataTable.Title>
-            </DataTable.Header>
+      <Provider theme={theme}>
+        <ScrollView
+          style={styles.container}
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={this.onRefresh}
+            ></RefreshControl>
+          }
+        >
+          <NavigationEvents
+            onWillFocus={() => this.setState({ loading: true })}
+            onDidFocus={this.fetchAPI}
+          />
+          <Text style={styles.headerText}> Star Light Resort </Text>
+          <View style={styles.subHeaderContainer}>
+            <Text style={styles.branchText}>SK branch</Text>
+            <Text>{date.toLocaleDateString()}</Text>
+          </View>
+          <View style={styles.bodyContainer}>
+            <Text
+              style={{
+                fontSize: 20,
+                //   borderBottomWidth: 1,
+                //   borderBottomColor: "red",
+                textAlign: "center",
+                marginBottom: 10,
+              }}
+            >
+              Check out
+            </Text>
+            <DataTable>
+              <DataTable.Header style={{ color: "red" }}>
+                <DataTable.Title>Name</DataTable.Title>
+                <DataTable.Title numeric>Phone</DataTable.Title>
+                <DataTable.Title numeric>Room</DataTable.Title>
+                <DataTable.Title numeric>Check In</DataTable.Title>
+                <DataTable.Title numeric>Length</DataTable.Title>
+              </DataTable.Header>
 
-            {loading && (
-              <ActivityIndicator
-                color="red"
-                size="large"
-                style={{ marginTop: 50 }}
-              ></ActivityIndicator>
-            )}
+              {loading && (
+                <ActivityIndicator
+                  color="red"
+                  size="large"
+                  style={{ marginTop: 50 }}
+                ></ActivityIndicator>
+              )}
 
-            {!loading && this.getRoomList()}
-          </DataTable>
-        </View>
-      </ScrollView>
+              {!loading && this.getRoomList()}
+            </DataTable>
+          </View>
+
+          {/* Modal */}
+          <Portal>
+            {/* Dialog */}
+            <Portal>
+              <Dialog
+                visible={dialog}
+                onDismiss={() => this.setState({ dialog: false })}
+              >
+                <Dialog.Content>
+                  <Text>Are you sure you want to proceed?</Text>
+                </Dialog.Content>
+                <Dialog.Actions style={{ marginTop: -20 }}>
+                  <Button
+                    onPress={() => this.setState({ dialog: false })}
+                    uppercase={false}
+                  >
+                    Cancel
+                  </Button>
+                  <Button onPress={this.onProceed} uppercase={false}>
+                    Confirm
+                  </Button>
+                </Dialog.Actions>
+              </Dialog>
+            </Portal>
+            <Modal
+              dismissable={false}
+              visible={modalCheckOut}
+              contentContainerStyle={styles.modalCheckOut}
+            >
+              <TouchableOpacity
+                onPress={this.onToggleModal}
+                style={{
+                  alignSelf: "flex-end",
+                  marginRight: 15,
+                  marginTop: -10,
+                }}
+              >
+                <AntDesign name="close" size={24} color="black" />
+              </TouchableOpacity>
+              <View>
+                <Text
+                  style={{
+                    marginBottom: 30,
+                    textAlign: "center",
+                    fontSize: 17,
+                  }}
+                >
+                  Check out information
+                </Text>
+                <View style={styles.modalTextInfoContainer}>
+                  <Text style={styles.modalTextInfo}>Name :</Text>
+                  <Text style={styles.modalTextInfo}>{checkOutInfo.name}</Text>
+                </View>
+                <View style={styles.modalTextInfoContainer}>
+                  <Text style={styles.modalTextInfo}>Phone :</Text>
+                  <Text style={styles.modalTextInfo}>{checkOutInfo.phone}</Text>
+                </View>
+                <View style={styles.modalTextInfoContainer}>
+                  <Text style={styles.modalTextInfo}>Check in Date : </Text>
+                  <Text style={styles.modalTextInfo}>
+                    {checkOutInfo.checkIn.toLocaleDateString()}
+                  </Text>
+                </View>
+                <View style={styles.modalTextInfoContainer}>
+                  <Text style={styles.modalTextInfo}>Room :</Text>
+                  <Text style={styles.modalTextInfo}>
+                    {checkOutInfo.room.toString()}
+                  </Text>
+                </View>
+                <View style={styles.modalTextInfoContainer}>
+                  <Text style={styles.modalTextInfo}>Length : </Text>
+                  <Text style={styles.modalTextInfo}>
+                    {checkOutInfo.length}
+                  </Text>
+                </View>
+              </View>
+              <View
+                style={{
+                  marginTop: 30,
+                  flexDirection: "row",
+                  justifyContent: "space-around",
+                }}
+              >
+                <Button
+                  mode="outlined"
+                  disabled={disableExtend}
+                  onPress={this.onConfirmExtend}
+                  uppercase={false}
+                  loading={loadingExtend}
+                >
+                  Extend
+                </Button>
+                <Button
+                  disabled={disableCheckOut}
+                  mode="outlined"
+                  onPress={this.onConfirmCheckOut}
+                  uppercase={false}
+                  loading={loadingCheckOut}
+                >
+                  Check out
+                </Button>
+              </View>
+            </Modal>
+          </Portal>
+        </ScrollView>
+      </Provider>
     );
   }
 }
@@ -181,5 +372,22 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     marginVertical: 8,
+  },
+  modalCheckOut: {
+    backgroundColor: "white",
+    marginHorizontal: 20,
+    paddingHorizontal: 20,
+    marginTop: -100,
+    borderRadius: 20,
+    height: 350,
+  },
+  modalTextInfo: {
+    fontSize: 15,
+    marginBottom: 10,
+  },
+  modalTextInfoContainer: {
+    paddingHorizontal: 40,
+    flexDirection: "row",
+    justifyContent: "space-between",
   },
 });
