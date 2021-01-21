@@ -25,6 +25,7 @@ export default class index extends Component {
    state = {
       date: new Date(),
       loading: true,
+      overlayLoading: false,
       refreshing: false,
       loadingExtend: false,
       disableExtend: false,
@@ -72,6 +73,26 @@ export default class index extends Component {
             loading: false,
             refreshing: false,
          });
+      }, 1000);
+   };
+
+   extend = () => {
+      setTimeout(() => {
+         this.setState({
+            overlayLoading: false,
+            loadingExtend: false,
+            disableCheckOut: false,
+         });
+      }, 1000);
+   };
+
+   checkOut = () => {
+      setTimeout(() => {
+         this.setState({
+            overlayLoading: false,
+            loadingCheckOut: false,
+            disableExtend: false,
+         });
       }, 500);
    };
 
@@ -95,21 +116,29 @@ export default class index extends Component {
    };
 
    onExtend = () => {
-      this.setState({
-         dialog: false,
-         loadingExtend: true,
-         disableCheckOut: true,
-         action: "",
-      });
+      this.setState(
+         {
+            dialog: false,
+            loadingExtend: true,
+            disableCheckOut: true,
+            action: "",
+            overlayLoading: true,
+         },
+         () => this.extend()
+      );
    };
 
    onCheckOut = () => {
-      this.setState({
-         dialog: false,
-         disableExtend: true,
-         loadingCheckOut: true,
-         action: "",
-      });
+      this.setState(
+         {
+            dialog: false,
+            disableExtend: true,
+            loadingCheckOut: true,
+            action: "",
+            overlayLoading: true,
+         },
+         () => this.checkOut()
+      );
    };
 
    onConfirmExtend = () => {
@@ -184,6 +213,7 @@ export default class index extends Component {
          modalCheckOut,
          checkOutInfo,
          dialog,
+         overlayLoading,
       } = this.state;
       const theme = {
          ...DefaultTheme,
@@ -263,6 +293,19 @@ export default class index extends Component {
                               Confirm
                            </Button>
                         </Dialog.Actions>
+                     </Dialog>
+                  </Portal>
+                  {/* OverLay Loading */}
+                  <Portal>
+                     <Dialog
+                        visible={overlayLoading}
+                        dismissable={false}
+                        style={{ backgroundColor: "transparent", elevation: 0 }}
+                     >
+                        <ActivityIndicator
+                           size="large"
+                           color="red"
+                        ></ActivityIndicator>
                      </Dialog>
                   </Portal>
                   <Modal
@@ -395,6 +438,7 @@ const styles = StyleSheet.create({
    modalTextInfo: {
       fontSize: 15,
       marginBottom: 10,
+      flex: 1,
    },
    modalTextInfoContainer: {
       paddingHorizontal: 40,

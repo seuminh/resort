@@ -12,13 +12,22 @@ import {
 
 import { Form, Item, Input, Label, Picker, Icon } from "native-base";
 
+import {
+   Button,
+   Dialog,
+   Portal,
+   Provider,
+   DefaultTheme,
+} from "react-native-paper";
+
 export default class checkIn extends Component {
    constructor(props) {
       super(props);
       this.state = {
          paid: "paid",
-         total: 0,
          bookingInfo: props.navigation.state.params.bookingInfo,
+         dialog: false,
+         overlayLoading: false,
       };
    }
 
@@ -51,6 +60,20 @@ export default class checkIn extends Component {
       alert("Check In");
    };
 
+   onCancel = () => {
+      this.setState(
+         {
+            overlayLoading: true,
+            dialog: false,
+         },
+         () => {
+            setTimeout(() => {
+               this.props.navigation.goBack();
+            }, 500);
+         }
+      );
+   };
+
    onHandleChangeText = (value, nameInput) => {
       this.setState({
          bookingInfo: {
@@ -61,135 +84,182 @@ export default class checkIn extends Component {
    };
 
    render() {
-      const { paid, total, bookingInfo } = this.state;
+      const { paid, bookingInfo, dialog, overlayLoading } = this.state;
+      const theme = {
+         ...DefaultTheme,
+      };
 
       return (
-         <ScrollView style={styles.container}>
-            <Text style={styles.headerText}> Star Light Resort </Text>
-            <Text style={styles.branchText}>SK branch</Text>
-            <View style={styles.bodyContainer}>
-               <Text
-                  style={{
-                     fontSize: 20,
-                     //   borderBottomWidth: 1,
-                     //   borderBottomColor: "red",
-                     textAlign: "center",
-                  }}
-               >
-                  Check In Form
-               </Text>
-               <Form>
-                  <Item floatingLabel>
-                     <Label>Name</Label>
-                     <Input
-                        value={bookingInfo.name}
-                        onChangeText={(value) =>
-                           this.onHandleChangeText(value, "name")
-                        }
-                     />
-                  </Item>
-                  <Item floatingLabel>
-                     <Label>ID Number</Label>
-                     <Input
-                        value={bookingInfo.id}
-                        onChangeText={(value) =>
-                           this.onHandleChangeText(value, "id")
-                        }
-                     />
-                  </Item>
-                  <Item floatingLabel>
-                     <Label>Phone Number</Label>
-                     <Input
-                        keyboardType="numeric"
-                        value={bookingInfo.phone}
-                        onChangeText={(value) =>
-                           this.onHandleChangeText(value, "phone")
-                        }
-                     />
-                  </Item>
-                  <Item floatingLabel>
-                     <Label>Number of Person</Label>
-                     <Input keyboardType="numeric" />
-                  </Item>
-                  {/* Check In */}
-                  <View style={styles.checkInContainer}>
-                     <Text style={styles.biggerText}>Check in :</Text>
-                     <Text style={[styles.biggerText, { marginLeft: 32 }]}>
-                        {bookingInfo.checkInDate.toLocaleDateString()}
-                     </Text>
-                  </View>
-                  {/* Check Out */}
-                  <View style={styles.checkOutContainer}>
-                     <Text style={styles.biggerText}>Check out :</Text>
-                     <Text style={[styles.biggerText, { marginLeft: 20 }]}>
-                        {bookingInfo.checkOutDate.toLocaleDateString()}
-                     </Text>
-                  </View>
-                  {/* Length */}
-                  <View style={styles.lengthContainer}>
-                     <Text style={styles.biggerText}>Length :</Text>
-                     <Text style={[styles.biggerText, { marginLeft: 47 }]}>
-                        {bookingInfo.length}
-                     </Text>
-                  </View>
-                  {/* Total */}
-                  <View style={styles.totalContainer}>
-                     <Text style={styles.biggerText}>Total price :</Text>
-                     <Text style={[styles.biggerText, { marginLeft: 22 }]}>
-                        $ {bookingInfo.total}
-                     </Text>
-                  </View>
-                  {/* Payment */}
-                  <View style={styles.paymentContainer}>
-                     <Text style={styles.biggerText}>Pay :</Text>
-                     <Picker
-                        mode="dropdown"
-                        iosIcon={<Icon name="arrow-down" />}
-                        style={{
-                           marginLeft: 57,
-                           marginTop: -11,
-                        }}
-                        selectedValue={paid}
-                        onValueChange={this.onPaymentChange}
+         <Provider theme={theme}>
+            <ScrollView style={styles.container}>
+               <Text style={styles.headerText}> Star Light Resort </Text>
+               <Text style={styles.branchText}>SK branch</Text>
+               <View style={styles.bodyContainer}>
+                  <Text
+                     style={{
+                        fontSize: 20,
+                        //   borderBottomWidth: 1,
+                        //   borderBottomColor: "red",
+                        textAlign: "center",
+                     }}
+                  >
+                     Check In Form
+                  </Text>
+                  <Form>
+                     <Item floatingLabel>
+                        <Label>Name</Label>
+                        <Input
+                           value={bookingInfo.name}
+                           onChangeText={(value) =>
+                              this.onHandleChangeText(value, "name")
+                           }
+                        />
+                     </Item>
+                     <Item floatingLabel>
+                        <Label>ID Number</Label>
+                        <Input
+                           value={bookingInfo.id}
+                           onChangeText={(value) =>
+                              this.onHandleChangeText(value, "id")
+                           }
+                        />
+                     </Item>
+                     <Item floatingLabel>
+                        <Label>Phone Number</Label>
+                        <Input
+                           keyboardType="numeric"
+                           value={bookingInfo.phone}
+                           onChangeText={(value) =>
+                              this.onHandleChangeText(value, "phone")
+                           }
+                        />
+                     </Item>
+                     <Item floatingLabel>
+                        <Label>Number of Person</Label>
+                        <Input keyboardType="numeric" />
+                     </Item>
+                     {/* Check In */}
+                     <View style={styles.checkInContainer}>
+                        <Text style={styles.biggerText}>Check in :</Text>
+                        <Text style={[styles.biggerText, { marginLeft: 32 }]}>
+                           {bookingInfo.checkInDate.toLocaleDateString()}
+                        </Text>
+                     </View>
+                     {/* Check Out */}
+                     <View style={styles.checkOutContainer}>
+                        <Text style={styles.biggerText}>Check out :</Text>
+                        <Text style={[styles.biggerText, { marginLeft: 20 }]}>
+                           {bookingInfo.checkOutDate.toLocaleDateString()}
+                        </Text>
+                     </View>
+                     {/* Length */}
+                     <View style={styles.lengthContainer}>
+                        <Text style={styles.biggerText}>Length :</Text>
+                        <Text style={[styles.biggerText, { marginLeft: 47 }]}>
+                           {bookingInfo.length}
+                        </Text>
+                     </View>
+                     {/* Total */}
+                     <View style={styles.totalContainer}>
+                        <Text style={styles.biggerText}>Total price :</Text>
+                        <Text style={[styles.biggerText, { marginLeft: 22 }]}>
+                           $ {bookingInfo.total}
+                        </Text>
+                     </View>
+                     {/* Payment */}
+                     <View style={styles.paymentContainer}>
+                        <Text style={styles.biggerText}>Pay :</Text>
+                        <Picker
+                           mode="dropdown"
+                           iosIcon={<Icon name="arrow-down" />}
+                           style={{
+                              marginLeft: 57,
+                              marginTop: -11,
+                           }}
+                           selectedValue={paid}
+                           onValueChange={this.onPaymentChange}
+                        >
+                           <Picker.Item label="Paid" value="paid" />
+                           <Picker.Item label="Not pay" value="notPaid" />
+                        </Picker>
+                     </View>
+                     {/* Room */}
+                     <View style={styles.roomContainer}>
+                        <Text style={styles.biggerText}>Room :</Text>
+                        <Text style={[styles.biggerText, { marginLeft: 50 }]}>
+                           {" "}
+                           {bookingInfo.room.toString()}
+                        </Text>
+                     </View>
+                  </Form>
+                  <View
+                     style={{
+                        flexDirection: "row",
+                        justifyContent: "space-around",
+                        marginTop: 20,
+                     }}
+                  >
+                     <Button
+                        onPress={() => this.setState({ dialog: true })}
+                        uppercase={false}
+                        mode="outlined"
                      >
-                        <Picker.Item label="Paid" value="paid" />
-                        <Picker.Item label="Not pay" value="notPaid" />
-                     </Picker>
-                  </View>
-                  {/* Room */}
-                  <View style={styles.roomContainer}>
-                     <Text style={styles.biggerText}>Room :</Text>
-                     <Text style={[styles.biggerText, { marginLeft: 50 }]}>
-                        {" "}
-                        {bookingInfo.room.toString()}
-                     </Text>
-                  </View>
-               </Form>
-               <View
-                  style={{
-                     flexDirection: "row",
-                     justifyContent: "space-around",
-                  }}
-               >
-                  <TouchableOpacity
-                     style={styles.btnPrint}
-                     onPress={this.onPrint}
-                  >
-                     <Text style={[styles.biggerText, { color: "#fff" }]}>
+                        Cancel
+                     </Button>
+                     <Button
+                        mode="outlined"
+                        onPress={this.onPrint}
+                        uppercase={false}
+                     >
                         Print
-                     </Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                     style={styles.btnCheckIn}
-                     onPress={this.onCheckIn}
-                  >
-                     <Text style={[styles.biggerText, { color: "#fff" }]}>
+                     </Button>
+                     <Button
+                        mode="outlined"
+                        onPress={this.onCheckIn}
+                        uppercase={false}
+                     >
                         Check In
-                     </Text>
-                  </TouchableOpacity>
+                     </Button>
+                  </View>
                </View>
-            </View>
-         </ScrollView>
+            </ScrollView>
+
+            {/* Dialog */}
+            <Portal>
+               <Dialog
+                  visible={dialog}
+                  onDismiss={() => this.setState({ dialog: false })}
+               >
+                  <Dialog.Content>
+                     <Text>Are you sure you want to proceed?</Text>
+                  </Dialog.Content>
+                  <Dialog.Actions style={{ marginTop: -20 }}>
+                     <Button
+                        onPress={() => this.setState({ dialog: false })}
+                        uppercase={false}
+                     >
+                        Cancel
+                     </Button>
+                     <Button onPress={this.onCancel} uppercase={false}>
+                        Confirm
+                     </Button>
+                  </Dialog.Actions>
+               </Dialog>
+            </Portal>
+            {/* OverLay Loading */}
+            <Portal>
+               <Dialog
+                  visible={overlayLoading}
+                  dismissable={false}
+                  style={{ backgroundColor: "transparent", elevation: 0 }}
+               >
+                  <ActivityIndicator
+                     size="large"
+                     color="red"
+                  ></ActivityIndicator>
+               </Dialog>
+            </Portal>
+         </Provider>
       );
    }
 }
@@ -199,6 +269,7 @@ const styles = StyleSheet.create({
       flex: 1,
       paddingHorizontal: 10,
       paddingTop: 10,
+      backgroundColor: "#fff",
    },
    dot: {
       fontSize: 30,
@@ -274,6 +345,7 @@ const styles = StyleSheet.create({
       alignSelf: "center",
       marginTop: 20,
       paddingHorizontal: 60,
+      marginHorizontal: 10,
    },
    btnCheckIn: {
       padding: 10,
@@ -281,5 +353,12 @@ const styles = StyleSheet.create({
       alignSelf: "center",
       marginTop: 20,
       paddingHorizontal: 45,
+   },
+   btnCancel: {
+      padding: 10,
+      backgroundColor: "darkslateblue",
+      alignSelf: "center",
+      marginTop: 20,
+      paddingHorizontal: 60,
    },
 });
