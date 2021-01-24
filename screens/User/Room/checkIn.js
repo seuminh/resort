@@ -15,6 +15,8 @@ import { Form, Item, Input, Label, Picker, Icon } from "native-base";
 import Unorderedlist from "react-native-unordered-list";
 import { Checkbox } from "react-native-paper";
 
+import * as Print from "expo-print";
+
 export default class checkIn extends Component {
    state = {
       checkInDateModal: false,
@@ -220,7 +222,12 @@ export default class checkIn extends Component {
          return r.selected === true;
       });
       if (selectedRooms.length === 0) alert("Please select any available room");
-      console.log(selectedRooms);
+      else {
+         console.log(selectedRooms);
+         Print.printAsync({
+            uri: "https://graduateland.com/api/v2/users/jesper/cv",
+         });
+      }
    };
 
    onCheckIn = () => {
