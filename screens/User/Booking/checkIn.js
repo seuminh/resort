@@ -24,10 +24,11 @@ export default class checkIn extends Component {
    constructor(props) {
       super(props);
       this.state = {
-         paid: "paid",
+         paid: "notPaid",
          bookingInfo: props.navigation.state.params.bookingInfo,
          dialog: false,
          overlayLoading: false,
+         action: "",
       };
    }
 
@@ -41,7 +42,8 @@ export default class checkIn extends Component {
       this.setState({
          bookingInfo: {
             ...bookingInfo,
-            total: bookingInfo.length * bookingInfo.room.length,
+            total:
+               bookingInfo.length * bookingInfo.room.length * bookingInfo.price,
          },
       });
    };
@@ -53,17 +55,32 @@ export default class checkIn extends Component {
    };
 
    onPrint = () => {
+      const { bookingInfo } = this.state;
+      if (this.state.paid === "paid") bookingInfo.deposit = bookingInfo.total;
+      else bookingInfo.deposit = 0;
+      bookingInfo.checkInDate = bookingInfo.checkInDate.toLocaleDateString();
+      bookingInfo.checkOutDate = bookingInfo.checkOutDate.toLocaleDateString();
       console.log(this.state.bookingInfo);
    };
 
    onCheckIn = () => {
-      alert("Check In");
+      const { bookingInfo } = this.state;
+      if (this.state.paid === "paid") bookingInfo.deposit = bookingInfo.total;
+      else bookingInfo.deposit = 0;
+      bookingInfo.checkInDate = bookingInfo.checkInDate.toLocaleDateString();
+      bookingInfo.checkOutDate = bookingInfo.checkOutDate.toLocaleDateString();
+      this.setState({
+         dialog: false,
+         action: "",
+      });
+      console.log(this.state.bookingInfo);
    };
 
    onCancel = () => {
       this.setState(
          {
             overlayLoading: true,
+            action: "",
             dialog: false,
          },
          () => {
@@ -72,6 +89,11 @@ export default class checkIn extends Component {
             }, 500);
          }
       );
+   };
+
+   onProceed = () => {
+      if (this.state.action === "cancel") this.onCancel();
+      else this.onCheckIn();
    };
 
    onHandleChangeText = (value, nameInput) => {
@@ -136,7 +158,13 @@ export default class checkIn extends Component {
                      </Item>
                      <Item floatingLabel>
                         <Label>Number of Person</Label>
-                        <Input keyboardType="numeric" />
+                        <Input
+                           keyboardType="numeric"
+                           value={bookingInfo.person}
+                           onChangeText={(value) =>
+                              this.onHandleChangeText(value, "person")
+                           }
+                        />
                      </Item>
                      {/* Check In */}
                      <View style={styles.checkInContainer}>
@@ -180,7 +208,7 @@ export default class checkIn extends Component {
                            onValueChange={this.onPaymentChange}
                         >
                            <Picker.Item label="Paid" value="paid" />
-                           <Picker.Item label="Not pay" value="notPaid" />
+                           <Picker.Item label="Not paid" value="notPaid" />
                         </Picker>
                      </View>
                      {/* Room */}
@@ -200,9 +228,13 @@ export default class checkIn extends Component {
                      }}
                   >
                      <Button
-                        onPress={() => this.setState({ dialog: true })}
+                        onPress={() =>
+                           this.setState({ dialog: true, action: "cancel" })
+                        }
                         uppercase={false}
                         mode="outlined"
+                        color="#D9534F"
+                        style={{ borderColor: "#D9534F", borderWidth: 1 }}
                      >
                         Cancel
                      </Button>
@@ -210,13 +242,18 @@ export default class checkIn extends Component {
                         mode="outlined"
                         onPress={this.onPrint}
                         uppercase={false}
+                        style={{ borderWidth: 1, borderColor: "#AA75F6" }}
                      >
                         Print
                      </Button>
                      <Button
                         mode="outlined"
-                        onPress={this.onCheckIn}
+                        onPress={() =>
+                           this.setState({ dialog: true, action: "checkIn" })
+                        }
                         uppercase={false}
+                        color="#0275D8"
+                        style={{ borderColor: "#0275D8", borderWidth: 1 }}
                      >
                         Check In
                      </Button>
@@ -228,19 +265,21 @@ export default class checkIn extends Component {
             <Portal>
                <Dialog
                   visible={dialog}
-                  onDismiss={() => this.setState({ dialog: false })}
+                  onDismiss={() => this.setState({ dialog: false, action: "" })}
                >
                   <Dialog.Content>
                      <Text>Are you sure you want to proceed?</Text>
                   </Dialog.Content>
                   <Dialog.Actions style={{ marginTop: -20 }}>
                      <Button
-                        onPress={() => this.setState({ dialog: false })}
+                        onPress={() =>
+                           this.setState({ dialog: false, action: "" })
+                        }
                         uppercase={false}
                      >
                         Cancel
                      </Button>
-                     <Button onPress={this.onCancel} uppercase={false}>
+                     <Button onPress={this.onProceed} uppercase={false}>
                         Confirm
                      </Button>
                   </Dialog.Actions>

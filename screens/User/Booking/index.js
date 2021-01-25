@@ -9,7 +9,7 @@ import {
    RefreshControl,
 } from "react-native";
 
-import { DataTable } from "react-native-paper";
+import { DataTable, Button } from "react-native-paper";
 import { NavigationEvents } from "react-navigation";
 
 export default class index extends Component {
@@ -25,6 +25,7 @@ export default class index extends Component {
             checkInDate: new Date("01/21/2021"),
             checkOutDate: new Date("01/22/2021"),
             length: 1,
+            price: 20,
          },
          {
             name: "Hello",
@@ -33,6 +34,7 @@ export default class index extends Component {
             checkInDate: new Date("01/29/2021"),
             checkOutDate: new Date("01/30/2021"),
             length: 1,
+            price: 20,
          },
          {
             name: "Hi",
@@ -41,6 +43,7 @@ export default class index extends Component {
             checkInDate: new Date("02/07/2021"),
             checkOutDate: new Date("02/09/2021"),
             length: 2,
+            price: 20,
          },
       ],
    };
@@ -86,7 +89,7 @@ export default class index extends Component {
                   backgroundColor = "#FCB941";
 
                return (
-                  <TouchableOpacity onPress={() => this.goCheckIn(r)}>
+                  <TouchableOpacity onPress={() => this.goCheckIn(r)} key={i}>
                      <DataTable.Row
                         style={{
                            backgroundColor: backgroundColor,
@@ -163,12 +166,19 @@ export default class index extends Component {
                   {!loading && this.getRoomList()}
                </DataTable>
 
-               <TouchableOpacity
-                  style={styles.btnAdd}
+               <Button
+                  mode="outlined"
                   onPress={this.goAddBooking}
+                  uppercase={false}
+                  style={{
+                     borderColor: "#AA75F6",
+                     borderWidth: 1,
+                     alignSelf: "center",
+                     marginTop: 20,
+                  }}
                >
-                  <Text style={{ color: "#fff" }}>Add Booking</Text>
-               </TouchableOpacity>
+                  Add Booking
+               </Button>
             </View>
          </ScrollView>
       );
@@ -201,12 +211,5 @@ const styles = StyleSheet.create({
       flexDirection: "row",
       justifyContent: "space-between",
       marginVertical: 8,
-   },
-   btnAdd: {
-      padding: 10,
-      backgroundColor: "darkslateblue",
-      alignSelf: "center",
-      marginTop: 20,
-      paddingHorizontal: 60,
    },
 });

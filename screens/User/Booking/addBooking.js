@@ -13,7 +13,14 @@ import {
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { Form, Item, Input, Label, Picker, Icon } from "native-base";
 import Unorderedlist from "react-native-unordered-list";
-import { Checkbox } from "react-native-paper";
+import {
+   Checkbox,
+   Button,
+   Portal,
+   Provider,
+   Dialog,
+   DefaultTheme,
+} from "react-native-paper";
 
 export default class AddBooking extends Component {
    state = {
@@ -23,6 +30,8 @@ export default class AddBooking extends Component {
       checkOutDate: new Date(),
       loadingRooms: true,
       length: 1,
+      dialog: false,
+      overLoading: false,
       rooms: [
          {
             number: "101",
@@ -41,6 +50,7 @@ export default class AddBooking extends Component {
             status: "available",
          },
       ],
+      bookingInfo: {},
    };
 
    componentDidMount() {
@@ -192,13 +202,37 @@ export default class AddBooking extends Component {
       );
    };
 
-   onPrint = () => {
-      const { rooms } = this.state;
-      let selectedRooms = rooms.filter((r) => {
-         return r.selected === true;
+   onAddBooking = () => {
+      const { rooms, bookingInfo } = this.state;
+      let selectedRooms = [];
+      rooms.map((r) => {
+         if (r.selected) selectedRooms.push(r.number);
       });
-      if (selectedRooms.length === 0) alert("Please select any available room");
-      console.log(selectedRooms);
+      if (selectedRooms.length === 0) {
+         alert("Please select any available room");
+         this.setState({
+            dialog: false,
+         });
+      } else {
+         this.setState({
+            overlayLoading: true,
+            dialog: false,
+         });
+         bookingInfo.checkInDate = this.state.checkInDate.toLocaleDateString();
+         bookingInfo.checkOutDate = this.state.checkOutDate.toLocaleDateString();
+         bookingInfo.length = this.state.length;
+         bookingInfo.rooms = selectedRooms;
+         console.log(bookingInfo);
+      }
+   };
+
+   onHandleChangeText = (value, nameInput) => {
+      this.setState({
+         bookingInfo: {
+            ...this.state.bookingInfo,
+            [nameInput]: value,
+         },
+      });
    };
 
    render() {
@@ -210,101 +244,174 @@ export default class AddBooking extends Component {
          rooms,
          length,
          loadingRooms,
+         bookingInfo,
+         dialog,
+         overlayLoading,
       } = this.state;
-
+      const theme = {
+         ...DefaultTheme,
+      };
       return (
-         <ScrollView style={styles.container}>
-            <Text style={styles.headerText}> Star Light Resort </Text>
-            <Text style={styles.branchText}>SK branch</Text>
-            <View style={styles.bodyContainer}>
-               <Text
-                  style={{
-                     fontSize: 20,
-                     textAlign: "center",
-                  }}
-               >
-                  Booking Form
-               </Text>
-               <Form>
-                  <Item floatingLabel>
-                     <Label>Name</Label>
-                     <Input />
-                  </Item>
-                  <Item floatingLabel>
-                     <Label>Phone Number</Label>
-                     <Input keyboardType="numeric" />
-                  </Item>
-                  {/* Check In */}
-                  <View style={styles.checkInContainer}>
-                     <Text style={styles.biggerText}>Check in :</Text>
-                     <TouchableOpacity onPress={this.toggleCheckInDateModal}>
-                        <Text style={[styles.biggerText, { marginLeft: 32 }]}>
-                           {checkInDate.toLocaleDateString()}
-                        </Text>
-                     </TouchableOpacity>
-                  </View>
-                  {/* Check Out */}
-                  <View style={styles.checkOutContainer}>
-                     <Text style={styles.biggerText}>Check out :</Text>
-                     <TouchableOpacity onPress={this.toggleCheckOutDateModal}>
-                        <Text style={[styles.biggerText, { marginLeft: 20 }]}>
-                           {checkOutDate.toLocaleDateString()}
-                        </Text>
-                     </TouchableOpacity>
-                  </View>
-                  {/* Length */}
-                  <View style={styles.lengthContainer}>
-                     <Text style={styles.biggerText}>Length :</Text>
-                     <Text style={[styles.biggerText, { marginLeft: 47 }]}>
-                        {length}
-                     </Text>
-                  </View>
-                  {/* Room */}
-                  <View style={styles.roomContainer}>
-                     <Text style={styles.biggerText}>Room :</Text>
-                     {loadingRooms && (
-                        <ActivityIndicator
-                           color="red"
-                           size="large"
-                           style={{ marginLeft: 50 }}
-                        ></ActivityIndicator>
-                     )}
-                     {!loadingRooms && (
-                        <FlatList
-                           style={{ marginTop: -10, paddingLeft: 14 }}
-                           data={rooms}
-                           renderItem={this.renderItem}
-                           keyExtractor={(item) => item.number}
-                        />
-                     )}
-                  </View>
-               </Form>
-               <TouchableOpacity style={styles.btnAdd} onPress={this.onPrint}>
-                  <Text style={[styles.biggerText, { color: "#fff" }]}>
-                     Add Booking
+         <Provider theme={theme}>
+            <ScrollView style={styles.container}>
+               <Text style={styles.headerText}> Star Light Resort </Text>
+               <Text style={styles.branchText}>SK branch</Text>
+               <View style={styles.bodyContainer}>
+                  <Text
+                     style={{
+                        fontSize: 20,
+                        textAlign: "center",
+                     }}
+                  >
+                     Booking Form
                   </Text>
-               </TouchableOpacity>
-            </View>
+                  <Form>
+                     <Item floatingLabel>
+                        <Label>Name</Label>
+                        <Input
+                           value={bookingInfo.name}
+                           onChangeText={(value) =>
+                              this.onHandleChangeText(value, "name")
+                           }
+                        />
+                     </Item>
+                     <Item floatingLabel>
+                        <Label>Phone Number</Label>
+                        <Input
+                           keyboardType="numeric"
+                           value={bookingInfo.phone}
+                           onChangeText={(value) =>
+                              this.onHandleChangeText(value, "phone")
+                           }
+                        />
+                     </Item>
+                     {/* Check In */}
+                     <View style={styles.checkInContainer}>
+                        <Text style={styles.biggerText}>Check in :</Text>
+                        <TouchableOpacity onPress={this.toggleCheckInDateModal}>
+                           <Text
+                              style={[styles.biggerText, { marginLeft: 32 }]}
+                           >
+                              {checkInDate.toLocaleDateString()}
+                           </Text>
+                        </TouchableOpacity>
+                     </View>
+                     {/* Check Out */}
+                     <View style={styles.checkOutContainer}>
+                        <Text style={styles.biggerText}>Check out :</Text>
+                        <TouchableOpacity
+                           onPress={this.toggleCheckOutDateModal}
+                        >
+                           <Text
+                              style={[styles.biggerText, { marginLeft: 20 }]}
+                           >
+                              {checkOutDate.toLocaleDateString()}
+                           </Text>
+                        </TouchableOpacity>
+                     </View>
+                     {/* Length */}
+                     <View style={styles.lengthContainer}>
+                        <Text style={styles.biggerText}>Length :</Text>
+                        <Text style={[styles.biggerText, { marginLeft: 47 }]}>
+                           {length}
+                        </Text>
+                     </View>
+                     {/* Room */}
+                     <View style={styles.roomContainer}>
+                        <Text style={styles.biggerText}>Room :</Text>
+                        {loadingRooms && (
+                           <ActivityIndicator
+                              color="red"
+                              size="large"
+                              style={{ marginLeft: 50 }}
+                           ></ActivityIndicator>
+                        )}
+                        {!loadingRooms && (
+                           <FlatList
+                              style={{ marginTop: -10, paddingLeft: 14 }}
+                              data={rooms}
+                              renderItem={this.renderItem}
+                              keyExtractor={(item) => item.number}
+                           />
+                        )}
+                     </View>
+                  </Form>
+                  <Button
+                     mode="outlined"
+                     onPress={() =>
+                        this.setState({
+                           dialog: true,
+                        })
+                     }
+                     uppercase={false}
+                     style={{
+                        borderColor: "#AA75F6",
+                        borderWidth: 1,
+                        alignSelf: "center",
+                        marginTop: 20,
+                     }}
+                  >
+                     Add Booking
+                  </Button>
+               </View>
 
-            {/* Modal */}
-            <DateTimePickerModal
-               date={checkInDate}
-               isVisible={checkInDateModal}
-               mode="date"
-               onConfirm={this.handleCheckInConfirm}
-               onCancel={this.toggleCheckInDateModal}
-               isDarkModeEnabled={false}
-            />
+               {/* Dialog */}
+               <Portal>
+                  <Dialog
+                     visible={dialog}
+                     onDismiss={() => this.setState({ dialog: false })}
+                  >
+                     <Dialog.Content>
+                        <Text>Are you sure you want to proceed?</Text>
+                     </Dialog.Content>
+                     <Dialog.Actions style={{ marginTop: -20 }}>
+                        <Button
+                           onPress={() => this.setState({ dialog: false })}
+                           uppercase={false}
+                        >
+                           Cancel
+                        </Button>
+                        <Button onPress={this.onAddBooking} uppercase={false}>
+                           Confirm
+                        </Button>
+                     </Dialog.Actions>
+                  </Dialog>
+               </Portal>
 
-            <DateTimePickerModal
-               date={checkOutDate}
-               isVisible={checkOutDateModal}
-               mode="date"
-               onConfirm={this.handleCheckOutConfirm}
-               onCancel={this.toggleCheckOutDateModal}
-               isDarkModeEnabled={false}
-            />
-         </ScrollView>
+               {/* OverLay Loading */}
+               <Portal>
+                  <Dialog
+                     visible={overlayLoading}
+                     dismissable={false}
+                     style={{ backgroundColor: "transparent", elevation: 0 }}
+                  >
+                     <ActivityIndicator
+                        size="large"
+                        color="red"
+                     ></ActivityIndicator>
+                  </Dialog>
+               </Portal>
+
+               {/* Modal */}
+               <DateTimePickerModal
+                  date={checkInDate}
+                  isVisible={checkInDateModal}
+                  mode="date"
+                  onConfirm={this.handleCheckInConfirm}
+                  onCancel={this.toggleCheckInDateModal}
+                  isDarkModeEnabled={false}
+               />
+
+               <DateTimePickerModal
+                  date={checkOutDate}
+                  isVisible={checkOutDateModal}
+                  mode="date"
+                  onConfirm={this.handleCheckOutConfirm}
+                  onCancel={this.toggleCheckOutDateModal}
+                  isDarkModeEnabled={false}
+               />
+            </ScrollView>
+         </Provider>
       );
    }
 }

@@ -177,7 +177,10 @@ export default class index extends Component {
                   backgroundColor = "#FCB941";
 
                return (
-                  <TouchableOpacity onPress={() => this.showCheckOutInfo(r)}>
+                  <TouchableOpacity
+                     onPress={() => this.showCheckOutInfo(r)}
+                     key={i}
+                  >
                      <DataTable.Row
                         style={{
                            backgroundColor: backgroundColor,
@@ -379,6 +382,8 @@ export default class index extends Component {
                            onPress={this.onConfirmExtend}
                            uppercase={false}
                            loading={loadingExtend}
+                           color="#0275D8"
+                           style={{ borderColor: "#0275D8" }}
                         >
                            Extend
                         </Button>
@@ -388,6 +393,8 @@ export default class index extends Component {
                            onPress={this.onConfirmCheckOut}
                            uppercase={false}
                            loading={loadingCheckOut}
+                           color="#D9534F"
+                           style={{ borderColor: "#D9534F" }}
                         >
                            Check out
                         </Button>

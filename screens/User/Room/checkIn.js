@@ -13,7 +13,14 @@ import {
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { Form, Item, Input, Label, Picker, Icon } from "native-base";
 import Unorderedlist from "react-native-unordered-list";
-import { Checkbox } from "react-native-paper";
+import {
+   Checkbox,
+   Portal,
+   Provider,
+   Dialog,
+   Button,
+   DefaultTheme,
+} from "react-native-paper";
 
 import * as Print from "expo-print";
 
@@ -21,12 +28,16 @@ export default class checkIn extends Component {
    state = {
       checkInDateModal: false,
       checkOutDateModal: false,
+      overlayLoading: false,
       checkInDate: new Date(),
       checkOutDate: new Date(),
       loadingRooms: true,
       length: 1,
-      paid: "paid",
+      paid: "notPaid",
       total: 0,
+      action: "",
+      dialog: false,
+      checkInInfo: {},
       rooms: [
          {
             number: "101",
@@ -194,6 +205,7 @@ export default class checkIn extends Component {
             : "#FCB941";
       return (
          <TouchableOpacity
+            key={index}
             style={styles.roomList}
             onPress={() => this.onCheckboxChange(item, index)}
          >
@@ -217,13 +229,25 @@ export default class checkIn extends Component {
    };
 
    onPrint = () => {
-      const { rooms } = this.state;
-      let selectedRooms = rooms.filter((r) => {
-         return r.selected === true;
+      const { rooms, checkInInfo } = this.state;
+      // let selectedRooms = rooms.filter((r) => {
+      //    return r.selected === true;
+      // });
+      let selectedRooms = [];
+      rooms.map((r) => {
+         if (r.selected) selectedRooms.push(r.number);
       });
       if (selectedRooms.length === 0) alert("Please select any available room");
       else {
-         console.log(selectedRooms);
+         checkInInfo.checkInDate = this.state.checkInDate.toLocaleDateString();
+         checkInInfo.checkOutDate = this.state.checkOutDate.toLocaleDateString();
+         checkInInfo.length = this.state.length;
+         checkInInfo.total = this.state.total;
+         if (this.state.paid === "paid")
+            checkInInfo.deposit = checkInInfo.total;
+         else checkInInfo.deposit = 0;
+         checkInInfo.rooms = selectedRooms;
+         console.log(checkInInfo);
          Print.printAsync({
             uri: "https://graduateland.com/api/v2/users/jesper/cv",
          });
@@ -232,6 +256,33 @@ export default class checkIn extends Component {
 
    onCheckIn = () => {
       alert("Check In");
+      this.setState({
+         dialog: false,
+         action: "",
+      });
+   };
+
+   onClear = () => {
+      alert("Clear");
+      this.setState({
+         action: "",
+         dialog: false,
+         checkInInfo: {},
+      });
+   };
+
+   onProceed = () => {
+      if (this.state.action === "clear") this.onClear();
+      else this.onCheckIn();
+   };
+
+   onHandleChangeText = (value, nameInput) => {
+      this.setState({
+         checkInInfo: {
+            ...this.state.checkInInfo,
+            [nameInput]: value,
+         },
+      });
    };
 
    render() {
@@ -245,153 +296,251 @@ export default class checkIn extends Component {
          length,
          loadingRooms,
          total,
+         overlayLoading,
+         dialog,
+         checkInInfo,
       } = this.state;
-
+      const theme = {
+         ...DefaultTheme,
+      };
       return (
-         <ScrollView style={styles.container}>
-            <Text style={styles.headerText}> Star Light Resort </Text>
-            <Text style={styles.branchText}>SK branch</Text>
-            <View style={styles.bodyContainer}>
-               <Text
-                  style={{
-                     fontSize: 20,
-                     //   borderBottomWidth: 1,
-                     //   borderBottomColor: "red",
-                     textAlign: "center",
-                  }}
-               >
-                  Check In Form
-               </Text>
-               <Form>
-                  <Item floatingLabel>
-                     <Label>Name</Label>
-                     <Input />
-                  </Item>
-                  <Item floatingLabel last>
-                     <Label>ID Number</Label>
-                     <Input />
-                  </Item>
-                  <Item floatingLabel>
-                     <Label>Phone Number</Label>
-                     <Input keyboardType="numeric" />
-                  </Item>
-                  <Item floatingLabel>
-                     <Label>Number of Guest</Label>
-                     <Input keyboardType="numeric" />
-                  </Item>
-                  {/* Check In */}
-                  <View style={styles.checkInContainer}>
-                     <Text style={styles.biggerText}>Check in :</Text>
-                     <TouchableOpacity onPress={this.toggleCheckInDateModal}>
-                        <Text style={[styles.biggerText, { marginLeft: 32 }]}>
-                           {checkInDate.toLocaleDateString()}
-                        </Text>
-                     </TouchableOpacity>
-                  </View>
-                  {/* Check Out */}
-                  <View style={styles.checkOutContainer}>
-                     <Text style={styles.biggerText}>Check out :</Text>
-                     <TouchableOpacity onPress={this.toggleCheckOutDateModal}>
-                        <Text style={[styles.biggerText, { marginLeft: 20 }]}>
-                           {checkOutDate.toLocaleDateString()}
-                        </Text>
-                     </TouchableOpacity>
-                  </View>
-                  {/* Length */}
-                  <View style={styles.lengthContainer}>
-                     <Text style={styles.biggerText}>Length :</Text>
-                     <Text style={[styles.biggerText, { marginLeft: 47 }]}>
-                        {length}
-                     </Text>
-                  </View>
-                  {/* Total */}
-                  <View style={styles.totalContainer}>
-                     <Text style={styles.biggerText}>Total price :</Text>
-                     <Text style={[styles.biggerText, { marginLeft: 22 }]}>
-                        $ {total}
-                     </Text>
-                  </View>
-                  {/* Payment */}
-                  <View style={styles.paymentContainer}>
-                     <Text style={styles.biggerText}>Pay :</Text>
-                     <Picker
-                        mode="dropdown"
-                        iosIcon={<Icon name="arrow-down" />}
-                        style={{
-                           marginLeft: 57,
-                           marginTop: -11,
-                        }}
-                        selectedValue={paid}
-                        onValueChange={this.onPaymentChange}
-                     >
-                        <Picker.Item label="Paid" value="paid" />
-                        <Picker.Item label="Not pay" value="notPaid" />
-                     </Picker>
-                  </View>
-                  {/* Room */}
-                  <View style={styles.roomContainer}>
-                     <Text style={styles.biggerText}>Room :</Text>
-                     {loadingRooms && (
-                        <ActivityIndicator
-                           color="red"
-                           size="large"
-                           style={{ marginLeft: 50 }}
-                        ></ActivityIndicator>
-                     )}
-                     {!loadingRooms && (
-                        <FlatList
-                           style={{ marginTop: -10, paddingLeft: 14 }}
-                           data={rooms}
-                           renderItem={this.renderItem}
-                           keyExtractor={(item) => item.number}
+         <Provider theme={theme}>
+            <ScrollView style={styles.container}>
+               <Text style={styles.headerText}> Star Light Resort </Text>
+               <Text style={styles.branchText}>SK branch</Text>
+               <View style={styles.bodyContainer}>
+                  <Text
+                     style={{
+                        fontSize: 20,
+                        //   borderBottomWidth: 1,
+                        //   borderBottomColor: "red",
+                        textAlign: "center",
+                     }}
+                  >
+                     Check In Form
+                  </Text>
+                  <Form>
+                     <Item floatingLabel>
+                        <Label>Name</Label>
+                        <Input
+                           value={checkInInfo.name}
+                           onChangeText={(value) =>
+                              this.onHandleChangeText(value, "name")
+                           }
                         />
-                     )}
-                  </View>
-               </Form>
-               <View
-                  style={{
-                     flexDirection: "row",
-                     justifyContent: "space-around",
-                  }}
-               >
-                  <TouchableOpacity
-                     style={styles.btnPrint}
-                     onPress={this.onPrint}
+                     </Item>
+                     <Item floatingLabel>
+                        <Label>ID Number</Label>
+                        <Input
+                           keyboardType="numeric"
+                           value={checkInInfo.id}
+                           onChangeText={(value) =>
+                              this.onHandleChangeText(value, "id")
+                           }
+                        />
+                     </Item>
+                     <Item floatingLabel>
+                        <Label>Phone Number</Label>
+                        <Input
+                           keyboardType="numeric"
+                           value={checkInInfo.phone}
+                           onChangeText={(value) =>
+                              this.onHandleChangeText(value, "phone")
+                           }
+                        />
+                     </Item>
+                     <Item floatingLabel last>
+                        <Label>Number of Guest</Label>
+                        <Input
+                           keyboardType="numeric"
+                           value={checkInInfo.person}
+                           onChangeText={(value) =>
+                              this.onHandleChangeText(value, "person")
+                           }
+                        />
+                     </Item>
+                     {/* Check In */}
+                     <View style={styles.checkInContainer}>
+                        <Text style={styles.biggerText}>Check in :</Text>
+                        <TouchableOpacity onPress={this.toggleCheckInDateModal}>
+                           <Text
+                              style={[styles.biggerText, { marginLeft: 32 }]}
+                           >
+                              {checkInDate.toLocaleDateString()}
+                           </Text>
+                        </TouchableOpacity>
+                     </View>
+                     {/* Check Out */}
+                     <View style={styles.checkOutContainer}>
+                        <Text style={styles.biggerText}>Check out :</Text>
+                        <TouchableOpacity
+                           onPress={this.toggleCheckOutDateModal}
+                        >
+                           <Text
+                              style={[styles.biggerText, { marginLeft: 20 }]}
+                           >
+                              {checkOutDate.toLocaleDateString()}
+                           </Text>
+                        </TouchableOpacity>
+                     </View>
+                     {/* Length */}
+                     <View style={styles.lengthContainer}>
+                        <Text style={styles.biggerText}>Length :</Text>
+                        <Text style={[styles.biggerText, { marginLeft: 47 }]}>
+                           {length}
+                        </Text>
+                     </View>
+                     {/* Total */}
+                     <View style={styles.totalContainer}>
+                        <Text style={styles.biggerText}>Total price :</Text>
+                        <Text style={[styles.biggerText, { marginLeft: 22 }]}>
+                           $ {total}
+                        </Text>
+                     </View>
+                     {/* Payment */}
+                     <View style={styles.paymentContainer}>
+                        <Text style={styles.biggerText}>Pay :</Text>
+                        <Picker
+                           mode="dropdown"
+                           iosIcon={<Icon name="arrow-down" />}
+                           style={{
+                              marginLeft: 57,
+                              marginTop: -11,
+                           }}
+                           selectedValue={paid}
+                           onValueChange={this.onPaymentChange}
+                        >
+                           <Picker.Item label="Paid" value="paid" />
+                           <Picker.Item label="Not pay" value="notPaid" />
+                        </Picker>
+                     </View>
+                     {/* Room */}
+                     <View style={styles.roomContainer}>
+                        <Text style={styles.biggerText}>Room :</Text>
+                        {loadingRooms && (
+                           <ActivityIndicator
+                              color="red"
+                              size="large"
+                              style={{ marginLeft: 50 }}
+                           ></ActivityIndicator>
+                        )}
+                        {!loadingRooms && (
+                           <FlatList
+                              style={{ marginTop: -10, paddingLeft: 14 }}
+                              data={rooms}
+                              renderItem={this.renderItem}
+                              keyExtractor={(item) => item.number}
+                           />
+                        )}
+                     </View>
+                  </Form>
+                  <View
+                     style={{
+                        flexDirection: "row",
+                        justifyContent: "space-around",
+                        marginTop: 20,
+                     }}
                   >
-                     <Text style={[styles.biggerText, { color: "#fff" }]}>
+                     <Button
+                        onPress={() =>
+                           this.setState({
+                              action: "clear",
+                              dialog: true,
+                           })
+                        }
+                        uppercase={false}
+                        mode="outlined"
+                        color="#D9534F"
+                        style={{ borderColor: "#D9534F", borderWidth: 1 }}
+                     >
+                        Clear
+                     </Button>
+                     <Button
+                        mode="outlined"
+                        onPress={this.onPrint}
+                        uppercase={false}
+                        color="#0275D8"
+                        style={{ borderColor: "#0275D8", borderWidth: 1 }}
+                     >
                         Print
-                     </Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                     style={styles.btnCheckIn}
-                     onPress={this.onCheckIn}
-                  >
-                     <Text style={[styles.biggerText, { color: "#fff" }]}>
+                     </Button>
+                     <Button
+                        mode="outlined"
+                        onPress={() =>
+                           this.setState({
+                              action: "checkIn",
+                              dialog: true,
+                           })
+                        }
+                        uppercase={false}
+                        style={{ borderWidth: 1, borderColor: "#AA75F6" }}
+                     >
                         Check In
-                     </Text>
-                  </TouchableOpacity>
+                     </Button>
+                  </View>
                </View>
-            </View>
 
-            {/* Modal */}
-            <DateTimePickerModal
-               date={checkInDate}
-               isVisible={checkInDateModal}
-               mode="date"
-               onConfirm={this.handleCheckInConfirm}
-               onCancel={this.toggleCheckInDateModal}
-               isDarkModeEnabled={false}
-            />
+               {/* Dialog */}
+               <Portal>
+                  <Dialog
+                     visible={dialog}
+                     onDismiss={() =>
+                        this.setState({ dialog: false, action: "" })
+                     }
+                  >
+                     <Dialog.Content>
+                        <Text>Are you sure you want to proceed?</Text>
+                     </Dialog.Content>
+                     <Dialog.Actions style={{ marginTop: -20 }}>
+                        <Button
+                           onPress={() =>
+                              this.setState({ dialog: false, action: "" })
+                           }
+                           uppercase={false}
+                        >
+                           Cancel
+                        </Button>
+                        <Button onPress={this.onProceed} uppercase={false}>
+                           Confirm
+                        </Button>
+                     </Dialog.Actions>
+                  </Dialog>
+               </Portal>
 
-            <DateTimePickerModal
-               date={checkOutDate}
-               isVisible={checkOutDateModal}
-               mode="date"
-               onConfirm={this.handleCheckOutConfirm}
-               onCancel={this.toggleCheckOutDateModal}
-               isDarkModeEnabled={false}
-            />
-         </ScrollView>
+               {/* OverLay Loading */}
+               <Portal>
+                  <Dialog
+                     visible={overlayLoading}
+                     dismissable={false}
+                     style={{ backgroundColor: "transparent", elevation: 0 }}
+                  >
+                     <ActivityIndicator
+                        size="large"
+                        color="red"
+                     ></ActivityIndicator>
+                  </Dialog>
+               </Portal>
+
+               {/* Modal */}
+               <DateTimePickerModal
+                  date={checkInDate}
+                  isVisible={checkInDateModal}
+                  mode="date"
+                  onConfirm={this.handleCheckInConfirm}
+                  onCancel={this.toggleCheckInDateModal}
+                  isDarkModeEnabled={false}
+               />
+
+               <DateTimePickerModal
+                  date={checkOutDate}
+                  isVisible={checkOutDateModal}
+                  mode="date"
+                  onConfirm={this.handleCheckOutConfirm}
+                  onCancel={this.toggleCheckOutDateModal}
+                  isDarkModeEnabled={false}
+               />
+            </ScrollView>
+         </Provider>
       );
    }
 }
