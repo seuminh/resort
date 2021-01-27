@@ -4,6 +4,8 @@ import React from "react";
 import index from "../../screens/Admin/Dashboard/index";
 import Header from "../../components/Header";
 
+import income from "../../screens/Admin/Dashboard/income";
+
 const screens = {
   index: {
     screen: index,
@@ -14,6 +16,9 @@ const screens = {
         ),
       };
     },
+  },
+  income: {
+    screen: income,
   },
 };
 

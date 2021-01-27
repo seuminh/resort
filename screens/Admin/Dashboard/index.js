@@ -14,7 +14,10 @@ export default class index extends Component {
     return (
       <ScrollView style={styles.container}>
         {/* Income */}
-        <TouchableOpacity style={styles.incomeContainer}>
+        <TouchableOpacity
+          style={styles.incomeContainer}
+          onPress={() => this.props.navigation.navigate("income")}
+        >
           <View style={styles.incomeIconContainer}>
             <FontAwesome name="dollar" size={24} color="#fff" />
           </View>
@@ -69,7 +72,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingVertical: 8,
     flexDirection: "row",
-    maxWidth: 400,
+    // maxWidth: 400,
     borderRadius: 10,
     justifyContent: "space-between",
     paddingRight: 20,
@@ -80,6 +83,7 @@ const styles = StyleSheet.create({
     padding: 20,
     backgroundColor: "#CA6A36",
     borderRadius: 5,
+    paddingHorizontal: 25,
   },
   incomeTitleContainer: {
     flex: 1,
@@ -99,7 +103,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingVertical: 8,
     flexDirection: "row",
-    maxWidth: 400,
+    // maxWidth: 400,
     borderRadius: 10,
     justifyContent: "space-between",
     paddingRight: 20,
@@ -129,7 +133,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingVertical: 8,
     flexDirection: "row",
-    maxWidth: 400,
+    // maxWidth: 400,
     borderRadius: 10,
     justifyContent: "space-between",
     paddingRight: 20,
@@ -140,6 +144,7 @@ const styles = StyleSheet.create({
     padding: 20,
     backgroundColor: "#6A0000",
     borderRadius: 5,
+    paddingHorizontal: 19,
   },
   roomTitleContainer: {
     flex: 1,
