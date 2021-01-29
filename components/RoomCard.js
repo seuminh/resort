@@ -60,7 +60,6 @@ const styles = StyleSheet.create({
    container: {
       marginHorizontal: 15,
       backgroundColor: "white",
-      borderRadius: 8,
       elevation: 5,
       shadowColor: "#aaa",
       shadowOffset: { width: 0, height: 2 },

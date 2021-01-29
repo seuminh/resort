@@ -167,7 +167,7 @@ export default class index extends Component {
       });
    };
 
-   getRoomList() {
+   renderRoomList() {
       const { roomList, date } = this.state;
       return (
          <View>
@@ -245,8 +245,6 @@ export default class index extends Component {
                   <Text
                      style={{
                         fontSize: 20,
-                        //   borderBottomWidth: 1,
-                        //   borderBottomColor: "red",
                         textAlign: "center",
                         marginBottom: 10,
                      }}
@@ -270,7 +268,7 @@ export default class index extends Component {
                         ></ActivityIndicator>
                      )}
 
-                     {!loading && this.getRoomList()}
+                     {!loading && this.renderRoomList()}
                   </DataTable>
                </View>
 

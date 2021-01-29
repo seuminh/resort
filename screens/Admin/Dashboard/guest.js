@@ -25,7 +25,7 @@ export default class income extends Component {
          modalSort: false,
          sort: "today",
          loading: true,
-         incomeList: [
+         guestList: [
             {
                branch: "No where",
                total: 2002,
@@ -67,16 +67,16 @@ export default class income extends Component {
       });
    };
 
-   renderIncomeList() {
-      const { incomeList } = this.state;
+   renderGuestList() {
+      const { guestList } = this.state;
       return (
          <View>
-            {incomeList.map((r, i) => {
+            {guestList.map((r, i) => {
                return (
                   <DataTable.Row key={i}>
                      <DataTable.Cell>{r.branch}</DataTable.Cell>
                      <DataTable.Cell numeric style>
-                        ${r.total}
+                        {r.total}
                      </DataTable.Cell>
                   </DataTable.Row>
                );
@@ -124,7 +124,7 @@ export default class income extends Component {
                         ></ActivityIndicator>
                      )}
 
-                     {!loading && this.renderIncomeList()}
+                     {!loading && this.renderGuestList()}
                   </DataTable>
                </View>
             </ScrollView>
