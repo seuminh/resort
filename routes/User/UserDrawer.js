@@ -4,10 +4,11 @@ import React from "react";
 
 import RoomStack from "./RoomStack";
 import BookingStack from "./BookingStack";
+import CheckOutStack from "./CheckOutStack";
 
 import Sidebar from "../../components/Sidebar";
 
-import { Ionicons } from "@expo/vector-icons";
+import { Ionicons, Entypo } from "@expo/vector-icons";
 
 const drawerOptions = {
   Room: {
@@ -25,6 +26,15 @@ const drawerOptions = {
       title: "Booking",
       drawerIcon: ({ tintColor }) => (
         <Ionicons name="ios-bed" size={18} color={tintColor} />
+      ),
+    },
+  },
+  CheckOutStack: {
+    screen: CheckOutStack,
+    navigationOptions: {
+      title: "Check out",
+      drawerIcon: ({ tintColor }) => (
+        <Entypo name="log-out" size={18} color={tintColor} />
       ),
     },
   },
