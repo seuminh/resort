@@ -6,6 +6,8 @@ import Header from "../../components/Header";
 
 import income from "../../screens/Admin/Dashboard/income";
 import guest from "../../screens/Admin/Dashboard/guest";
+import room from "../../screens/Admin/Dashboard/Room/index";
+import showRoom from "../../screens/Admin/Dashboard/Room/room";
 
 const screens = {
    index: {
@@ -23,6 +25,12 @@ const screens = {
    },
    guest: {
       screen: guest,
+   },
+   room: {
+      screen: room,
+   },
+   showRoom: {
+      screen: showRoom,
    },
 };
 

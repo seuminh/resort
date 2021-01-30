@@ -5,6 +5,7 @@ import {
    View,
    ScrollView,
    TouchableOpacity,
+   RefreshControl,
    ActivityIndicator,
 } from "react-native";
 
@@ -24,6 +25,7 @@ export default class income extends Component {
       this.state = {
          modalSort: false,
          sort: "today",
+         refreshing: false,
          loading: true,
          guestList: [
             {
@@ -50,8 +52,18 @@ export default class income extends Component {
       setTimeout(() => {
          this.setState({
             loading: false,
+            refreshing: false,
          });
       }, 1000);
+   };
+
+   onRefresh = () => {
+      this.setState(
+         {
+            refreshing: true,
+         },
+         () => this.fetchAPI()
+      );
    };
 
    onToggleModalSort = () => {
@@ -86,13 +98,21 @@ export default class income extends Component {
    }
 
    render() {
-      const { modalSort, sort, loading } = this.state;
+      const { modalSort, sort, loading, refreshing } = this.state;
       const theme = {
          ...DefaultTheme,
       };
       return (
          <Provider theme={theme}>
-            <ScrollView style={styles.container}>
+            <ScrollView
+               style={styles.container}
+               refreshControl={
+                  <RefreshControl
+                     refreshing={refreshing}
+                     onRefresh={this.onRefresh}
+                  ></RefreshControl>
+               }
+            >
                <Text style={styles.headerText}> Star Light Resort </Text>
                <View style={styles.sortByContainer}>
                   <Text style={styles.sortByText}>Sort by:</Text>
@@ -108,7 +128,7 @@ export default class income extends Component {
                         marginBottom: 10,
                      }}
                   >
-                     Income
+                     Guest
                   </Text>
                   <DataTable>
                      <DataTable.Header style={{ color: "red" }}>

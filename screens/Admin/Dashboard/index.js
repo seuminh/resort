@@ -47,7 +47,10 @@ export default class index extends Component {
             </TouchableOpacity>
 
             {/* Room */}
-            <TouchableOpacity style={styles.roomContainer}>
+            <TouchableOpacity
+               style={styles.roomContainer}
+               onPress={() => this.props.navigation.navigate("room")}
+            >
                <View style={styles.roomIconContainer}>
                   <FontAwesome name="hotel" size={24} color="#fff" />
                </View>
