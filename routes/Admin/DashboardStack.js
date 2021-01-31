@@ -8,6 +8,8 @@ import income from "../../screens/Admin/Dashboard/income";
 import guest from "../../screens/Admin/Dashboard/guest";
 import room from "../../screens/Admin/Dashboard/Room/index";
 import showRoom from "../../screens/Admin/Dashboard/Room/room";
+import user from "../../screens/Admin/Dashboard/User/index";
+import addUser from "../../screens/Admin/Dashboard/User/addUser";
 
 const screens = {
    index: {
@@ -31,6 +33,12 @@ const screens = {
    },
    showRoom: {
       screen: showRoom,
+   },
+   user: {
+      screen: user,
+   },
+   addUser: {
+      screen: addUser,
    },
 };
 
