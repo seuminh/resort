@@ -287,38 +287,44 @@ export default class AddBooking extends Component {
                      </Item>
                      {/* Check In */}
                      <View style={styles.checkInContainer}>
-                        <Text style={styles.biggerText}>Check in :</Text>
-                        <TouchableOpacity onPress={this.toggleCheckInDateModal}>
-                           <Text
-                              style={[styles.biggerText, { marginLeft: 32 }]}
-                           >
+                        <Text style={[styles.biggerText, { flex: 1 }]}>
+                           Check in :
+                        </Text>
+                        <TouchableOpacity
+                           onPress={this.toggleCheckInDateModal}
+                           style={{ flex: 2 }}
+                        >
+                           <Text style={[styles.biggerText]}>
                               {checkInDate.toLocaleDateString()}
                            </Text>
                         </TouchableOpacity>
                      </View>
                      {/* Check Out */}
                      <View style={styles.checkOutContainer}>
-                        <Text style={styles.biggerText}>Check out :</Text>
+                        <Text style={[styles.biggerText, { flex: 1 }]}>
+                           Check out :
+                        </Text>
                         <TouchableOpacity
                            onPress={this.toggleCheckOutDateModal}
+                           style={{ flex: 2 }}
                         >
-                           <Text
-                              style={[styles.biggerText, { marginLeft: 20 }]}
-                           >
+                           <Text style={[styles.biggerText]}>
                               {checkOutDate.toLocaleDateString()}
                            </Text>
                         </TouchableOpacity>
                      </View>
                      {/* Length */}
                      <View style={styles.lengthContainer}>
-                        <Text style={styles.biggerText}>Length :</Text>
-                        <Text style={[styles.biggerText, { marginLeft: 47 }]}>
+                        <Text style={[styles.biggerText, { flex: 1 }]}>
+                           Length :
+                        </Text>
+                        <Text style={[styles.biggerText, { flex: 2 }]}>
                            {length}
                         </Text>
                      </View>
                      {/* Room */}
                      <View style={styles.roomContainer}>
-                        <Text style={styles.biggerText}>Room :</Text>
+                        <Text style={[styles.biggerText]}>Room :</Text>
                         {loadingRooms && (
                            <ActivityIndicator
                               color="red"
