@@ -168,53 +168,67 @@ export default class checkIn extends Component {
                      </Item>
                      {/* Check In */}
                      <View style={styles.checkInContainer}>
-                        <Text style={styles.biggerText}>Check in :</Text>
-                        <Text style={[styles.biggerText, { marginLeft: 32 }]}>
+                        <Text style={[styles.biggerText, { flex: 1 }]}>
+                           Check in :
+                        </Text>
+                        <Text style={[styles.biggerText, { flex: 2 }]}>
                            {bookingInfo.checkInDate.toLocaleDateString()}
                         </Text>
                      </View>
                      {/* Check Out */}
                      <View style={styles.checkOutContainer}>
-                        <Text style={styles.biggerText}>Check out :</Text>
-                        <Text style={[styles.biggerText, { marginLeft: 20 }]}>
+                        <Text style={[styles.biggerText, { flex: 1 }]}>
+                           Check out :
+                        </Text>
+                        <Text style={[styles.biggerText, { flex: 2 }]}>
                            {bookingInfo.checkOutDate.toLocaleDateString()}
                         </Text>
                      </View>
                      {/* Length */}
                      <View style={styles.lengthContainer}>
-                        <Text style={styles.biggerText}>Length :</Text>
-                        <Text style={[styles.biggerText, { marginLeft: 47 }]}>
+                        <Text style={[styles.biggerText, { flex: 1 }]}>
+                           Length :
+                        </Text>
+                        <Text style={[styles.biggerText, { flex: 2 }]}>
                            {bookingInfo.length}
                         </Text>
                      </View>
                      {/* Total */}
                      <View style={styles.totalContainer}>
-                        <Text style={styles.biggerText}>Total price :</Text>
-                        <Text style={[styles.biggerText, { marginLeft: 22 }]}>
+                        <Text style={[styles.biggerText, { flex: 1 }]}>
+                           Total price :
+                        </Text>
+                        <Text style={[styles.biggerText, { flex: 2 }]}>
                            $ {bookingInfo.total}
                         </Text>
                      </View>
                      {/* Payment */}
                      <View style={styles.paymentContainer}>
-                        <Text style={styles.biggerText}>Pay :</Text>
-                        <Picker
-                           mode="dropdown"
-                           iosIcon={<Icon name="arrow-down" />}
-                           style={{
-                              marginLeft: 57,
-                              marginTop: -11,
-                           }}
-                           selectedValue={paid}
-                           onValueChange={this.onPaymentChange}
-                        >
-                           <Picker.Item label="Paid" value="paid" />
-                           <Picker.Item label="Not paid" value="notPaid" />
-                        </Picker>
+                        <Text style={[styles.biggerText, { flex: 1 }]}>
+                           Pay :
+                        </Text>
+                        <View style={{ flex: 2 }}>
+                           <Picker
+                              mode="dropdown"
+                              iosIcon={<Icon name="arrow-down" />}
+                              style={{
+                                 marginTop: -11,
+                                 marginLeft: -15,
+                              }}
+                              selectedValue={paid}
+                              onValueChange={this.onPaymentChange}
+                           >
+                              <Picker.Item label="Paid" value="paid" />
+                              <Picker.Item label="Not paid" value="notPaid" />
+                           </Picker>
+                        </View>
                      </View>
                      {/* Room */}
                      <View style={styles.roomContainer}>
-                        <Text style={styles.biggerText}>Room :</Text>
-                        <Text style={[styles.biggerText, { marginLeft: 50 }]}>
+                        <Text style={[styles.biggerText, { flex: 1 }]}>
+                           Room :
+                        </Text>
+                        <Text style={[styles.biggerText, { flex: 2 }]}>
                            {bookingInfo.room.toString()}
                         </Text>
                      </View>

@@ -7,7 +7,12 @@ import {
    ScrollView,
 } from "react-native";
 
-import { FontAwesome, Feather } from "@expo/vector-icons";
+import {
+   FontAwesome,
+   Feather,
+   AntDesign,
+   FontAwesome5,
+} from "@expo/vector-icons";
 
 export default class index extends Component {
    render() {
@@ -36,7 +41,7 @@ export default class index extends Component {
                onPress={() => this.props.navigation.navigate("guest")}
             >
                <View style={styles.guestIconContainer}>
-                  <Feather name="user" size={24} color="#fff" />
+                  <FontAwesome5 name="user-friends" size={24} color="#fff" />
                </View>
                <View style={styles.guestTitleContainer}>
                   <Text style={styles.guestTitle}>Total Guest</Text>
@@ -59,6 +64,22 @@ export default class index extends Component {
                </View>
                <View style={styles.roomTotalContainer}>
                   <Text style={styles.roomTotal}>10</Text>
+               </View>
+            </TouchableOpacity>
+
+            {/* User */}
+            <TouchableOpacity
+               style={styles.userContainer}
+               onPress={() => this.props.navigation.navigate("user")}
+            >
+               <View style={styles.userIconContainer}>
+                  <AntDesign name="adduser" size={24} color="#fff" />
+               </View>
+               <View style={styles.userTitleContainer}>
+                  <Text style={styles.userTitle}>Total user</Text>
+               </View>
+               <View style={styles.userTotalContainer}>
+                  <Text style={styles.userTotal}>10</Text>
                </View>
             </TouchableOpacity>
          </ScrollView>
@@ -126,6 +147,7 @@ const styles = StyleSheet.create({
       padding: 20,
       backgroundColor: "darkslateblue",
       borderRadius: 5,
+      paddingHorizontal: 18,
    },
    guestTitleContainer: {
       flex: 1,
@@ -169,5 +191,35 @@ const styles = StyleSheet.create({
    },
    roomTotal: {
       color: "#6A0000",
+   },
+   // User
+   userContainer: {
+      backgroundColor: "#fff",
+      paddingHorizontal: 10,
+      paddingVertical: 8,
+      flexDirection: "row",
+      // maxWidth: 400,
+      borderRadius: 10,
+      justifyContent: "space-between",
+      paddingRight: 20,
+      marginBottom: 20,
+      elevation: 5,
+   },
+   userIconContainer: {
+      padding: 20,
+      backgroundColor: "#0275D8",
+      borderRadius: 5,
+      paddingHorizontal: 21,
+   },
+   userTitleContainer: {
+      flex: 1,
+      justifyContent: "center",
+      marginLeft: 20,
+   },
+   userTotalContainer: {
+      justifyContent: "center",
+   },
+   userTotal: {
+      color: "#0275D8",
    },
 });

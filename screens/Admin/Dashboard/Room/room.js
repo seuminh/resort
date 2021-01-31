@@ -247,7 +247,7 @@ export default class income extends Component {
                </View>
             </ScrollView>
 
-            {/* Modal Room */}
+            {/* Modal */}
             <Portal>
                {/* Dialog */}
                <Portal>
@@ -324,10 +324,10 @@ export default class income extends Component {
                         </Item>
                         {/* Branch */}
                         <View style={styles.branchContainer}>
-                           <Text style={styles.biggerText}>Branch :</Text>
-                           <Text
-                              style={[styles.biggerText, { marginLeft: 47 }]}
-                           >
+                           <Text style={[styles.biggerText, { flex: 1 }]}>
+                              Branch :
+                           </Text>
+                           <Text style={[styles.biggerText, { flex: 2 }]}>
                               {branch}
                            </Text>
                         </View>
@@ -488,11 +488,6 @@ const styles = StyleSheet.create({
       marginTop: -100,
       borderRadius: 20,
       height: 360,
-   },
-   branchContainer: {
-      flexDirection: "row",
-      paddingLeft: 14,
-      marginTop: 20,
    },
    biggerText: {
       fontSize: 17,
