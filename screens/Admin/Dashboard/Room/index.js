@@ -72,7 +72,7 @@ export default class income extends Component {
                   >
                      <DataTable.Row>
                         <DataTable.Cell>{r.branch}</DataTable.Cell>
-                        <DataTable.Cell numeric>${r.total}</DataTable.Cell>
+                        <DataTable.Cell numeric>{r.total}</DataTable.Cell>
                      </DataTable.Row>
                   </TouchableOpacity>
                );

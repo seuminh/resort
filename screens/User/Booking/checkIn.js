@@ -215,7 +215,6 @@ export default class checkIn extends Component {
                      <View style={styles.roomContainer}>
                         <Text style={styles.biggerText}>Room :</Text>
                         <Text style={[styles.biggerText, { marginLeft: 50 }]}>
-                           {" "}
                            {bookingInfo.room.toString()}
                         </Text>
                      </View>
