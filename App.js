@@ -1,7 +1,8 @@
 import { StatusBar } from "expo-status-bar";
 import React, { Component } from "react";
-
 import { StyleSheet, Text, View } from "react-native";
+
+import { AuthProvider } from "./context";
 
 import { AppLoading } from "expo";
 import { Asset } from "expo-asset";
@@ -61,7 +62,10 @@ export default class App extends Component {
         />
       );
     }
-    return <AppNavigator></AppNavigator>;
+    return;
+    <AuthProvider>
+      <AppNavigator></AppNavigator>
+    </AuthProvider>;
   }
 }
 
