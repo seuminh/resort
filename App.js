@@ -62,10 +62,11 @@ export default class App extends Component {
         />
       );
     }
-    return;
-    <AuthProvider>
-      <AppNavigator></AppNavigator>
-    </AuthProvider>;
+    return (
+      <AuthProvider>
+        <AppNavigator></AppNavigator>
+      </AuthProvider>
+    );
   }
 }
 

@@ -1,7 +1,7 @@
 import { authConstant } from "./constants";
 
 export const initialState = {
-  token: "" || localStorage.getItem("token"),
+  token: "",
   user: "",
   expirationToken: "",
 };
