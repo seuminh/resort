@@ -1,4 +1,5 @@
-import { authConstant } from "./constants";
+import { authConstant } from "./actionsTypes";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export const loginUser = async (dispatch, data) => {
   const { username, password } = data;
@@ -6,11 +7,22 @@ export const loginUser = async (dispatch, data) => {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-    }, 
+    },
     body: JSON.stringify({ username, password }),
   }).then((res) => res.json());
 
   if (returnData.success) {
-    dispatch({ type: authConstant.LOGIN, payload: returnData.data });
+    const { user, token, expireDate } = returnData.data;
+
+    const userPair = ["user", JSON.stringify(user)];
+    const tokenPair = ["token", token];
+    const expirationTokenPair = ["expirationToken", expireDate];
+    await AsyncStorage.multiSet([userPair, tokenPair, expirationTokenPair]);
+    dispatch({ type: authConstant.LOGIN_SUCCESS, payload: returnData.data });
   }
+};
+
+export const logout = async (dispatch) => {
+  await AsyncStorage.clear();
+  dispatch({ type:  authConstant.LOGIN_FAIL });
 };

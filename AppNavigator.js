@@ -77,6 +77,7 @@ const AppNavigator = () => {
   const dispatch = useAuthDispatch();
 
   console.log(authState);
+  
 
   if (!authState.user) {
     return (
@@ -159,8 +160,8 @@ const AppNavigator = () => {
       </Modal>
     );
   }
-  console.log(authState.user.role )
-  if (authState.user.role === "admin")
+  console.log(authState.user )
+  if (authState.user?.role === "admin")
     return (
       <AdminDrawer
       screenProps={{ signOut: ()=>{}, username: "Admin" }}
