@@ -1,5 +1,5 @@
 import { createStackNavigator } from "react-navigation-stack";
-import React from "react";
+import React, {useState} from "react";
 
 import Room from "../../screens/User/Room/index";
 import CheckIn from "../../screens/User/Room/checkIn";

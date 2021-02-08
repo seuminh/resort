@@ -1,6 +1,7 @@
 import { StatusBar } from "expo-status-bar";
 import React, { Component } from "react";
 import { StyleSheet, Text, View } from "react-native";
+import { QueryClient, QueryClientProvider } from "react-query";
 
 import { AuthProvider } from "./context";
 
@@ -25,6 +26,8 @@ async function downloadAssets() {
 
   await Promise.all([...imageAssets]);
 }
+
+const queryClient = new QueryClient();
 
 export default class App extends Component {
   state = {
@@ -64,7 +67,9 @@ export default class App extends Component {
     }
     return (
       <AuthProvider>
-        <AppNavigator></AppNavigator>
+        <QueryClientProvider client={queryClient}>
+          <AppNavigator></AppNavigator>
+        </QueryClientProvider>
       </AuthProvider>
     );
   }

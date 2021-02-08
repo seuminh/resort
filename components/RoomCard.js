@@ -9,9 +9,9 @@ export default class RoomCard extends Component {
 
    render() {
       let statusColor =
-         this.props.status === "available"
+         this.props.status === "available" ||this.props.status === "checkOut" 
             ? "#2CC990"
-            : this.props.status === "busy"
+            : this.props.status === "checkIn"
             ? "#FC6042"
             : "#FCB941";
 
