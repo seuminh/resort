@@ -8,9 +8,12 @@ import {
   TouchableOpacity,
   Alert,
 } from "react-native";
+import { Button } from "react-native-paper";
 import { DrawerItems } from "react-navigation-drawer";
+import { logout, useAuthDispatch } from "../context";
 
 const Sidebar = (props) => {
+  const dispatch = useAuthDispatch();
   function showAlert() {
     Alert.alert("", "Are you sure you want to log out?", [
       {
@@ -18,7 +21,7 @@ const Sidebar = (props) => {
         onPress: () => console.log("cancel"),
         style: "cancel",
       },
-      { text: "Log Out", onPress: () => props.signOut() },
+      { text: "Log Out", onPress: () =>  logout(dispatch) },
     ]);
   }
   return (
@@ -30,6 +33,7 @@ const Sidebar = (props) => {
         ></Image>
         <Text>Login As {props.username}</Text>
       </View>
+      
       <View style={styles.bottomSidebar}>
         <ScrollView style={{ marginTop: -5 }}>
           <DrawerItems {...props}></DrawerItems>
