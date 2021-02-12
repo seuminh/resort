@@ -5,6 +5,8 @@ import {
    View,
    ScrollView,
    ActivityIndicator,
+   FlatList,
+   TouchableOpacity,
 } from "react-native";
 
 import { Form, Item, Input, Label, Picker, Icon } from "native-base";
@@ -17,8 +19,11 @@ import {
    Button,
 } from "react-native-paper";
 
+import { Feather } from "@expo/vector-icons";
+
 const index = () => {
    const [overlayLoading, setOverlayLoading] = useState(false);
+   const [loadingBranch, setLoadingBranch] = useState(true);
    const [dialog, setDialog] = useState(false);
    const [userInfo, setUserInfo] = useState({
       name: "",
@@ -26,7 +31,13 @@ const index = () => {
       confirmPassword: "",
    });
    const [passwordError, setPasswordError] = useState(false);
-   const [branch, setBranch] = useState([]);
+   const [branch, setBranch] = useState(["Unknown", "No Name", "Hello"]);
+   const [selectedBranch, setSelectedBranch] = useState(branch[0]);
+
+   useEffect(() => {
+      fetchAPI();
+      console.log(selectedBranch);
+   }, []);
 
    useEffect(() => {
       if (userInfo.password !== userInfo.confirmPassword) {
@@ -35,6 +46,19 @@ const index = () => {
          setPasswordError(false);
       }
    }, [userInfo]);
+
+   useEffect(() => {
+      setUserInfo({
+         ...userInfo,
+         branch: selectedBranch,
+      });
+   }, [selectedBranch]);
+
+   const fetchAPI = () => {
+      setTimeout(() => {
+         setLoadingBranch(false);
+      }, 1000);
+   };
 
    const onHandleChangeText = (value, nameInput) => {
       setUserInfo({
@@ -53,6 +77,20 @@ const index = () => {
          console.log(userInfo);
          alert("User Add");
       }
+   };
+
+   const renderItem = ({ item, index }) => {
+      return (
+         <TouchableOpacity
+            style={styles.branchList}
+            onPress={() => setSelectedBranch(item)}
+         >
+            <Text style={{ fontSize: 17 }}>{item}</Text>
+            {selectedBranch === item && (
+               <Feather name="check" size={20} color="green" />
+            )}
+         </TouchableOpacity>
+      );
    };
 
    const theme = {
@@ -115,6 +153,21 @@ const index = () => {
                   </View>
                   <View style={styles.branchContainer}>
                      <Text style={{ fontSize: 17 }}>Branch :</Text>
+                     {loadingBranch && (
+                        <ActivityIndicator
+                           color="red"
+                           size="large"
+                           style={{ marginLeft: 50 }}
+                        ></ActivityIndicator>
+                     )}
+                     {!loadingBranch && (
+                        <FlatList
+                           style={{ marginTop: -10, paddingLeft: 14 }}
+                           data={branch}
+                           renderItem={renderItem}
+                           keyExtractor={(item) => item.number}
+                        ></FlatList>
+                     )}
                   </View>
                </Form>
                <View
@@ -204,8 +257,18 @@ const styles = StyleSheet.create({
       marginTop: 5,
    },
    branchContainer: {
-      marginTop: 10,
+      marginTop: 20,
       paddingLeft: 14,
       flexDirection: "row",
+   },
+   branchList: {
+      flexDirection: "row",
+      paddingHorizontal: 20,
+      paddingVertical: 5,
+      backgroundColor: "white",
+      borderRadius: 8,
+      marginVertical: 10,
+      marginHorizontal: 5,
+      justifyContent: "space-between",
    },
 });
