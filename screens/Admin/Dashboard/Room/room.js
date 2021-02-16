@@ -1,5 +1,5 @@
-import React, { Component } from "react";
-import {} from 'react-query'
+import React, { Component, useEffect, useState } from "react";
+import {} from "react-query";
 import {
    Text,
    StyleSheet,
@@ -24,149 +24,524 @@ import { Form, Item, Input, Label, Picker, Icon } from "native-base";
 
 import { AntDesign } from "@expo/vector-icons";
 
-export default class income extends Component {
-   constructor(props) {
-      super(props);
-      this.state = {
-         refreshing: false,
-         loading: true,
-         overlayLoading: false,
-         branch: props.navigation.state.params.branch,
-         roomInfo: {
-            number: 0,
-            price: 0,
-         },
-         roomAddInfo: {},
-         modalRoom: false,
-         modalAddRoom: false,
-         dialog: false,
-         action: "",
-         roomList: [
-            {
-               number: "101",
-               price: 20,
-            },
-            {
-               number: "102",
-               price: 20,
-            },
-            {
-               number: "103",
-               price: 20,
-            },
-            {
-               number: "104",
-               price: 20,
-            },
-         ],
-      };
-   }
+// export default class income extends Component {
+//   constructor(props) {
+//     super(props);
+//     this.state = {
+//       refreshing: false,
+//       loading: true,
+//       overlayLoading: false,
+//       branch: props.navigation.state.params.branch,
+//       roomInfo: {
+//         number: 0,
+//         price: 0,
+//       },
+//       roomAddInfo: {},
+//       modalRoom: false,
+//       modalAddRoom: false,
+//       dialog: false,
+//       action: "",
+//       roomList: [
+// {
+//   number: "101",
+//   price: 20,
+// },
+// {
+//   number: "102",
+//   price: 20,
+// },
+// {
+//   number: "103",
+//   price: 20,
+// },
+// {
+//   number: "104",
+//   price: 20,
+// },
+//       ],
+//     };
+//   }
 
-   componentDidMount() {
-      this.fetchAPI();
-   }
+//   componentDidMount() {
+//     this.fetchAPI();
+//   }
 
-   fetchAPI = () => {
+//   fetchAPI = () => {
+//     setTimeout(() => {
+//       this.setState({
+//         loading: false,
+//         refreshing: false,
+//       });
+//     }, 1000);
+//   };
+
+//   onRefresh = () => {
+//     this.setState(
+//       {
+//         refreshing: true,
+//       },
+//       () => this.fetchAPI()
+//     );
+//   };
+
+//   onToggleModalAddRoom = () => {
+//     this.setState({
+//       modalAddRoom: !this.state.modalAddRoom,
+//     });
+//   };
+
+//   onToggleModalRoom = () => {
+//     this.setState({
+//       modalRoom: !this.state.modalRoom,
+//     });
+//   };
+
+// showRoomInfo = (r) => {
+//   this.onToggleModalRoom();
+//   this.setState({
+//     roomInfo: r,
+//   });
+// };
+
+// onUpdate = () => {
+//   this.setState({
+//     dialog: false,
+//     action: "",
+//     modalRoom: false,
+//   });
+//   alert("Update");
+//   console.log(this.state.roomInfo);
+// };
+
+// onDelete = () => {
+//   this.setState({
+//     dialog: false,
+//     action: "",
+//     modalRoom: false,
+//   });
+//   alert("Delete");
+//   console.log(this.state.roomInfo);
+// };
+
+// onAdd = () => {
+//   this.setState({
+//     dialog: false,
+//     action: "",
+//     modalAddRoom: false,
+//   });
+//   alert("Add");
+//   console.log(this.state.roomAddInfo);
+// };
+
+// onProceed = () => {
+//   const { action } = this.state;
+//   if (action === "delete") this.onDelete();
+//   else if (action === "update") this.onUpdate();
+//   else if (action === "add") this.onAdd();
+// };
+
+// onHandleChangeText = (value, nameInput) => {
+//   this.setState({
+//     roomInfo: {
+//       ...this.state.roomInfo,
+//       [nameInput]: value,
+//     },
+//   });
+// };
+
+// onHandleChangeTextAdd = (value, nameInput) => {
+//   this.setState({
+//     roomAddInfo: {
+//       ...this.state.roomAddInfo,
+//       [nameInput]: value,
+//     },
+//   });
+// };
+// renderRoomList() {
+//   const { roomList } = this.state;
+//   return (
+//     <View>
+//       {roomList.map((r, i) => {
+//         return (
+//           <TouchableOpacity key={i} onPress={() => this.showRoomInfo(r)}>
+//             <DataTable.Row>
+//               <DataTable.Cell>{r.number}</DataTable.Cell>
+//               <DataTable.Cell numeric>${r.price}</DataTable.Cell>
+//             </DataTable.Row>
+//           </TouchableOpacity>
+//         );
+//       })}
+//     </View>
+//   );
+// }
+
+//   render() {
+//     const {
+//       loading,
+//       refreshing,
+//       branch,
+//       modalRoom,
+//       modalAddRoom,
+//       dialog,
+//       roomInfo,
+//       overlayLoading,
+//     } = this.state;
+// const theme = {
+//   ...DefaultTheme,
+// };
+//     return (
+// <Provider theme={theme}>
+//   <ScrollView
+//     style={styles.container}
+//     refreshControl={
+//       <RefreshControl
+//         refreshing={refreshing}
+//         onRefresh={this.onRefresh}
+//       ></RefreshControl>
+//     }
+//   >
+//     {/* <Text style={styles.headerText}> Star Light Resort </Text> */}
+
+//     <View style={styles.bodyContainer}>
+//       <Text
+//         style={{
+//           fontSize: 20,
+//           textAlign: "center",
+//           marginBottom: 10,
+//         }}
+//       >
+//         {branch}
+//       </Text>
+//       <DataTable>
+//         <DataTable.Header style={{ color: "red" }}>
+//           <DataTable.Title>Room No</DataTable.Title>
+//           <DataTable.Title numeric>Price</DataTable.Title>
+//         </DataTable.Header>
+
+//         {loading && (
+//           <ActivityIndicator
+//             color="red"
+//             size="large"
+//             style={{ marginTop: 50 }}
+//           ></ActivityIndicator>
+//         )}
+
+//         {!loading && this.renderRoomList()}
+//       </DataTable>
+
+//       <Button
+//         mode="outlined"
+//         onPress={this.onToggleModalAddRoom}
+//         uppercase={false}
+//         style={{
+//           borderColor: "#AA75F6",
+//           borderWidth: 1,
+//           alignSelf: "center",
+//           marginTop: 20,
+//         }}
+//       >
+//         Add Room
+//       </Button>
+//     </View>
+//   </ScrollView>
+
+//   {/* Modal */}
+//   <Portal>
+//     {/* Dialog */}
+//     <Portal>
+//       <Dialog
+//         visible={dialog}
+//         onDismiss={() => this.setState({ dialog: false, action: "" })}
+//       >
+//         <Dialog.Content>
+//           <Text>Are you sure you want to proceed?</Text>
+//         </Dialog.Content>
+//         <Dialog.Actions style={{ marginTop: -20 }}>
+//           <Button
+//             onPress={() => this.setState({ dialog: false, action: "" })}
+//             uppercase={false}
+//           >
+//             Cancel
+//           </Button>
+//           <Button onPress={this.onProceed} uppercase={false}>
+//             Confirm
+//           </Button>
+//         </Dialog.Actions>
+//       </Dialog>
+//     </Portal>
+//     {/* Modal Add Room */}
+//     <Modal
+//       visible={modalAddRoom}
+//       contentContainerStyle={styles.modalAddRoom}
+//       onDismiss={this.onToggleModalAddRoom}
+//     >
+//       <TouchableOpacity
+//         onPress={this.onToggleModalAddRoom}
+//         style={{
+//           alignSelf: "flex-end",
+//           marginRight: 15,
+//           marginTop: -10,
+//         }}
+//       >
+//         <AntDesign name="close" size={24} color="black" />
+//       </TouchableOpacity>
+//       <View>
+//         <Text
+//           style={{
+//             marginBottom: 15,
+//             textAlign: "center",
+//             fontSize: 17,
+//           }}
+//         >
+//           Add Room
+//         </Text>
+//         <Form>
+//           <Item floatingLabel>
+//             <Label>Room Number</Label>
+//             <Input
+//               onChangeText={(value) =>
+//                 this.onHandleChangeTextAdd(value, "number")
+//               }
+//             ></Input>
+//           </Item>
+//           <Item floatingLabel>
+//             <Label>Price</Label>
+//             <Input
+//               keyboardType="numeric"
+//               onChangeText={(value) =>
+//                 this.onHandleChangeTextAdd(Number(value), "price")
+//               }
+//             ></Input>
+//           </Item>
+//           {/* Branch */}
+//           <View style={styles.branchContainer}>
+//             <Text style={[styles.biggerText, { flex: 1 }]}>Branch :</Text>
+//             <Text style={[styles.biggerText, { flex: 2 }]}>{branch}</Text>
+//           </View>
+//           <Button
+//             mode="outlined"
+//             onPress={() =>
+//               this.setState({
+//                 dialog: true,
+//                 action: "add",
+//               })
+//             }
+//             uppercase={false}
+//             color="#0275D8"
+//             style={{
+//               borderColor: "#0275D8",
+//               width: 150,
+//               alignSelf: "center",
+//               marginTop: 20,
+//             }}
+//           >
+//             Add
+//           </Button>
+//         </Form>
+//       </View>
+//     </Modal>
+//     {/* Modal Room */}
+//     <Modal
+//       visible={modalRoom}
+//       onDismiss={this.onToggleModalRoom}
+//       contentContainerStyle={styles.modalRoom}
+//     >
+//       <TouchableOpacity
+//         onPress={this.onToggleModalRoom}
+//         style={{
+//           alignSelf: "flex-end",
+//           marginRight: 15,
+//           marginTop: -10,
+//         }}
+//       >
+//         <AntDesign name="close" size={24} color="black" />
+//       </TouchableOpacity>
+//       <View>
+//         <Text
+//           style={{
+//             marginBottom: 15,
+//             textAlign: "center",
+//             fontSize: 17,
+//           }}
+//         >
+//           Edit Room
+//         </Text>
+//         <Form>
+//           <Item floatingLabel>
+//             <Label>Room Number</Label>
+//             <Input
+//               value={roomInfo.number.toString()}
+//               onChangeText={(value) =>
+//                 this.onHandleChangeText(value, "number")
+//               }
+//             ></Input>
+//           </Item>
+//           <Item floatingLabel>
+//             <Label>Price</Label>
+//             <Input
+//               value={roomInfo.price.toString()}
+//               keyboardType="numeric"
+//               onChangeText={(value) =>
+//                 this.onHandleChangeText(Number(value), "price")
+//               }
+//             ></Input>
+//           </Item>
+//           <View
+//             style={{
+//               marginTop: 20,
+//               flexDirection: "row",
+//               justifyContent: "space-around",
+//             }}
+//           >
+//             <Button
+//               mode="outlined"
+//               onPress={() =>
+//                 this.setState({
+//                   dialog: true,
+//                   action: "update",
+//                 })
+//               }
+//               uppercase={false}
+//               color="#0275D8"
+//               style={{ borderColor: "#0275D8" }}
+//             >
+//               Update
+//             </Button>
+//             <Button
+//               mode="outlined"
+//               onPress={() =>
+//                 this.setState({
+//                   dialog: true,
+//                   action: "delete",
+//                 })
+//               }
+//               uppercase={false}
+//               color="#D9534F"
+//               style={{ borderColor: "#D9534F" }}
+//             >
+//               Delete
+//             </Button>
+//           </View>
+//         </Form>
+//       </View>
+//     </Modal>
+//   </Portal>
+//   {/* OverLay Loading */}
+//   <Portal>
+//     <Dialog
+//       visible={overlayLoading}
+//       dismissable={false}
+//       style={{ backgroundColor: "transparent", elevation: 0 }}
+//     >
+//       <ActivityIndicator size="large" color="red"></ActivityIndicator>
+//     </Dialog>
+//   </Portal>
+// </Provider>
+//     );
+//   }
+// }
+
+const index = ({ navigation }) => {
+   const [refreshing, setRefreshing] = useState(false);
+   const [loading, setLoading] = useState(true);
+   const [overlayLoading, setOverlayLoading] = useState(false);
+   const [branch, setBranch] = useState(navigation.state.params.branch);
+   const [roomInfo, setRoomInfo] = useState({ number: 0, price: 0 });
+   const [roomAddInfo, setRoomAddInfo] = useState({});
+   const [modalRoom, setModalRoom] = useState(false);
+   const [modalAddRoom, setModalAddRoom] = useState(false);
+   const [dialog, setDialog] = useState(false);
+   const [action, setAction] = useState("");
+   const [roomList, setRoomList] = useState([
+      {
+         number: "101",
+         price: 20,
+      },
+      {
+         number: "102",
+         price: 20,
+      },
+      {
+         number: "103",
+         price: 20,
+      },
+      {
+         number: "104",
+         price: 20,
+      },
+   ]);
+
+   useEffect(() => {
+      fetchAPI();
+   }, []);
+
+   const fetchAPI = () => {
       setTimeout(() => {
-         this.setState({
-            loading: false,
-            refreshing: false,
-         });
+         setLoading(false);
+         setRefreshing(false);
       }, 1000);
    };
 
-   onRefresh = () => {
-      this.setState(
-         {
-            refreshing: true,
-         },
-         () => this.fetchAPI()
-      );
+   const onRefresh = () => {
+      setRefreshing(true);
+      fetchAPI();
    };
 
-   onToggleModalAddRoom = () => {
-      this.setState({
-         modalAddRoom: !this.state.modalAddRoom,
-      });
+   const showRoomInfo = (r) => {
+      setModalRoom(true);
+      setRoomInfo(r);
    };
 
-   onToggleModalRoom = () => {
-      this.setState({
-         modalRoom: !this.state.modalRoom,
-      });
-   };
-
-   showRoomInfo = (r) => {
-      this.onToggleModalRoom();
-      this.setState({
-         roomInfo: r,
-      });
-   };
-
-   onUpdate = () => {
-      this.setState({
-         dialog: false,
-         action: "",
-         modalRoom: false,
-      });
+   const onUpdate = () => {
+      setDialog(false);
+      setAction("");
+      setModalRoom(false);
       alert("Update");
-      console.log(this.state.roomInfo);
+      console.log(roomInfo);
    };
 
-   onDelete = () => {
-      this.setState({
-         dialog: false,
-         action: "",
-         modalRoom: false,
-      });
+   const onDelete = () => {
+      setDialog(false);
+      setAction("");
+      setModalRoom(false);
       alert("Delete");
-      console.log(this.state.roomInfo);
+      console.log(roomInfo);
    };
 
-   onAdd = () => {
-      this.setState({
-         dialog: false,
-         action: "",
-         modalAddRoom: false,
-      });
+   const onAdd = () => {
+      setDialog(false);
+      setAction("");
+      setModalAddRoom(false);
       alert("Add");
-      console.log(this.state.roomAddInfo);
+      console.log(roomAddInfo);
    };
 
-   onProceed = () => {
-      const { action } = this.state;
-      if (action === "delete") this.onDelete();
-      else if (action === "update") this.onUpdate();
-      else if (action === "add") this.onAdd();
+   const onProceed = () => {
+      if (action === "delete") onDelete();
+      else if (action === "update") onUpdate();
+      else if (action === "add") onAdd();
    };
 
-   onHandleChangeText = (value, nameInput) => {
-      this.setState({
-         roomInfo: {
-            ...this.state.roomInfo,
-            [nameInput]: value,
-         },
+   const onHandleChangeText = (value, nameInput) => {
+      setRoomInfo({
+         ...roomInfo,
+         [nameInput]: value,
       });
    };
 
-   onHandleChangeTextAdd = (value, nameInput) => {
-      this.setState({
-         roomAddInfo: {
-            ...this.state.roomAddInfo,
-            [nameInput]: value,
-         },
+   const onHandleChangeTextAdd = (value, nameInput) => {
+      setRoomAddInfo({
+         ...roomAddInfo,
+         [nameInput]: value,
       });
    };
-   renderRoomList() {
-      const { roomList } = this.state;
+
+   const renderRoomList = () => {
       return (
          <View>
             {roomList.map((r, i) => {
                return (
-                  <TouchableOpacity
-                     key={i}
-                     onPress={() => this.showRoomInfo(r)}
-                  >
+                  <TouchableOpacity key={i} onPress={() => showRoomInfo(r)}>
                      <DataTable.Row>
                         <DataTable.Cell>{r.number}</DataTable.Cell>
                         <DataTable.Cell numeric>${r.price}</DataTable.Cell>
@@ -176,287 +551,268 @@ export default class income extends Component {
             })}
          </View>
       );
-   }
+   };
 
-   render() {
-      const {
-         loading,
-         refreshing,
-         branch,
-         modalRoom,
-         modalAddRoom,
-         dialog,
-         roomInfo,
-         overlayLoading,
-      } = this.state;
-      const theme = {
-         ...DefaultTheme,
-      };
-      return (
-         <Provider theme={theme}>
-            <ScrollView
-               style={styles.container}
-               refreshControl={
-                  <RefreshControl
-                     refreshing={refreshing}
-                     onRefresh={this.onRefresh}
-                  ></RefreshControl>
-               }
+   const theme = {
+      ...DefaultTheme,
+   };
+
+   return (
+      <Provider theme={theme}>
+         <ScrollView
+            style={styles.container}
+            refreshControl={
+               <RefreshControl
+                  refreshing={refreshing}
+                  onRefresh={onRefresh}
+               ></RefreshControl>
+            }
+         >
+            {/* <Text style={styles.headerText}> Star Light Resort </Text> */}
+
+            <View style={styles.bodyContainer}>
+               <Text
+                  style={{
+                     fontSize: 20,
+                     textAlign: "center",
+                     marginBottom: 10,
+                  }}
+               >
+                  {branch}
+               </Text>
+               <DataTable>
+                  <DataTable.Header style={{ color: "red" }}>
+                     <DataTable.Title>Room No</DataTable.Title>
+                     <DataTable.Title numeric>Price</DataTable.Title>
+                  </DataTable.Header>
+
+                  {loading && (
+                     <ActivityIndicator
+                        color="red"
+                        size="large"
+                        style={{ marginTop: 50 }}
+                     ></ActivityIndicator>
+                  )}
+
+                  {!loading && renderRoomList()}
+               </DataTable>
+
+               <Button
+                  mode="outlined"
+                  onPress={() => setModalAddRoom(true)}
+                  uppercase={false}
+                  style={{
+                     borderColor: "#AA75F6",
+                     borderWidth: 1,
+                     alignSelf: "center",
+                     marginTop: 20,
+                  }}
+               >
+                  Add Room
+               </Button>
+            </View>
+         </ScrollView>
+
+         {/* Modal */}
+         <Portal>
+            {/* Dialog */}
+            <Portal>
+               <Dialog
+                  visible={dialog}
+                  onDismiss={() => {
+                     setDialog(false);
+                     setAction("");
+                  }}
+               >
+                  <Dialog.Content>
+                     <Text>Are you sure you want to proceed?</Text>
+                  </Dialog.Content>
+                  <Dialog.Actions style={{ marginTop: -20 }}>
+                     <Button
+                        onPress={() => {
+                           setDialog(false);
+                           setAction("");
+                        }}
+                        uppercase={false}
+                     >
+                        Cancel
+                     </Button>
+                     <Button onPress={onProceed} uppercase={false}>
+                        Confirm
+                     </Button>
+                  </Dialog.Actions>
+               </Dialog>
+            </Portal>
+            {/* Modal Add Room */}
+            <Modal
+               visible={modalAddRoom}
+               contentContainerStyle={styles.modalAddRoom}
+               onDismiss={() => setModalAddRoom(false)}
             >
-               {/* <Text style={styles.headerText}> Star Light Resort </Text> */}
-
-               <View style={styles.bodyContainer}>
+               <TouchableOpacity
+                  onPress={() => setModalAddRoom(false)}
+                  style={{
+                     alignSelf: "flex-end",
+                     marginRight: 15,
+                     marginTop: -10,
+                  }}
+               >
+                  <AntDesign name="close" size={24} color="black" />
+               </TouchableOpacity>
+               <View>
                   <Text
                      style={{
-                        fontSize: 20,
+                        marginBottom: 15,
                         textAlign: "center",
-                        marginBottom: 10,
-                     }}
-                  >
-                     {branch}
-                  </Text>
-                  <DataTable>
-                     <DataTable.Header style={{ color: "red" }}>
-                        <DataTable.Title>Room No</DataTable.Title>
-                        <DataTable.Title numeric>Price</DataTable.Title>
-                     </DataTable.Header>
-
-                     {loading && (
-                        <ActivityIndicator
-                           color="red"
-                           size="large"
-                           style={{ marginTop: 50 }}
-                        ></ActivityIndicator>
-                     )}
-
-                     {!loading && this.renderRoomList()}
-                  </DataTable>
-
-                  <Button
-                     mode="outlined"
-                     onPress={this.onToggleModalAddRoom}
-                     uppercase={false}
-                     style={{
-                        borderColor: "#AA75F6",
-                        borderWidth: 1,
-                        alignSelf: "center",
-                        marginTop: 20,
+                        fontSize: 17,
                      }}
                   >
                      Add Room
-                  </Button>
-               </View>
-            </ScrollView>
-
-            {/* Modal */}
-            <Portal>
-               {/* Dialog */}
-               <Portal>
-                  <Dialog
-                     visible={dialog}
-                     onDismiss={() =>
-                        this.setState({ dialog: false, action: "" })
-                     }
-                  >
-                     <Dialog.Content>
-                        <Text>Are you sure you want to proceed?</Text>
-                     </Dialog.Content>
-                     <Dialog.Actions style={{ marginTop: -20 }}>
-                        <Button
-                           onPress={() =>
-                              this.setState({ dialog: false, action: "" })
+                  </Text>
+                  <Form>
+                     <Item floatingLabel>
+                        <Label>Room Number</Label>
+                        <Input
+                           onChangeText={(value) =>
+                              onHandleChangeTextAdd(value, "number")
                            }
-                           uppercase={false}
-                        >
-                           Cancel
-                        </Button>
-                        <Button onPress={this.onProceed} uppercase={false}>
-                           Confirm
-                        </Button>
-                     </Dialog.Actions>
-                  </Dialog>
-               </Portal>
-               {/* Modal Add Room */}
-               <Modal
-                  visible={modalAddRoom}
-                  contentContainerStyle={styles.modalAddRoom}
-                  onDismiss={this.onToggleModalAddRoom}
-               >
-                  <TouchableOpacity
-                     onPress={this.onToggleModalAddRoom}
-                     style={{
-                        alignSelf: "flex-end",
-                        marginRight: 15,
-                        marginTop: -10,
-                     }}
-                  >
-                     <AntDesign name="close" size={24} color="black" />
-                  </TouchableOpacity>
-                  <View>
-                     <Text
+                        ></Input>
+                     </Item>
+                     <Item floatingLabel>
+                        <Label>Price</Label>
+                        <Input
+                           keyboardType="numeric"
+                           onChangeText={(value) =>
+                              onHandleChangeTextAdd(Number(value), "price")
+                           }
+                        ></Input>
+                     </Item>
+                     {/* Branch */}
+                     <View style={styles.branchContainer}>
+                        <Text style={[styles.biggerText, { flex: 1 }]}>
+                           Branch :
+                        </Text>
+                        <Text style={[styles.biggerText, { flex: 2 }]}>
+                           {branch}
+                        </Text>
+                     </View>
+                     <Button
+                        mode="outlined"
+                        onPress={() => {
+                           setDialog(true);
+                           setAction("add");
+                        }}
+                        uppercase={false}
+                        color="#0275D8"
                         style={{
-                           marginBottom: 15,
-                           textAlign: "center",
-                           fontSize: 17,
+                           borderColor: "#0275D8",
+                           width: 150,
+                           alignSelf: "center",
+                           marginTop: 20,
                         }}
                      >
-                        Add Room
-                     </Text>
-                     <Form>
-                        <Item floatingLabel>
-                           <Label>Room Number</Label>
-                           <Input
-                              onChangeText={(value) =>
-                                 this.onHandleChangeTextAdd(value, "number")
-                              }
-                           ></Input>
-                        </Item>
-                        <Item floatingLabel>
-                           <Label>Price</Label>
-                           <Input
-                              keyboardType="numeric"
-                              onChangeText={(value) =>
-                                 this.onHandleChangeTextAdd(
-                                    Number(value),
-                                    "price"
-                                 )
-                              }
-                           ></Input>
-                        </Item>
-                        {/* Branch */}
-                        <View style={styles.branchContainer}>
-                           <Text style={[styles.biggerText, { flex: 1 }]}>
-                              Branch :
-                           </Text>
-                           <Text style={[styles.biggerText, { flex: 2 }]}>
-                              {branch}
-                           </Text>
-                        </View>
+                        Add
+                     </Button>
+                  </Form>
+               </View>
+            </Modal>
+            {/* Modal Room */}
+            <Modal
+               visible={modalRoom}
+               onDismiss={() => setModalRoom(false)}
+               contentContainerStyle={styles.modalRoom}
+            >
+               <TouchableOpacity
+                  onPress={() => setModalRoom(false)}
+                  style={{
+                     alignSelf: "flex-end",
+                     marginRight: 15,
+                     marginTop: -10,
+                  }}
+               >
+                  <AntDesign name="close" size={24} color="black" />
+               </TouchableOpacity>
+               <View>
+                  <Text
+                     style={{
+                        marginBottom: 15,
+                        textAlign: "center",
+                        fontSize: 17,
+                     }}
+                  >
+                     Edit Room
+                  </Text>
+                  <Form>
+                     <Item floatingLabel>
+                        <Label>Room Number</Label>
+                        <Input
+                           value={roomInfo.number.toString()}
+                           onChangeText={(value) =>
+                              onHandleChangeText(value, "number")
+                           }
+                        ></Input>
+                     </Item>
+                     <Item floatingLabel>
+                        <Label>Price</Label>
+                        <Input
+                           value={roomInfo.price.toString()}
+                           keyboardType="numeric"
+                           onChangeText={(value) =>
+                              onHandleChangeText(Number(value), "price")
+                           }
+                        ></Input>
+                     </Item>
+                     <View
+                        style={{
+                           marginTop: 20,
+                           flexDirection: "row",
+                           justifyContent: "space-around",
+                        }}
+                     >
                         <Button
                            mode="outlined"
-                           onPress={() =>
-                              this.setState({
-                                 dialog: true,
-                                 action: "add",
-                              })
-                           }
+                           onPress={() => {
+                              setDialog(true);
+                              setAction("update");
+                           }}
                            uppercase={false}
                            color="#0275D8"
-                           style={{
-                              borderColor: "#0275D8",
-                              width: 150,
-                              alignSelf: "center",
-                              marginTop: 20,
-                           }}
+                           style={{ borderColor: "#0275D8" }}
                         >
-                           Add
+                           Update
                         </Button>
-                     </Form>
-                  </View>
-               </Modal>
-               {/* Modal Room */}
-               <Modal
-                  visible={modalRoom}
-                  onDismiss={this.onToggleModalRoom}
-                  contentContainerStyle={styles.modalRoom}
-               >
-                  <TouchableOpacity
-                     onPress={this.onToggleModalRoom}
-                     style={{
-                        alignSelf: "flex-end",
-                        marginRight: 15,
-                        marginTop: -10,
-                     }}
-                  >
-                     <AntDesign name="close" size={24} color="black" />
-                  </TouchableOpacity>
-                  <View>
-                     <Text
-                        style={{
-                           marginBottom: 15,
-                           textAlign: "center",
-                           fontSize: 17,
-                        }}
-                     >
-                        Edit Room
-                     </Text>
-                     <Form>
-                        <Item floatingLabel>
-                           <Label>Room Number</Label>
-                           <Input
-                              value={roomInfo.number.toString()}
-                              onChangeText={(value) =>
-                                 this.onHandleChangeText(value, "number")
-                              }
-                           ></Input>
-                        </Item>
-                        <Item floatingLabel>
-                           <Label>Price</Label>
-                           <Input
-                              value={roomInfo.price.toString()}
-                              keyboardType="numeric"
-                              onChangeText={(value) =>
-                                 this.onHandleChangeText(Number(value), "price")
-                              }
-                           ></Input>
-                        </Item>
-                        <View
-                           style={{
-                              marginTop: 20,
-                              flexDirection: "row",
-                              justifyContent: "space-around",
+                        <Button
+                           mode="outlined"
+                           onPress={() => {
+                              setDialog(true);
+                              setAction("delete");
                            }}
+                           uppercase={false}
+                           color="#D9534F"
+                           style={{ borderColor: "#D9534F" }}
                         >
-                           <Button
-                              mode="outlined"
-                              onPress={() =>
-                                 this.setState({
-                                    dialog: true,
-                                    action: "update",
-                                 })
-                              }
-                              uppercase={false}
-                              color="#0275D8"
-                              style={{ borderColor: "#0275D8" }}
-                           >
-                              Update
-                           </Button>
-                           <Button
-                              mode="outlined"
-                              onPress={() =>
-                                 this.setState({
-                                    dialog: true,
-                                    action: "delete",
-                                 })
-                              }
-                              uppercase={false}
-                              color="#D9534F"
-                              style={{ borderColor: "#D9534F" }}
-                           >
-                              Delete
-                           </Button>
-                        </View>
-                     </Form>
-                  </View>
-               </Modal>
-            </Portal>
-            {/* OverLay Loading */}
-            <Portal>
-               <Dialog
-                  visible={overlayLoading}
-                  dismissable={false}
-                  style={{ backgroundColor: "transparent", elevation: 0 }}
-               >
-                  <ActivityIndicator
-                     size="large"
-                     color="red"
-                  ></ActivityIndicator>
-               </Dialog>
-            </Portal>
-         </Provider>
-      );
-   }
-}
+                           Delete
+                        </Button>
+                     </View>
+                  </Form>
+               </View>
+            </Modal>
+         </Portal>
+         {/* OverLay Loading */}
+         <Portal>
+            <Dialog
+               visible={overlayLoading}
+               dismissable={false}
+               style={{ backgroundColor: "transparent", elevation: 0 }}
+            >
+               <ActivityIndicator size="large" color="red"></ActivityIndicator>
+            </Dialog>
+         </Portal>
+      </Provider>
+   );
+};
+
+export default index;
 
 const styles = StyleSheet.create({
    container: {
@@ -492,5 +848,10 @@ const styles = StyleSheet.create({
    },
    biggerText: {
       fontSize: 17,
+   },
+   branchContainer: {
+      flexDirection: "row",
+      marginTop: 20,
+      paddingLeft: 14,
    },
 });

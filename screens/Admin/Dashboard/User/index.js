@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, useState, useEffect } from "react";
 import {
    Text,
    StyleSheet,
@@ -21,97 +21,345 @@ import {
 
 import { AntDesign } from "@expo/vector-icons";
 
-export default class index extends Component {
-   constructor(props) {
-      super(props);
-      this.state = {
-         refreshing: false,
-         loading: true,
-         overlayLoading: false,
-         dialog: false,
-         modalUser: false,
-         action: "",
-         userInfo: {
-            name: "",
-            branch: "",
-         },
-         userList: [
-            {
-               name: "Kok",
-               branch: "No where",
-            },
-            {
-               name: "Hello",
-               branch: "No Name",
-            },
-            {
-               name: "Dara",
-               branch: "No where",
-            },
-         ],
-      };
-   }
+// export default class index extends Component {
+//    constructor(props) {
+//       super(props);
+//       this.state = {
+//          refreshing: false,
+//          loading: true,
+//          overlayLoading: false,
+//          dialog: false,
+//          modalUser: false,
+//          action: "",
+//          userInfo: {
+//             name: "",
+//             branch: "",
+//          },
+//          userList: [
+// {
+//    name: "Kok",
+//    branch: "No where",
+// },
+// {
+//    name: "Hello",
+//    branch: "No Name",
+// },
+// {
+//    name: "Dara",
+//    branch: "No where",
+// },
+//          ],
+//       };
+//    }
 
-   componentDidMount() {
-      this.fetchAPI();
-   }
+//    componentDidMount() {
+//       this.fetchAPI();
+//    }
 
-   fetchAPI = () => {
+// fetchAPI = () => {
+//    setTimeout(() => {
+//       this.setState({
+//          loading: false,
+//          refreshing: false,
+//       });
+//    }, 1000);
+// };
+
+// showUserInfo = (r) => {
+//    this.onToggleModalUser();
+//    this.setState({
+//       userInfo: r,
+//    });
+// };
+
+// onRefresh = () => {
+//    this.setState(
+//       {
+//          refreshing: true,
+//       },
+//       () => this.fetchAPI()
+//    );
+// };
+
+//    onToggleModalUser = () => {
+//       this.setState({
+//          modalUser: !this.state.modalUser,
+//       });
+//    };
+
+// onDelete = () => {
+//    this.setState({
+//       dialog: false,
+//       action: "",
+//       modalUser: false,
+//    });
+//    alert("Delete");
+//    console.log(this.state.userInfo);
+// };
+
+// onProceed = () => {
+//    const { action } = this.state;
+//    if (action === "delete") this.onDelete();
+// };
+
+// renderUserList() {
+//    const { userList } = this.state;
+//    return (
+//       <View>
+//          {userList.map((r, i) => {
+//             return (
+//                <TouchableOpacity
+//                   key={i}
+//                   onPress={() => this.showUserInfo(r)}
+//                >
+//                   <DataTable.Row>
+//                      <DataTable.Cell>{r.name}</DataTable.Cell>
+//                      <DataTable.Cell numeric>{r.branch}</DataTable.Cell>
+//                   </DataTable.Row>
+//                </TouchableOpacity>
+//             );
+//          })}
+//       </View>
+//    );
+// }
+
+//    render() {
+//       const {
+//          loading,
+//          refreshing,
+//          overlayLoading,
+//          dialog,
+//          modalUser,
+//          userInfo,
+//       } = this.state;
+// const theme = {
+//    ...DefaultTheme,
+// };
+//       return (
+// <Provider theme={theme}>
+//    <ScrollView
+//       style={styles.container}
+//       refreshControl={
+//          <RefreshControl
+//             refreshing={refreshing}
+//             onRefresh={this.onRefresh}
+//          ></RefreshControl>
+//       }
+//    >
+//       <Text style={styles.headerText}> Star Light Resort </Text>
+
+//       <View style={styles.bodyContainer}>
+//          <Text
+//             style={{
+//                fontSize: 20,
+//                textAlign: "center",
+//                marginBottom: 10,
+//             }}
+//          >
+//             User
+//          </Text>
+//          <DataTable>
+//             <DataTable.Header style={{ color: "red" }}>
+//                <DataTable.Title>Name</DataTable.Title>
+//                <DataTable.Title numeric>Branch</DataTable.Title>
+//             </DataTable.Header>
+
+//             {loading && (
+//                <ActivityIndicator
+//                   color="red"
+//                   size="large"
+//                   style={{ marginTop: 50 }}
+//                ></ActivityIndicator>
+//             )}
+
+//             {!loading && this.renderUserList()}
+//          </DataTable>
+
+//          <Button
+//             mode="outlined"
+//             onPress={() => this.props.navigation.navigate("addUser")}
+//             uppercase={false}
+//             style={{
+//                borderColor: "#AA75F6",
+//                borderWidth: 1,
+//                alignSelf: "center",
+//                marginTop: 20,
+//             }}
+//          >
+//             Add User
+//          </Button>
+//       </View>
+//    </ScrollView>
+
+//    {/* Modal */}
+//    <Portal>
+//       {/* Dialog */}
+//       <Portal>
+//          <Dialog
+//             visible={dialog}
+//             onDismiss={() =>
+//                this.setState({ dialog: false, action: "" })
+//             }
+//          >
+//             <Dialog.Content>
+//                <Text>Are you sure you want to proceed?</Text>
+//             </Dialog.Content>
+//             <Dialog.Actions style={{ marginTop: -20 }}>
+//                <Button
+//                   onPress={() =>
+//                      this.setState({ dialog: false, action: "" })
+//                   }
+//                   uppercase={false}
+//                >
+//                   Cancel
+//                </Button>
+//                <Button onPress={this.onProceed} uppercase={false}>
+//                   Confirm
+//                </Button>
+//             </Dialog.Actions>
+//          </Dialog>
+//       </Portal>
+
+//       {/* Modal User */}
+//       <Modal
+//          visible={modalUser}
+//          onDismiss={this.onToggleModalUser}
+//          contentContainerStyle={styles.modalUser}
+//       >
+//          <TouchableOpacity
+//             onPress={this.onToggleModalUser}
+//             style={{
+//                alignSelf: "flex-end",
+//                marginRight: 15,
+//                marginTop: -10,
+//             }}
+//          >
+//             <AntDesign name="close" size={24} color="black" />
+//          </TouchableOpacity>
+//          <View>
+//             <Text
+//                style={{
+//                   marginBottom: 15,
+//                   textAlign: "center",
+//                   fontSize: 17,
+//                }}
+//             >
+//                User
+//             </Text>
+//             <View>
+//                <View style={styles.nameContainer}>
+//                   <Text style={[styles.biggerText, { flex: 1 }]}>
+//                      Name :
+//                   </Text>
+//                   <Text style={[styles.biggerText, { flex: 2 }]}>
+//                      {userInfo.name}
+//                   </Text>
+//                </View>
+//                <View style={styles.branchContainer}>
+//                   <Text style={[styles.biggerText, { flex: 1 }]}>
+//                      Branch :
+//                   </Text>
+//                   <Text style={[styles.biggerText, { flex: 2 }]}>
+//                      {userInfo.branch}
+//                   </Text>
+//                </View>
+//                <Button
+//                   mode="outlined"
+//                   onPress={() =>
+//                      this.setState({
+//                         dialog: true,
+//                         action: "delete",
+//                      })
+//                   }
+//                   uppercase={false}
+//                   color="#D9534F"
+//                   style={{
+//                      borderColor: "#D9534F",
+//                      width: 150,
+//                      alignSelf: "center",
+//                      marginTop: 20,
+//                   }}
+//                >
+//                   Delete
+//                </Button>
+//             </View>
+//          </View>
+//       </Modal>
+//    </Portal>
+//    {/* OverLay Loading */}
+//    <Portal>
+//       <Dialog
+//          visible={overlayLoading}
+//          dismissable={false}
+//          style={{ backgroundColor: "transparent", elevation: 0 }}
+//       >
+//          <ActivityIndicator
+//             size="large"
+//             color="red"
+//          ></ActivityIndicator>
+//       </Dialog>
+//    </Portal>
+// </Provider>
+//       );
+//    }
+// }
+
+const index = ({ navigation }) => {
+   const [refreshing, setRefreshing] = useState(false);
+   const [loading, setLoading] = useState(true);
+   const [overlayLoading, setOverlayLoading] = useState(false);
+   const [dialog, setDialog] = useState(false);
+   const [modalUser, setModalUser] = useState(false);
+   const [userInfo, setUserInfo] = useState({ name: "", branch: "" });
+   const [userList, setUserList] = useState([
+      {
+         name: "Kok",
+         branch: "No where",
+      },
+      {
+         name: "Hello",
+         branch: "No Name",
+      },
+      {
+         name: "Dara",
+         branch: "No where",
+      },
+   ]);
+
+   useEffect(() => {
+      fetchAPI();
+   }, []);
+
+   const fetchAPI = () => {
       setTimeout(() => {
-         this.setState({
-            loading: false,
-            refreshing: false,
-         });
+         setLoading(false);
+         setRefreshing(false);
       }, 1000);
    };
 
-   showUserInfo = (r) => {
-      this.onToggleModalUser();
-      this.setState({
-         userInfo: r,
-      });
+   const onRefresh = () => {
+      setRefreshing(true);
+      fetchAPI();
    };
 
-   onRefresh = () => {
-      this.setState(
-         {
-            refreshing: true,
-         },
-         () => this.fetchAPI()
-      );
-   };
-
-   onToggleModalUser = () => {
-      this.setState({
-         modalUser: !this.state.modalUser,
-      });
-   };
-
-   onDelete = () => {
-      this.setState({
-         dialog: false,
-         action: "",
-         modalUser: false,
-      });
+   const onDelete = () => {
+      setDialog(false);
+      setModalUser(false);
       alert("Delete");
-      console.log(this.state.userInfo);
+      console.log(userInfo);
    };
 
-   onProceed = () => {
-      const { action } = this.state;
-      if (action === "delete") this.onDelete();
+   const showUserInfo = (r) => {
+      setModalUser(true);
+      setUserInfo(r);
    };
 
-   renderUserList() {
-      const { userList } = this.state;
+   const renderUserList = () => {
       return (
          <View>
             {userList.map((r, i) => {
                return (
-                  <TouchableOpacity
-                     key={i}
-                     onPress={() => this.showUserInfo(r)}
-                  >
+                  <TouchableOpacity key={i} onPress={() => showUserInfo(r)}>
                      <DataTable.Row>
                         <DataTable.Cell>{r.name}</DataTable.Cell>
                         <DataTable.Cell numeric>{r.branch}</DataTable.Cell>
@@ -121,188 +369,168 @@ export default class index extends Component {
             })}
          </View>
       );
-   }
+   };
 
-   render() {
-      const {
-         loading,
-         refreshing,
-         overlayLoading,
-         dialog,
-         modalUser,
-         userInfo,
-      } = this.state;
-      const theme = {
-         ...DefaultTheme,
-      };
-      return (
-         <Provider theme={theme}>
-            <ScrollView
-               style={styles.container}
-               refreshControl={
-                  <RefreshControl
-                     refreshing={refreshing}
-                     onRefresh={this.onRefresh}
-                  ></RefreshControl>
-               }
+   const theme = {
+      ...DefaultTheme,
+   };
+
+   return (
+      <Provider theme={theme}>
+         <ScrollView
+            style={styles.container}
+            refreshControl={
+               <RefreshControl
+                  refreshing={refreshing}
+                  onRefresh={onRefresh}
+               ></RefreshControl>
+            }
+         >
+            <Text style={styles.headerText}> Star Light Resort </Text>
+
+            <View style={styles.bodyContainer}>
+               <Text
+                  style={{
+                     fontSize: 20,
+                     textAlign: "center",
+                     marginBottom: 10,
+                  }}
+               >
+                  User
+               </Text>
+               <DataTable>
+                  <DataTable.Header style={{ color: "red" }}>
+                     <DataTable.Title>Name</DataTable.Title>
+                     <DataTable.Title numeric>Branch</DataTable.Title>
+                  </DataTable.Header>
+
+                  {loading && (
+                     <ActivityIndicator
+                        color="red"
+                        size="large"
+                        style={{ marginTop: 50 }}
+                     ></ActivityIndicator>
+                  )}
+
+                  {!loading && renderUserList()}
+               </DataTable>
+
+               <Button
+                  mode="outlined"
+                  onPress={() => navigation.navigate("addUser")}
+                  uppercase={false}
+                  style={{
+                     borderColor: "#AA75F6",
+                     borderWidth: 1,
+                     alignSelf: "center",
+                     marginTop: 20,
+                  }}
+               >
+                  Add User
+               </Button>
+            </View>
+         </ScrollView>
+
+         {/* Modal */}
+         <Portal>
+            {/* Dialog */}
+            <Portal>
+               <Dialog
+                  visible={dialog}
+                  onDismiss={() => {
+                     setDialog(false);
+                  }}
+               >
+                  <Dialog.Content>
+                     <Text>Are you sure you want to proceed?</Text>
+                  </Dialog.Content>
+                  <Dialog.Actions style={{ marginTop: -20 }}>
+                     <Button onPress={() => setDialog(false)} uppercase={false}>
+                        Cancel
+                     </Button>
+                     <Button onPress={onDelete} uppercase={false}>
+                        Confirm
+                     </Button>
+                  </Dialog.Actions>
+               </Dialog>
+            </Portal>
+
+            {/* Modal User */}
+            <Modal
+               visible={modalUser}
+               onDismiss={() => setModalUser(false)}
+               contentContainerStyle={styles.modalUser}
             >
-               <Text style={styles.headerText}> Star Light Resort </Text>
-
-               <View style={styles.bodyContainer}>
+               <TouchableOpacity
+                  onPress={() => setModalUser(false)}
+                  style={{
+                     alignSelf: "flex-end",
+                     marginRight: 15,
+                     marginTop: -10,
+                  }}
+               >
+                  <AntDesign name="close" size={24} color="black" />
+               </TouchableOpacity>
+               <View>
                   <Text
                      style={{
-                        fontSize: 20,
+                        marginBottom: 15,
                         textAlign: "center",
-                        marginBottom: 10,
+                        fontSize: 17,
                      }}
                   >
                      User
                   </Text>
-                  <DataTable>
-                     <DataTable.Header style={{ color: "red" }}>
-                        <DataTable.Title>Name</DataTable.Title>
-                        <DataTable.Title numeric>Branch</DataTable.Title>
-                     </DataTable.Header>
-
-                     {loading && (
-                        <ActivityIndicator
-                           color="red"
-                           size="large"
-                           style={{ marginTop: 50 }}
-                        ></ActivityIndicator>
-                     )}
-
-                     {!loading && this.renderUserList()}
-                  </DataTable>
-
-                  <Button
-                     mode="outlined"
-                     onPress={() => this.props.navigation.navigate("addUser")}
-                     uppercase={false}
-                     style={{
-                        borderColor: "#AA75F6",
-                        borderWidth: 1,
-                        alignSelf: "center",
-                        marginTop: 20,
-                     }}
-                  >
-                     Add User
-                  </Button>
-               </View>
-            </ScrollView>
-
-            {/* Modal */}
-            <Portal>
-               {/* Dialog */}
-               <Portal>
-                  <Dialog
-                     visible={dialog}
-                     onDismiss={() =>
-                        this.setState({ dialog: false, action: "" })
-                     }
-                  >
-                     <Dialog.Content>
-                        <Text>Are you sure you want to proceed?</Text>
-                     </Dialog.Content>
-                     <Dialog.Actions style={{ marginTop: -20 }}>
-                        <Button
-                           onPress={() =>
-                              this.setState({ dialog: false, action: "" })
-                           }
-                           uppercase={false}
-                        >
-                           Cancel
-                        </Button>
-                        <Button onPress={this.onProceed} uppercase={false}>
-                           Confirm
-                        </Button>
-                     </Dialog.Actions>
-                  </Dialog>
-               </Portal>
-
-               {/* Modal User */}
-               <Modal
-                  visible={modalUser}
-                  onDismiss={this.onToggleModalUser}
-                  contentContainerStyle={styles.modalUser}
-               >
-                  <TouchableOpacity
-                     onPress={this.onToggleModalUser}
-                     style={{
-                        alignSelf: "flex-end",
-                        marginRight: 15,
-                        marginTop: -10,
-                     }}
-                  >
-                     <AntDesign name="close" size={24} color="black" />
-                  </TouchableOpacity>
                   <View>
-                     <Text
+                     <View style={styles.nameContainer}>
+                        <Text style={[styles.biggerText, { flex: 1 }]}>
+                           Name :
+                        </Text>
+                        <Text style={[styles.biggerText, { flex: 2 }]}>
+                           {userInfo.name}
+                        </Text>
+                     </View>
+                     <View style={styles.branchContainer}>
+                        <Text style={[styles.biggerText, { flex: 1 }]}>
+                           Branch :
+                        </Text>
+                        <Text style={[styles.biggerText, { flex: 2 }]}>
+                           {userInfo.branch}
+                        </Text>
+                     </View>
+                     <Button
+                        mode="outlined"
+                        onPress={() => setDialog(true)}
+                        uppercase={false}
+                        color="#D9534F"
                         style={{
-                           marginBottom: 15,
-                           textAlign: "center",
-                           fontSize: 17,
+                           borderColor: "#D9534F",
+                           width: 150,
+                           alignSelf: "center",
+                           marginTop: 20,
                         }}
                      >
-                        User
-                     </Text>
-                     <View>
-                        <View style={styles.nameContainer}>
-                           <Text style={[styles.biggerText, { flex: 1 }]}>
-                              Name :
-                           </Text>
-                           <Text style={[styles.biggerText, { flex: 2 }]}>
-                              {userInfo.name}
-                           </Text>
-                        </View>
-                        <View style={styles.branchContainer}>
-                           <Text style={[styles.biggerText, { flex: 1 }]}>
-                              Branch :
-                           </Text>
-                           <Text style={[styles.biggerText, { flex: 2 }]}>
-                              {userInfo.branch}
-                           </Text>
-                        </View>
-                        <Button
-                           mode="outlined"
-                           onPress={() =>
-                              this.setState({
-                                 dialog: true,
-                                 action: "delete",
-                              })
-                           }
-                           uppercase={false}
-                           color="#D9534F"
-                           style={{
-                              borderColor: "#D9534F",
-                              width: 150,
-                              alignSelf: "center",
-                              marginTop: 20,
-                           }}
-                        >
-                           Delete
-                        </Button>
-                     </View>
+                        Delete
+                     </Button>
                   </View>
-               </Modal>
-            </Portal>
-            {/* OverLay Loading */}
-            <Portal>
-               <Dialog
-                  visible={overlayLoading}
-                  dismissable={false}
-                  style={{ backgroundColor: "transparent", elevation: 0 }}
-               >
-                  <ActivityIndicator
-                     size="large"
-                     color="red"
-                  ></ActivityIndicator>
-               </Dialog>
-            </Portal>
-         </Provider>
-      );
-   }
-}
+               </View>
+            </Modal>
+         </Portal>
+         {/* OverLay Loading */}
+         <Portal>
+            <Dialog
+               visible={overlayLoading}
+               dismissable={false}
+               style={{ backgroundColor: "transparent", elevation: 0 }}
+            >
+               <ActivityIndicator size="large" color="red"></ActivityIndicator>
+            </Dialog>
+         </Portal>
+      </Provider>
+   );
+};
+
+export default index;
 
 const styles = StyleSheet.create({
    container: {

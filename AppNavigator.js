@@ -77,7 +77,12 @@ const AppNavigator = () => {
   const dispatch = useAuthDispatch();
 
   console.log(authState);
-  
+
+  return (
+    <AdminDrawer
+      screenProps={{ signOut: () => {}, username: "Admin" }}
+    ></AdminDrawer>
+  );
 
   if (!authState.user) {
     return (
@@ -141,8 +146,11 @@ const AppNavigator = () => {
             )} */}
             <Button
               mode="outlined"
-              onPress={()=>{
-                loginUser(dispatch, {username:'steve', password: '123'})
+              onPress={() => {
+                loginUser(dispatch, {
+                  username: "steve",
+                  password: "123",
+                });
               }}
               uppercase={false}
               style={{
@@ -160,17 +168,17 @@ const AppNavigator = () => {
       </Modal>
     );
   }
-  console.log(authState.user )
+  console.log(authState.user);
   if (authState.user?.role === "admin")
     return (
       <AdminDrawer
-      screenProps={{ signOut: ()=>{}, username: "Admin" }}
+        screenProps={{ signOut: () => {}, username: "Admin" }}
       ></AdminDrawer>
     );
   else
     return (
       <UserDrawer
-      screenProps={{ signOut: ()=>{}, username: "User" }}
+        screenProps={{ signOut: () => {}, username: "User" }}
       ></UserDrawer>
     );
 };

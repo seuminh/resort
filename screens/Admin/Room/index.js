@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, useState, useEffect } from "react";
 import {
   Text,
   StyleSheet,
@@ -13,115 +13,201 @@ import DateTimePickerModal from "react-native-modal-datetime-picker";
 import Card from "../../../components/RoomCard";
 import { NavigationEvents } from "react-navigation";
 
-export default class index extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      dateModal: false,
-      date: new Date(),
-      loading: true,
-      refreshing: false,
-    };
-  }
+// export default class index extends Component {
+//   constructor(props) {
+//     super(props);
+//     this.state = {
+//       dateModal: false,
+//       date: new Date(),
+//       loading: true,
+//       refreshing: false,
+//     };
+//   }
 
-  toggleDateModal = () => {
-    this.setState({
-      dateModal: !this.state.dateModal,
-    });
-  };
+//   toggleDateModal = () => {
+//     this.setState({
+//       dateModal: !this.state.dateModal,
+//     });
+//   };
 
-  handleConfirm = (date) => {
-    this.setState(
-      {
-        date: new Date(date),
-        dateModal: !this.state.dateModal,
-        loading: true,
-      },
-      () => {
-        this.fetchRoom();
-      }
-    );
-  };
+// handleConfirm = (date) => {
+//   this.setState(
+//     {
+//       date: new Date(date),
+//       dateModal: !this.state.dateModal,
+//       loading: true,
+//     },
+//     () => {
+//       this.fetchRoom();
+//     }
+//   );
+// };
 
-  fetchRoom = () => {
+// fetchRoom = () => {
+//   setTimeout(() => {
+//     this.setState({
+//       loading: false,
+//       refreshing: false,
+//     });
+//   }, 500);
+// };
+
+// onRefresh = () => {
+//   this.setState(
+//     {
+//       refreshing: true,
+//     },
+//     () => this.fetchRoom()
+//   );
+// };
+
+//   componentDidMount() {
+//     this.fetchRoom();
+//   }
+
+//   render() {
+//     const { dateModal, date, loading, refreshing } = this.state;
+//     return (
+// <ScrollView
+//   style={styles.container}
+//   refreshControl={
+//     <RefreshControl
+//       refreshing={refreshing}
+//       onRefresh={this.onRefresh}
+//     ></RefreshControl>
+//   }
+// >
+//   <NavigationEvents
+//     onWillFocus={() => this.setState({ loading: true })}
+//     onDidFocus={this.fetchRoom}
+//   />
+//   <Text style={styles.headerText}> Star Light Resort </Text>
+//   <View style={styles.subHeaderContainer}>
+//     <Text style={styles.branchText}>SK branch</Text>
+//     <TouchableOpacity onPress={this.toggleDateModal}>
+//       <Text>Select Date</Text>
+//     </TouchableOpacity>
+//   </View>
+//   <View style={styles.selectDateButton}>
+//     <Text>{date.toLocaleDateString()}</Text>
+//   </View>
+
+//   <View style={styles.bodyContainer}>
+//     {!loading && (
+//       <View style={styles.cardContainer}>
+//         <Card status="busy"></Card>
+//         <Card status="available"></Card>
+//         <Card status="available"></Card>
+//         <Card status="reserved"></Card>
+//         <Card status="available"></Card>
+//         <Card status="available"></Card>
+//       </View>
+//     )}
+
+//     {loading && (
+//       <ActivityIndicator color="red" size="large"></ActivityIndicator>
+//     )}
+//   </View>
+
+//   {/* Modal */}
+//   <DateTimePickerModal
+//     isVisible={dateModal}
+//     mode="date"
+//     onConfirm={this.handleConfirm}
+//     onCancel={this.toggleDateModal}
+//     date={new Date()}
+//     isDarkModeEnabled={false}
+//   />
+// </ScrollView>
+//     );
+//   }
+// }
+
+const index = () => {
+  const [dateModal, setDateModal] = useState(false);
+  const [date, setDate] = useState(new Date());
+  const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
+
+  useEffect(() => {
+    fetchRoom();
+  }, []);
+
+  const fetchRoom = () => {
     setTimeout(() => {
-      this.setState({
-        loading: false,
-        refreshing: false,
-      });
+      setLoading(false);
+      setRefreshing(false);
     }, 500);
   };
 
-  onRefresh = () => {
-    this.setState(
-      {
-        refreshing: true,
-      },
-      () => this.fetchRoom()
-    );
+  const onRefresh = () => {
+    setRefreshing(true);
+    fetchRoom();
   };
 
-  componentDidMount() {
-    this.fetchRoom();
-  }
+  const handleConfirm = (date) => {
+    setDate(date);
+    setDateModal(false);
+    setLoading(true);
+    fetchRoom();
+  };
 
-  render() {
-    const { dateModal, date, loading, refreshing } = this.state;
-    return (
-      <ScrollView
-        style={styles.container}
-        refreshControl={
-          <RefreshControl
-            refreshing={refreshing}
-            onRefresh={this.onRefresh}
-          ></RefreshControl>
-        }
-      >
-        <NavigationEvents
-          onWillFocus={() => this.setState({ loading: true })}
-          onDidFocus={this.fetchRoom}
-        />
-        <Text style={styles.headerText}> Star Light Resort </Text>
-        <View style={styles.subHeaderContainer}>
-          <Text style={styles.branchText}>SK branch</Text>
-          <TouchableOpacity onPress={this.toggleDateModal}>
-            <Text>Select Date</Text>
-          </TouchableOpacity>
-        </View>
-        <View style={styles.selectDateButton}>
-          <Text>{date.toLocaleDateString()}</Text>
-        </View>
+  return (
+    <ScrollView
+      style={styles.container}
+      refreshControl={
+        <RefreshControl
+          refreshing={refreshing}
+          onRefresh={onRefresh}
+        ></RefreshControl>
+      }
+    >
+      <NavigationEvents
+        onWillFocus={() => setLoading(true)}
+        onDidFocus={fetchRoom}
+      />
+      <Text style={styles.headerText}> Star Light Resort </Text>
+      <View style={styles.subHeaderContainer}>
+        <Text style={styles.branchText}>SK branch</Text>
+        <TouchableOpacity onPress={() => setDateModal(true)}>
+          <Text>Select Date</Text>
+        </TouchableOpacity>
+      </View>
+      <View style={styles.selectDateButton}>
+        <Text>{date.toLocaleDateString()}</Text>
+      </View>
 
-        <View style={styles.bodyContainer}>
-          {!loading && (
-            <View style={styles.cardContainer}>
-              <Card status="busy"></Card>
-              <Card status="available"></Card>
-              <Card status="available"></Card>
-              <Card status="reserved"></Card>
-              <Card status="available"></Card>
-              <Card status="available"></Card>
-            </View>
-          )}
+      <View style={styles.bodyContainer}>
+        {!loading && (
+          <View style={styles.cardContainer}>
+            <Card status="busy"></Card>
+            <Card status="available"></Card>
+            <Card status="available"></Card>
+            <Card status="reserved"></Card>
+            <Card status="available"></Card>
+            <Card status="available"></Card>
+          </View>
+        )}
 
-          {loading && (
-            <ActivityIndicator color="red" size="large"></ActivityIndicator>
-          )}
-        </View>
+        {loading && (
+          <ActivityIndicator color="red" size="large"></ActivityIndicator>
+        )}
+      </View>
 
-        {/* Modal */}
-        <DateTimePickerModal
-          isVisible={dateModal}
-          mode="date"
-          onConfirm={this.handleConfirm}
-          onCancel={this.toggleDateModal}
-          date={new Date()}
-          isDarkModeEnabled={false}
-        />
-      </ScrollView>
-    );
-  }
-}
+      {/* Modal */}
+      <DateTimePickerModal
+        isVisible={dateModal}
+        mode="date"
+        onConfirm={handleConfirm}
+        onCancel={() => setDateModal(false)}
+        date={new Date()}
+        isDarkModeEnabled={false}
+      />
+    </ScrollView>
+  );
+};
+
+export default index;
 
 const styles = StyleSheet.create({
   container: {
