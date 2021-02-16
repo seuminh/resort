@@ -152,7 +152,9 @@ const index = ({ navigation }) => {
 
             <Button
                mode="outlined"
-               onPress={() => navigation.navigate("CheckIn")}
+               onPress={() => navigation.navigate("CheckIn",{
+                  rooms: data
+               })}
                uppercase={false}
                style={{
                   borderColor: "#AA75F6",

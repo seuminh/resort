@@ -78,11 +78,11 @@ const AppNavigator = () => {
 
   console.log(authState);
 
-  return (
-    <AdminDrawer
-      screenProps={{ signOut: () => {}, username: "Admin" }}
-    ></AdminDrawer>
-  );
+  // return (
+  //   <AdminDrawer
+  //     screenProps={{ signOut: () => {}, username: "Admin" }}
+  //   ></AdminDrawer>
+  // );
 
   if (!authState.user) {
     return (
