@@ -141,7 +141,7 @@ const index = ({ navigation }) => {
                      if (v.reservation.length > 0) {
                         status = v.reservation[0].status;
                      }
-                     return <Card status={status} room={v.number}></Card>;
+                     return <Card status={status} key={v.id} room={v.number}></Card>;
                   })}
                </View>
             )}
