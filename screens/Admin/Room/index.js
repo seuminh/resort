@@ -9,6 +9,7 @@ import {
   RefreshControl,
 } from "react-native";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
+import { Picker } from "native-base";
 
 import Card from "../../../components/RoomCard";
 import { NavigationEvents } from "react-navigation";
@@ -88,7 +89,7 @@ import { NavigationEvents } from "react-navigation";
 //       <Text>Select Date</Text>
 //     </TouchableOpacity>
 //   </View>
-//   <View style={styles.selectDateButton}>
+//   <View style={styles.selectedDate}>
 //     <Text>{date.toLocaleDateString()}</Text>
 //   </View>
 
@@ -128,6 +129,8 @@ const index = () => {
   const [date, setDate] = useState(new Date());
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
+  const [branch, setBranch] = useState(["hi", "Hello"]);
+  const [selectedBranch, setSelectedBranch] = useState(branch[0]);
 
   useEffect(() => {
     fetchRoom();
@@ -168,12 +171,26 @@ const index = () => {
       />
       <Text style={styles.headerText}> Star Light Resort </Text>
       <View style={styles.subHeaderContainer}>
-        <Text style={styles.branchText}>SK branch</Text>
+        <Text>
+          <Picker
+            mode="dropdown"
+            style={{
+              marginTop: -11,
+              marginLeft: -15,
+            }}
+            selectedValue={selectedBranch}
+            onValueChange={(value) => setSelectedBranch(value)}
+          >
+            {branch.map((r, i) => {
+              return <Picker.Item label={r} value={r} key={i} />;
+            })}
+          </Picker>
+        </Text>
         <TouchableOpacity onPress={() => setDateModal(true)}>
           <Text>Select Date</Text>
         </TouchableOpacity>
       </View>
-      <View style={styles.selectDateButton}>
+      <View style={styles.selectedDate}>
         <Text>{date.toLocaleDateString()}</Text>
       </View>
 
@@ -225,13 +242,10 @@ const styles = StyleSheet.create({
     marginVertical: 8,
     paddingHorizontal: 7,
   },
-  branchText: {
-    fontSize: 14,
-    color: "#6A0E00",
-  },
-  selectDateButton: {
+  selectedDate: {
     paddingHorizontal: 7,
     alignSelf: "flex-end",
+    marginTop: -13,
   },
   bodyContainer: {
     flex: 1,

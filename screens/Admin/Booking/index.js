@@ -9,6 +9,8 @@ import {
   RefreshControl,
 } from "react-native";
 
+import { Picker } from "native-base";
+
 import { DataTable } from "react-native-paper";
 import { NavigationEvents } from "react-navigation";
 
@@ -157,6 +159,8 @@ const index = () => {
   const [date, setDate] = useState(new Date());
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
+  const [branch, setBranch] = useState(["hi", "Hello"]);
+  const [selectedBranch, setSelectedBranch] = useState(branch[0]);
   const [reservedRoom, setReservedRoom] = useState([
     {
       name: "Unknown",
@@ -243,7 +247,21 @@ const index = () => {
       />
       <Text style={styles.headerText}> Star Light Resort </Text>
       <View style={styles.subHeaderContainer}>
-        <Text style={styles.branchText}>SK branch</Text>
+        <Text>
+          <Picker
+            mode="dropdown"
+            style={{
+              marginTop: -11,
+              marginLeft: -10,
+            }}
+            selectedValue={selectedBranch}
+            onValueChange={(value) => setSelectedBranch(value)}
+          >
+            {branch.map((r, i) => {
+              return <Picker.Item label={r} value={r} key={i} />;
+            })}
+          </Picker>
+        </Text>
         <Text>{date.toLocaleDateString()}</Text>
       </View>
       <View style={styles.bodyContainer}>
