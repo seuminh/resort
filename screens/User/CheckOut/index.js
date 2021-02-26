@@ -31,10 +31,8 @@ const index = () => {
   const [action, setAction] = useState("");
   const [dialog, setDialog] = useState(false);
   const [modalCheckOut, setModalCheckOut] = useState(false);
-  const [checkOutInfo, setCheckOutInfo] = useState({
-    checkIn: new Date(),
-    room: [],
-  });
+  const [checkOutInfo, setCheckOutInfo] = useState(null);
+
   const [roomList, setRoomList] = useState([
     // {
     //   name: "Unknown",
@@ -85,11 +83,22 @@ const index = () => {
     }, 1000);
   };
 
-  const checkOut = () => {
-    setTimeout(() => {
-      console.log(checkOutInfo);
+  const checkOut = async () => {
+    const data = await fetch(
+      `http://10.0.2.2:5000/api/v1/reservations/${checkOutInfo.id}/checkout`,
+      {
+        method: "PUT",
+        headers: {
+          Authorization: `Bearer ${authState.token}`,
+          "Content-Type": "application/json",
+        },
+      }
+    ).then((res) => res.json());
+    if (data.success) {
       setOverlayLoading(false);
-    }, 1000);
+      setRoomList(roomList.filter(v=>v.id!==checkOutInfo.id));
+      setModalCheckOut(false);
+    }
   };
 
   const onRefresh = () => {
@@ -117,6 +126,7 @@ const index = () => {
   };
 
   const showCheckOutInfo = (r) => {
+    console.log({ checkout: r });
     setModalCheckOut(true);
     setCheckOutInfo(r);
   };
@@ -218,117 +228,133 @@ const index = () => {
         </View>
 
         {/* Modal */}
-        <Portal>
-          {/* Dialog */}
+        {checkOutInfo && (
           <Portal>
-            <Dialog visible={dialog} onDismiss={() => setDialog(false)}>
-              <Dialog.Content>
-                <Text>Are you sure you want to proceed?</Text>
-              </Dialog.Content>
-              <Dialog.Actions style={{ marginTop: -20 }}>
-                <Button onPress={() => setDialog(false)} uppercase={false}>
-                  Cancel
-                </Button>
-                <Button onPress={onProceed} uppercase={false}>
-                  Confirm
-                </Button>
-              </Dialog.Actions>
-            </Dialog>
-          </Portal>
-          {/* OverLay Loading */}
-          <Portal>
-            <Dialog
-              visible={overlayLoading}
+            {/* Dialog */}
+            <Portal>
+              <Dialog visible={dialog} onDismiss={() => setDialog(false)}>
+                <Dialog.Content>
+                  <Text>Are you sure you want to proceed?</Text>
+                </Dialog.Content>
+                <Dialog.Actions style={{ marginTop: -20 }}>
+                  <Button onPress={() => setDialog(false)} uppercase={false}>
+                    Cancel
+                  </Button>
+                  <Button onPress={onProceed} uppercase={false}>
+                    Confirm
+                  </Button>
+                </Dialog.Actions>
+              </Dialog>
+            </Portal>
+            {/* OverLay Loading */}
+            <Portal>
+              <Dialog
+                visible={overlayLoading}
+                dismissable={false}
+                style={{ backgroundColor: "transparent", elevation: 0 }}
+              >
+                <ActivityIndicator size="large" color="red"></ActivityIndicator>
+              </Dialog>
+            </Portal>
+            <Modal
               dismissable={false}
-              style={{ backgroundColor: "transparent", elevation: 0 }}
+              visible={modalCheckOut}
+              contentContainerStyle={styles.modalCheckOut}
             >
-              <ActivityIndicator size="large" color="red"></ActivityIndicator>
-            </Dialog>
-          </Portal>
-          <Modal
-            dismissable={false}
-            visible={modalCheckOut}
-            contentContainerStyle={styles.modalCheckOut}
-          >
-            <TouchableOpacity
-              onPress={() => setModalCheckOut(false)}
-              style={{
-                alignSelf: "flex-end",
-                marginRight: 15,
-                marginTop: -10,
-              }}
-            >
-              <AntDesign name="close" size={24} color="black" />
-            </TouchableOpacity>
-            <View>
-              <Text
+              <TouchableOpacity
+                onPress={() => setModalCheckOut(false)}
                 style={{
-                  marginBottom: 30,
-                  textAlign: "center",
-                  fontSize: 17,
+                  alignSelf: "flex-end",
+                  marginRight: 15,
+                  marginTop: -10,
                 }}
               >
-                Check out information
-              </Text>
-              <View style={styles.modalTextInfoContainer}>
-                <Text style={styles.modalTextInfo}>Name :</Text>
-                <Text style={styles.modalTextInfo}>{checkOutInfo.name}</Text>
-              </View>
-              <View style={styles.modalTextInfoContainer}>
-                <Text style={styles.modalTextInfo}>Phone :</Text>
-                <Text style={styles.modalTextInfo}>{checkOutInfo.phone}</Text>
-              </View>
-              <View style={styles.modalTextInfoContainer}>
-                <Text style={styles.modalTextInfo}>Check in Date : </Text>
-                <Text style={styles.modalTextInfo}>
-                  {checkOutInfo.checkIn.toLocaleDateString()}
+                <AntDesign name="close" size={24} color="black" />
+              </TouchableOpacity>
+              <View>
+                <Text
+                  style={{
+                    marginBottom: 30,
+                    textAlign: "center",
+                    fontSize: 17,
+                  }}
+                >
+                  Check out information
                 </Text>
+                <View style={styles.modalTextInfoContainer}>
+                  <Text style={styles.modalTextInfo}>Name :</Text>
+                  <Text style={styles.modalTextInfo}>
+                    {checkOutInfo.customer.name}
+                  </Text>
+                </View>
+                <View style={styles.modalTextInfoContainer}>
+                  <Text style={styles.modalTextInfo}>Phone :</Text>
+                  <Text style={styles.modalTextInfo}>
+                    {checkOutInfo.customer.phoneNumber}
+                  </Text>
+                </View>
+                <View style={styles.modalTextInfoContainer}>
+                  <Text style={styles.modalTextInfo}>Check in Date : </Text>
+                  <Text style={styles.modalTextInfo}>
+                    {new Date(checkOutInfo.startDate).toLocaleDateString()}
+                  </Text>
+                </View>
+                <View style={styles.modalTextInfoContainer}>
+                  <Text style={styles.modalTextInfo}>Check out Date : </Text>
+                  <Text style={styles.modalTextInfo}>
+                    {new Date(checkOutInfo.endDate).toLocaleDateString()}
+                  </Text>
+                </View>
+                <View style={styles.modalTextInfoContainer}>
+                  <Text style={styles.modalTextInfo}>Room :</Text>
+                  <Text style={styles.modalTextInfo}>
+                    {checkOutInfo.room.map((v) => v.number).toString()}
+                  </Text>
+                </View>
+                <View style={styles.modalTextInfoContainer}>
+                  <Text style={styles.modalTextInfo}>Length : </Text>
+                  <Text style={styles.modalTextInfo}>
+                    {(new Date(checkOutInfo.endDate) -
+                      new Date(checkOutInfo.startDate)) /
+                      (24 * 60 * 60 * 1000)}
+                  </Text>
+                </View>
               </View>
-              <View style={styles.modalTextInfoContainer}>
-                <Text style={styles.modalTextInfo}>Room :</Text>
-                <Text style={styles.modalTextInfo}>
-                  {checkOutInfo.room.toString()}
-                </Text>
-              </View>
-              <View style={styles.modalTextInfoContainer}>
-                <Text style={styles.modalTextInfo}>Length : </Text>
-                <Text style={styles.modalTextInfo}>{checkOutInfo.length}</Text>
-              </View>
-            </View>
-            <View
-              style={{
-                marginTop: 30,
-                flexDirection: "row",
-                justifyContent: "space-around",
-              }}
-            >
-              <Button
-                mode="outlined"
-                onPress={() => {
-                  setDialog(true);
-                  setAction("extend");
+              <View
+                style={{
+                  marginTop: 30,
+                  flexDirection: "row",
+                  justifyContent: "space-around",
                 }}
-                uppercase={false}
-                color="#0275D8"
-                style={{ borderColor: "#0275D8" }}
               >
-                Extend
-              </Button>
-              <Button
-                mode="outlined"
-                onPress={() => {
-                  setDialog(true);
-                  setAction("checkout");
-                }}
-                uppercase={false}
-                color="#D9534F"
-                style={{ borderColor: "#D9534F" }}
-              >
-                Check out
-              </Button>
-            </View>
-          </Modal>
-        </Portal>
+                <Button
+                  mode="outlined"
+                  onPress={() => {
+                    setDialog(true);
+                    setAction("extend");
+                  }}
+                  uppercase={false}
+                  color="#0275D8"
+                  style={{ borderColor: "#0275D8" }}
+                >
+                  Extend
+                </Button>
+                <Button
+                  mode="outlined"
+                  onPress={() => {
+                    setDialog(true);
+                    setAction("checkout");
+                  }}
+                  uppercase={false}
+                  color="#D9534F"
+                  style={{ borderColor: "#D9534F" }}
+                >
+                  Check out
+                </Button>
+              </View>
+            </Modal>
+          </Portal>
+        )}
       </ScrollView>
     </Provider>
   );

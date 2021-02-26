@@ -183,41 +183,17 @@ import { NavigationEvents } from "react-navigation";
 //   }
 // }
 
+import { useAuthState } from "../../../context";
+
 const index = ({ navigation }) => {
+  const authState = useAuthState();
   const [date, setDate] = useState(new Date());
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
-  const [reservedRoom, setReservedRoom] = useState([
-    {
-      name: "Unknown",
-      phone: "012233211",
-      room: [101, 102],
-      checkInDate: new Date("01/21/2021"),
-      checkOutDate: new Date("01/22/2021"),
-      length: 1,
-      price: 20,
-    },
-    {
-      name: "Hello",
-      phone: "0977009000",
-      room: [103],
-      checkInDate: new Date("01/29/2021"),
-      checkOutDate: new Date("01/30/2021"),
-      length: 1,
-      price: 20,
-    },
-    {
-      name: "Hi",
-      phone: "0977009000",
-      room: [104],
-      checkInDate: new Date("02/11/2021"),
-      checkOutDate: new Date("02/13/2021"),
-      length: 2,
-      price: 20,
-    },
-  ]);
+  const [reservedRoom, setReservedRoom] = useState([]);
 
   useEffect(() => {
+    setLoading(true);
     fetchAPI();
   }, []);
 
@@ -225,11 +201,21 @@ const index = ({ navigation }) => {
     fetchAPI();
   }, [refreshing]);
 
-  const fetchAPI = () => {
-    setTimeout(() => {
-      setLoading(false);
-      setRefreshing(false);
-    }, 500);
+  const fetchAPI = async () => {
+    const res = await fetch(
+      "http://10.0.2.2:5000/api/v1/reservations?status=reserved&sort=endDate",
+      {
+        headers: {
+          Authorization: `Bearer ${authState.token}`,
+        },
+      }
+    ).then((res) => res.json());
+    if (res.success) {
+      setReservedRoom(res.data);
+    }
+    console.log(res);
+    setLoading(false);
+    setRefreshing(false);
   };
 
   const onRefresh = () => {
@@ -245,7 +231,7 @@ const index = ({ navigation }) => {
       <View>
         {reservedRoom.map((r, i) => {
           let backgroundColor = null;
-          if (r.checkInDate.getTime() - date.getTime() < 0)
+          if (new Date(r.startDate).getTime() - date.getTime() < 0)
             backgroundColor = "#FCB941";
 
           return (
@@ -256,13 +242,21 @@ const index = ({ navigation }) => {
                   marginBottom: 3,
                 }}
               >
-                {r.name && <DataTable.Cell>{r.name}</DataTable.Cell>}
-                <DataTable.Cell numeric>{r.phone}</DataTable.Cell>
-                <DataTable.Cell numeric>{r.room.toString()}</DataTable.Cell>
+                <DataTable.Cell>{r.customer.name}</DataTable.Cell>
                 <DataTable.Cell numeric>
-                  {r.checkInDate.toLocaleDateString()}
+                  {r.customer.phoneNumber}
                 </DataTable.Cell>
-                <DataTable.Cell numeric>{r.length}</DataTable.Cell>
+                <DataTable.Cell numeric>
+                  {r.room.map((v) => v.number).toString()}
+                </DataTable.Cell>
+                <DataTable.Cell numeric>
+                  {new Date(r.startDate).toLocaleDateString()}
+                </DataTable.Cell>
+                <DataTable.Cell numeric>
+                  {" "}
+                  {(new Date(r.endDate) - new Date(r.startDate)) /
+                    (24 * 60 * 60 * 1000)}
+                </DataTable.Cell>
               </DataTable.Row>
             </TouchableOpacity>
           );
