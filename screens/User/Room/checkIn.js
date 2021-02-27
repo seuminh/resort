@@ -132,10 +132,13 @@ const index = ({ navigation }) => {
       if (!room.selected) {
         room.selected = false;
       }
+
       if (room.reservation.length > 0) {
-        return {
-          ...room,
-        };
+        if (room.reservation[0].status !== "checkOut") {
+          return {
+            ...room,
+          };
+        }
       }
       if (room.number == item.number) {
         return {
@@ -170,6 +173,7 @@ const index = ({ navigation }) => {
         : status === "checkIn"
         ? "#FC6042"
         : "#FCB941";
+    console.log(status);
     return (
       <TouchableOpacity
         key={index}
@@ -178,7 +182,9 @@ const index = ({ navigation }) => {
       >
         <View style={{ flexDirection: "row" }}>
           <Checkbox
-            disabled={!status === "available" ? true : false}
+            disabled={
+              status === "available" || status === "checkOut" ? false : true
+            }
             status={item.selected ? "checked" : "unchecked"}
           />
           <Text style={[styles.biggerText, { paddingTop: 7 }]}>
@@ -209,7 +215,7 @@ const index = ({ navigation }) => {
         cardId: checkInInfo.id,
         name: checkInInfo.name,
         phoneNumber: checkInInfo.phone,
-        numPeople: checkInInfo.person,
+        numPerson: checkInInfo.person,
       };
       checkInInfoCustomer.reservation = {
         startDate: checkInDate.toLocaleDateString(),
@@ -217,6 +223,7 @@ const index = ({ navigation }) => {
         room: selectedRooms,
         status: "checkIn",
       };
+
       if (paid === "paid") checkInInfoCustomer.reservation.paidPrice = total;
       else checkInInfoCustomer.reservation.deposited = total;
       const data = await fetch(`http://10.0.2.2:5000/api/v1/reservations`, {
@@ -228,9 +235,10 @@ const index = ({ navigation }) => {
 
         body: JSON.stringify(checkInInfoCustomer),
       }).then((res) => res.json());
-      console.log(data);
-      Print.printAsync({
-        html: `
+      if (data.success) {
+        console.log(data);
+        Print.printAsync({
+          html: `
           <html>
           <head>
           <style>
@@ -242,9 +250,10 @@ const index = ({ navigation }) => {
           <body>
           <h1 >hi</h1></body>
           </html>`,
-      }).then(() => {
-        navigation.pop();
-      });
+        }).then(() => {
+          navigation.pop();
+        });
+      }
     }
   };
 
@@ -424,7 +433,7 @@ const index = ({ navigation }) => {
                   style={{ marginTop: -10, paddingLeft: 14 }}
                   data={rooms}
                   renderItem={renderItem}
-                  keyExtractor={(item) => item.number}
+                  keyExtractor={(item) => item.number.toString()}
                 />
               )}
             </View>

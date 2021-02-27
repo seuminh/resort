@@ -9,454 +9,100 @@ import {
   FlatList,
   SafeAreaView,
 } from "react-native";
+import { useQuery } from "react-query";
+import { useAuthState } from "../../../context";
 
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { Form, Item, Input, Label, Picker, Icon } from "native-base";
 import Unorderedlist from "react-native-unordered-list";
 import {
   Checkbox,
-  Button,
   Portal,
   Provider,
   Dialog,
+  Button,
   DefaultTheme,
 } from "react-native-paper";
-import { useTheme } from "react-navigation";
 
-// export default class AddBooking extends Component {
-//   state = {
-//     checkInDateModal: false,
-//     checkOutDateModal: false,
-//     checkInDate: new Date(),
-//     checkOutDate: new Date(),
-//     loadingRooms: true,
-//     length: 1,
-//     dialog: false,
-//     overLoading: false,
-//     rooms: [
-// {
-//   number: "101",
-//   status: "busy",
-// },
-// {
-//   number: "102",
-//   status: "available",
-// },
-// {
-//   number: "103",
-//   status: "reserved",
-// },
-// {
-//   number: "104",
-//   status: "available",
-// },
-//     ],
-//     bookingInfo: {},
-//   };
+import * as Print from "expo-print";
+import checkIn from "../Booking/checkIn";
 
-//   componentDidMount() {
-//     this.state.checkOutDate.setDate(this.state.checkInDate.getDate() + 1);
-//     this.fetchRooms();
-//     this.getFilterdRooms();
-//     this.calculateLength();
-//   }
+const theme = {
+  ...DefaultTheme,
+};
 
-//   fetchRooms = () => {
-//     setTimeout(() => {
-//       this.setState({
-//         loadingRooms: false,
-//       });
-//     }, 500);
-//   };
-
-//   calculateLength = () => {
-//     const { checkInDate, checkOutDate } = this.state;
-//     var diffTime = checkOutDate.getTime() - checkInDate.getTime();
-//     var diffDay = diffTime / (1000 * 3600 * 24);
-//     if (Math.round(diffDay) <= 0) {
-//       this.setState({
-//         length: "Error",
-//       });
-//       return;
-//     }
-//     this.setState({
-//       length: Math.round(diffDay),
-//     });
-//   };
-
-//   getFilterdRooms = () => {
-//     const { rooms } = this.state;
-//     const filterRooms = rooms.map((room) => {
-//       if (room.status === "available") {
-//         return {
-//           ...room,
-//           selected: false,
-//           available: true,
-//         };
-//       }
-//       return {
-//         ...room,
-//         selected: false,
-//         available: false,
-//       };
-//     });
-//     this.setState({
-//       rooms: filterRooms,
-//     });
-//   };
-
-//   toggleCheckInDateModal = () => {
-//     this.setState({
-//       checkInDateModal: !this.state.checkInDateModal,
-//     });
-//   };
-
-//   toggleCheckOutDateModal = () => {
-//     this.setState({
-//       checkOutDateModal: !this.state.checkOutDateModal,
-//     });
-//   };
-
-//   handleCheckInConfirm = (date) => {
-//     this.setState(
-//       {
-//         loadingRooms: true,
-//         checkInDate: new Date(date),
-//         checkInDateModal: !this.state.checkInDateModal,
-//       },
-//       () => {
-//         this.fetchRooms();
-//         this.state.checkOutDate.setDate(this.state.checkInDate.getDate() + 1);
-//         this.calculateLength();
-//       }
-//     );
-//   };
-
-//   handleCheckOutConfirm = (date) => {
-//     this.setState(
-//       {
-//         loadingRooms: true,
-//         checkOutDate: new Date(date),
-//         checkOutDateModal: !this.state.checkOutDateModal,
-//       },
-//       () => {
-//         this.fetchRooms();
-//         this.calculateLength();
-//       }
-//     );
-//   };
-
-//   onCheckboxChange = (item, index) => {
-//     const { rooms } = this.state;
-//     const newRoomData = rooms.map((room) => {
-//       if (room.status !== "available") {
-//         return {
-//           ...room,
-//         };
-//       }
-//       if (room.number == item.number) {
-//         return {
-//           ...room,
-//           selected: !room.selected,
-//         };
-//       }
-//       return {
-//         ...room,
-//         selected: room.selected,
-//       };
-//     });
-//     this.setState({
-//       rooms: newRoomData,
-//     });
-//   };
-
-//   renderItem = ({ item, index }) => {
-//     let dotColor =
-//       item.status === "available"
-//         ? "#2CC990"
-//         : item.status === "busy"
-//         ? "#FC6042"
-//         : "#FCB941";
-//     return (
-//       <TouchableOpacity
-//         style={styles.roomList}
-//         onPress={() => this.onCheckboxChange(item, index)}
-//       >
-//         <View style={{ flexDirection: "row" }}>
-//           <Checkbox
-//             disabled={!item.available ? true : false}
-//             status={item.selected ? "checked" : "unchecked"}
-//             // onPress={() => this.onCheckboxChange(item, index)}
-//           />
-//           <Text style={[styles.biggerText, { paddingTop: 7 }]}>
-//             {item.number}
-//           </Text>
-//         </View>
-//         <Unorderedlist
-//           bulletUnicode={0x2022}
-//           color={dotColor}
-//           style={styles.dot}
-//         ></Unorderedlist>
-//       </TouchableOpacity>
-//     );
-//   };
-
-//   onAddBooking = () => {
-//     const { rooms, bookingInfo } = this.state;
-//     let selectedRooms = [];
-//     rooms.map((r) => {
-//       if (r.selected) selectedRooms.push(r.number);
-//     });
-//     if (selectedRooms.length === 0) {
-//       alert("Please select any available room");
-//       this.setState({
-//         dialog: false,
-//       });
-//     } else {
-//       this.setState({
-//         overlayLoading: true,
-//         dialog: false,
-//       });
-//       bookingInfo.checkInDate = this.state.checkInDate.toLocaleDateString();
-//       bookingInfo.checkOutDate = this.state.checkOutDate.toLocaleDateString();
-//       bookingInfo.length = this.state.length;
-//       bookingInfo.rooms = selectedRooms;
-//       console.log(bookingInfo);
-//     }
-//   };
-
-//   onHandleChangeText = (value, nameInput) => {
-//     this.setState({
-//       bookingInfo: {
-//         ...this.state.bookingInfo,
-//         [nameInput]: value,
-//       },
-//     });
-//   };
-
-//   render() {
-//     const {
-//       checkInDate,
-//       checkOutDate,
-//       checkInDateModal,
-//       checkOutDateModal,
-//       rooms,
-//       length,
-//       loadingRooms,
-//       bookingInfo,
-//       dialog,
-//       overlayLoading,
-//     } = this.state;
-//  const theme = {
-//    ...DefaultTheme,
-//  };
-//     return (
-// <Provider theme={theme}>
-//   <ScrollView style={styles.container}>
-//     <Text style={styles.headerText}> Star Light Resort </Text>
-//     <Text style={styles.branchText}>SK branch</Text>
-//     <View style={styles.bodyContainer}>
-//       <Text
-//         style={{
-//           fontSize: 20,
-//           textAlign: "center",
-//         }}
-//       >
-//         Booking Form
-//       </Text>
-//       <Form>
-//         <Item floatingLabel>
-//           <Label>Name</Label>
-//           <Input
-//             value={bookingInfo.name}
-//             onChangeText={(value) =>
-//               this.onHandleChangeText(value, "name")
-//             }
-//           />
-//         </Item>
-//         <Item floatingLabel>
-//           <Label>Phone Number</Label>
-//           <Input
-//             keyboardType="numeric"
-//             value={bookingInfo.phone}
-//             onChangeText={(value) =>
-//               this.onHandleChangeText(value, "phone")
-//             }
-//           />
-//         </Item>
-//         {/* Check In */}
-//         <View style={styles.checkInContainer}>
-//           <Text style={[styles.biggerText, { flex: 1 }]}>Check in :</Text>
-//           <TouchableOpacity
-//             onPress={this.toggleCheckInDateModal}
-//             style={{ flex: 2 }}
-//           >
-//             <Text style={[styles.biggerText]}>
-//               {checkInDate.toLocaleDateString()}
-//             </Text>
-//           </TouchableOpacity>
-//         </View>
-//         {/* Check Out */}
-//         <View style={styles.checkOutContainer}>
-//           <Text style={[styles.biggerText, { flex: 1 }]}>
-//             Check out :
-//           </Text>
-//           <TouchableOpacity
-//             onPress={this.toggleCheckOutDateModal}
-//             style={{ flex: 2 }}
-//           >
-//             <Text style={[styles.biggerText]}>
-//               {checkOutDate.toLocaleDateString()}
-//             </Text>
-//           </TouchableOpacity>
-//         </View>
-//         {/* Length */}
-//         <View style={styles.lengthContainer}>
-//           <Text style={[styles.biggerText, { flex: 1 }]}>Length :</Text>
-//           <Text style={[styles.biggerText, { flex: 2 }]}>{length}</Text>
-//         </View>
-//         {/* Room */}
-//         <View style={styles.roomContainer}>
-//           <Text style={[styles.biggerText]}>Room :</Text>
-//           {loadingRooms && (
-//             <ActivityIndicator
-//               color="red"
-//               size="large"
-//               style={{ marginLeft: 50 }}
-//             ></ActivityIndicator>
-//           )}
-//           {!loadingRooms && (
-//             <FlatList
-//               style={{ marginTop: -10, paddingLeft: 14 }}
-//               data={rooms}
-//               renderItem={this.renderItem}
-//               keyExtractor={(item) => item.number}
-//             />
-//           )}
-//         </View>
-//       </Form>
-//       <Button
-//         mode="outlined"
-//         onPress={() =>
-//           this.setState({
-//             dialog: true,
-//           })
-//         }
-//         uppercase={false}
-//         style={{
-//           borderColor: "#AA75F6",
-//           borderWidth: 1,
-//           alignSelf: "center",
-//           marginTop: 20,
-//         }}
-//       >
-//         Add Booking
-//       </Button>
-//     </View>
-
-//     {/* Dialog */}
-//     <Portal>
-//       <Dialog
-//         visible={dialog}
-//         onDismiss={() => this.setState({ dialog: false })}
-//       >
-//         <Dialog.Content>
-//           <Text>Are you sure you want to proceed?</Text>
-//         </Dialog.Content>
-//         <Dialog.Actions style={{ marginTop: -20 }}>
-//           <Button
-//             onPress={() => this.setState({ dialog: false })}
-//             uppercase={false}
-//           >
-//             Cancel
-//           </Button>
-//           <Button onPress={this.onAddBooking} uppercase={false}>
-//             Confirm
-//           </Button>
-//         </Dialog.Actions>
-//       </Dialog>
-//     </Portal>
-
-//     {/* OverLay Loading */}
-//     <Portal>
-//       <Dialog
-//         visible={overlayLoading}
-//         dismissable={false}
-//         style={{ backgroundColor: "transparent", elevation: 0 }}
-//       >
-//         <ActivityIndicator size="large" color="red"></ActivityIndicator>
-//       </Dialog>
-//     </Portal>
-
-//     {/* Modal */}
-//     <DateTimePickerModal
-//       date={checkInDate}
-//       isVisible={checkInDateModal}
-//       mode="date"
-//       onConfirm={this.handleCheckInConfirm}
-//       onCancel={this.toggleCheckInDateModal}
-//       isDarkModeEnabled={false}
-//     />
-
-//     <DateTimePickerModal
-//       date={checkOutDate}
-//       isVisible={checkOutDateModal}
-//       mode="date"
-//       onConfirm={this.handleCheckOutConfirm}
-//       onCancel={this.toggleCheckOutDateModal}
-//       isDarkModeEnabled={false}
-//     />
-//   </ScrollView>
-// </Provider>
-//     );
-//   }
-// }
-
-const index = () => {
+const index = ({ navigation }) => {
+  //   console.log({ room: navigation.getParam("rooms") });
   const [checkInDateModal, setCheckInDateModal] = useState(false);
   const [checkOutDateModal, setCheckOutDateModal] = useState(false);
+  const [overlayLoading, setOverlayLoading] = useState(false);
   const [checkInDate, setCheckInDate] = useState(new Date());
-  const [checkOutDate, setCheckOutDate] = useState(new Date());
+  const [checkOutDate, setCheckOutDate] = useState(
+    new Date(new Date().setDate(checkInDate.getDate() + 1))
+  );
   const [loadingRooms, setLoadingRooms] = useState(true);
   const [length, setLength] = useState(0);
+  const [paid, setPaid] = useState("notPaid");
+  const [total, setTotal] = useState(0);
+  const [action, setAction] = useState("");
   const [dialog, setDialog] = useState(false);
-  const [overlayLoading, setOverlayLoading] = useState(false);
-  const [bookingInfo, setBookingInfo] = useState({});
-  const [rooms, setRooms] = useState([
-    {
-      number: "101",
-      status: "busy",
-    },
-    {
-      number: "102",
-      status: "available",
-    },
-    {
-      number: "103",
-      status: "reserved",
-    },
-    {
-      number: "104",
-      status: "available",
-    },
-  ]);
+  const [checkInInfo, setCheckInInfo] = useState({});
+  const [rooms, setRooms] = useState([]);
+  const authState = useAuthState();
+
+  const { status, data } = useQuery(
+    ["rooms", checkOutDate, checkInDate],
+    () => {
+      setCheckInDateModal(false);
+      setCheckOutDateModal(false);
+      setLoadingRooms(true);
+      setTotal(0);
+
+      return fetch(
+        `http://10.0.2.2:5000/api/v1/rooms/belong?startDate=${checkInDate.toLocaleDateString()}&endDate=${checkOutDate.toLocaleDateString()}`,
+        {
+          headers: {
+            Authorization: `Bearer ${authState.token}`,
+          },
+        }
+      )
+        .then((res) => res.json())
+        .then((data) => {
+          setLoadingRooms(false);
+          return data;
+        });
+    }
+  );
 
   useEffect(() => {
-    checkOutDate.setDate(checkInDate.getDate() + 1);
-    fetchRooms();
     calculateLength();
-    getFilterdRooms();
   }, []);
+
+  useEffect(() => {
+    setRooms(data);
+  }, [data]);
 
   useEffect(() => {
     calculateLength();
   }, [checkOutDate, checkInDate]);
 
-  const fetchRooms = () => {
-    setTimeout(() => {
-      setLoadingRooms(false);
-    }, 500);
-  };
+  //  const getFilterdRooms = () => {
+  //    const filterRooms = rooms.map((room) => {
+  //      if (room.status === "available") {
+  //        return {
+  //          ...room,
+  //          selected: false,
+  //          available: true,
+  //        };
+  //      }
+  //      return {
+  //        ...room,
+  //        selected: false,
+  //        available: false,
+  //      };
+  //    });
+  //    setRooms(filterRooms);
+  //  };
 
   const calculateLength = () => {
     var diffTime = checkOutDate.getTime() - checkInDate.getTime();
@@ -468,45 +114,27 @@ const index = () => {
     setLength(Math.round(diffDay));
   };
 
-  const getFilterdRooms = () => {
-    const filterRooms = rooms.map((room) => {
-      if (room.status === "available") {
-        return {
-          ...room,
-          selected: false,
-          available: true,
-        };
-      }
-      return {
-        ...room,
-        selected: false,
-        available: false,
-      };
-    });
-    setRooms(filterRooms);
-  };
-
   const handleCheckInConfirm = (date) => {
-    setLoadingRooms(true);
     setCheckInDate(date);
-    setCheckInDateModal(false);
-    checkOutDate.setDate(date.getDate() + 1);
-    fetchRooms();
+    setCheckOutDate(new Date(date.getTime() + 60 * 60 * 24 * 1000));
   };
 
   const handleCheckOutConfirm = (date) => {
-    setLoadingRooms(true);
     setCheckOutDate(date);
-    setCheckOutDateModal(false);
-    fetchRooms();
   };
 
   const onCheckboxChange = (item, index) => {
     const newRoomData = rooms.map((room) => {
-      if (room.status !== "available") {
-        return {
-          ...room,
-        };
+      if (!room.selected) {
+        room.selected = false;
+      }
+
+      if (room.reservation.length > 0) {
+        if (room.reservation[0].status !== "checkOut") {
+          return {
+            ...room,
+          };
+        }
       }
       if (room.number == item.number) {
         return {
@@ -519,24 +147,39 @@ const index = () => {
         selected: room.selected,
       };
     });
+    let selectedRooms = newRoomData.filter((r) => {
+      return r.selected === true;
+    });
+    let totalPrice = selectedRooms.reduce((acc, room) => {
+      return acc + room.price;
+    }, 0);
+    totalPrice *= length;
     setRooms(newRoomData);
+    setTotal(totalPrice);
   };
 
   const renderItem = ({ item, index }) => {
+    let status = "available";
+    if (item.reservation.length > 0) {
+      status = item.reservation[0].status;
+    }
     let dotColor =
-      item.status === "available"
+      status === "available" || status === "checkOut"
         ? "#2CC990"
-        : item.status === "busy"
+        : status === "checkIn"
         ? "#FC6042"
         : "#FCB941";
     return (
       <TouchableOpacity
+        key={index}
         style={styles.roomList}
         onPress={() => onCheckboxChange(item, index)}
       >
         <View style={{ flexDirection: "row" }}>
           <Checkbox
-            disabled={!item.available ? true : false}
+            disabled={
+              status === "available" || status === "checkOut" ? false : true
+            }
             status={item.selected ? "checked" : "unchecked"}
           />
           <Text style={[styles.biggerText, { paddingTop: 7 }]}>
@@ -552,41 +195,65 @@ const index = () => {
     );
   };
 
-  const onAddBooking = () => {
+  const onAddBooking = async () => {
     let selectedRooms = [];
     rooms.map((r) => {
-      if (r.selected) selectedRooms.push(r.number);
+      if (r.selected) selectedRooms.push(r.id);
     });
-    if (selectedRooms.length === 0) {
-      alert("Please select any available room");
-      setDialog(false);
-    } else {
-      setOverlayLoading(true);
-      setDialog(false);
-      bookingInfo.checkInDate = checkInDate.toLocaleDateString();
-      bookingInfo.checkOutDate = checkOutDate.toLocaleDateString();
-      bookingInfo.length = length;
-      bookingInfo.rooms = selectedRooms;
-      console.log(bookingInfo);
+    if (selectedRooms.length === 0) alert("Please select any available room");
+    else {
+      const checkInInfoCustomer = {
+        customer: {},
+        reservation: {},
+      };
+      checkInInfoCustomer.customer = {
+        name: checkInInfo.name,
+        phoneNumber: checkInInfo.phone,
+      };
+      checkInInfoCustomer.reservation = {
+        startDate: checkInDate.toLocaleDateString(),
+        endDate: checkOutDate.toLocaleDateString(),
+        room: selectedRooms,
+      };
+
+      const data = await fetch(`http://10.0.2.2:5000/api/v1/reservations`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${authState.token}`,
+          "Content-Type": "application/json",
+        },
+
+        body: JSON.stringify(checkInInfoCustomer),
+      }).then((res) => res.json());
+      navigation.pop();
     }
   };
 
-  const onHandleChangeText = (value, nameInput) => {
-    setBookingInfo({
-      ...bookingInfo,
-      [nameInput]: value,
-    });
+  const onClear = () => {
+    setAction("");
+    setDialog(false);
+    setCheckInInfo({});
   };
 
-  const theme = {
-    ...DefaultTheme,
+  const onProceed = () => {
+    if (action === "clear") onClear();
+    else onAddBooking();
+  };
+
+  const onHandleChangeText = (value, nameInput) => {
+    setCheckInInfo({
+      ...checkInInfo,
+      [nameInput]: value,
+    });
   };
 
   return (
     <Provider theme={theme}>
       <ScrollView style={styles.container}>
         <Text style={styles.headerText}> Star Light Resort </Text>
-        <Text style={styles.branchText}>SK branch</Text>
+        <Text style={styles.branchText}>
+          {data?.length > 0 ? data[0].branch.name : ""}
+        </Text>
         <View style={styles.bodyContainer}>
           <Text
             style={{
@@ -600,7 +267,7 @@ const index = () => {
             <Item floatingLabel>
               <Label>Name</Label>
               <Input
-                value={bookingInfo.name}
+                value={checkInInfo.name}
                 onChangeText={(value) => onHandleChangeText(value, "name")}
               />
             </Item>
@@ -608,10 +275,11 @@ const index = () => {
               <Label>Phone Number</Label>
               <Input
                 keyboardType="numeric"
-                value={bookingInfo.phone}
+                value={checkInInfo.phone}
                 onChangeText={(value) => onHandleChangeText(value, "phone")}
               />
             </Item>
+
             {/* Check In */}
             <View style={styles.checkInContainer}>
               <Text style={[styles.biggerText, { flex: 1 }]}>Check in :</Text>
@@ -641,9 +309,17 @@ const index = () => {
               <Text style={[styles.biggerText, { flex: 1 }]}>Length :</Text>
               <Text style={[styles.biggerText, { flex: 2 }]}>{length}</Text>
             </View>
+            {/* Total */}
+            <View style={styles.totalContainer}>
+              <Text style={[styles.biggerText, { flex: 1 }]}>
+                Total price :
+              </Text>
+              <Text style={[styles.biggerText, { flex: 2 }]}>$ {total}</Text>
+            </View>
+
             {/* Room */}
             <View style={styles.roomContainer}>
-              <Text style={[styles.biggerText]}>Room :</Text>
+              <Text style={styles.biggerText}>Room :</Text>
               {loadingRooms && (
                 <ActivityIndicator
                   color="red"
@@ -656,26 +332,43 @@ const index = () => {
                   style={{ marginTop: -10, paddingLeft: 14 }}
                   data={rooms}
                   renderItem={renderItem}
-                  keyExtractor={(item) => item.number}
+                  keyExtractor={(item) => item.number.toString()}
                 />
               )}
             </View>
           </Form>
-          <Button
-            mode="outlined"
-            onPress={() => {
-              setDialog(true);
-            }}
-            uppercase={false}
+          <View
             style={{
-              borderColor: "#AA75F6",
-              borderWidth: 1,
-              alignSelf: "center",
+              flexDirection: "row",
+              justifyContent: "space-around",
               marginTop: 20,
             }}
           >
-            Add Booking
-          </Button>
+            <Button
+              onPress={() => {
+                setAction("clear");
+                setDialog(true);
+              }}
+              uppercase={false}
+              mode="outlined"
+              color="#D9534F"
+              style={{ borderColor: "#D9534F", borderWidth: 1 }}
+            >
+              Clear
+            </Button>
+
+            <Button
+              mode="outlined"
+              onPress={() => {
+                setAction("booking");
+                setDialog(true);
+              }}
+              uppercase={false}
+              style={{ borderWidth: 1, borderColor: "#AA75F6" }}
+            >
+              Add Booking
+            </Button>
+          </View>
         </View>
 
         {/* Dialog */}
@@ -684,6 +377,7 @@ const index = () => {
             visible={dialog}
             onDismiss={() => {
               setDialog(false);
+              setAction("");
             }}
           >
             <Dialog.Content>
@@ -693,12 +387,13 @@ const index = () => {
               <Button
                 onPress={() => {
                   setDialog(false);
+                  setAction("");
                 }}
                 uppercase={false}
               >
                 Cancel
               </Button>
-              <Button onPress={onAddBooking} uppercase={false}>
+              <Button onPress={onProceed} uppercase={false}>
                 Confirm
               </Button>
             </Dialog.Actions>
@@ -786,8 +481,18 @@ const styles = StyleSheet.create({
     paddingLeft: 14,
     marginTop: 20,
   },
-  roomContainer: {
+  totalContainer: {
+    flexDirection: "row",
+    paddingLeft: 14,
     marginTop: 20,
+  },
+  paymentContainer: {
+    paddingLeft: 14,
+    marginTop: 20,
+    flexDirection: "row",
+  },
+  roomContainer: {
+    marginTop: 10,
     paddingLeft: 14,
     flexDirection: "row",
   },
@@ -797,19 +502,22 @@ const styles = StyleSheet.create({
     paddingVertical: 3,
     backgroundColor: "white",
     borderRadius: 8,
-    // elevation: 5,
-    // shadowColor: "darkslateblue",
-    // shadowOffset: { width: 0, height: 2 },
-    // shadowOpacity: 0.3,
     marginVertical: 10,
     marginHorizontal: 5,
     justifyContent: "space-between",
   },
-  btnAdd: {
+  btnPrint: {
     padding: 10,
     backgroundColor: "darkslateblue",
     alignSelf: "center",
     marginTop: 20,
     paddingHorizontal: 60,
+  },
+  btnCheckIn: {
+    padding: 10,
+    backgroundColor: "darkslateblue",
+    alignSelf: "center",
+    marginTop: 20,
+    paddingHorizontal: 45,
   },
 });

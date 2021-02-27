@@ -77,10 +77,10 @@ const index = () => {
   };
 
   const extend = () => {
-    setTimeout(() => {
-      console.log(checkOutInfo);
-      setOverlayLoading(false);
-    }, 1000);
+    // setTimeout(() => {
+    //   console.log(checkOutInfo);
+    //   setOverlayLoading(false);
+    // }, 1000);
   };
 
   const checkOut = async () => {
@@ -193,7 +193,7 @@ const index = () => {
         />
         <Text style={styles.headerText}> Star Light Resort </Text>
         <View style={styles.subHeaderContainer}>
-          <Text style={styles.branchText}>SK branch</Text>
+          <Text style={styles.branchText}>{authState.user.branch.name}</Text>
           <Text>{date.toLocaleDateString()}</Text>
         </View>
         <View style={styles.bodyContainer}>

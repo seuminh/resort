@@ -14,186 +14,56 @@ import { Picker } from "native-base";
 import { DataTable } from "react-native-paper";
 import { NavigationEvents } from "react-navigation";
 
-// export default class index extends Component {
-//   state = {
-//     date: new Date(),
-//     loading: true,
-//     refreshing: false,
-//     reservedRoom: [
-// {
-//   name: "Unknown",
-//   phone: "012233211",
-//   room: [101, 102],
-//   checkIn: new Date("12/29/2020"),
-//   length: 1,
-// },
-// {
-//   name: "Hello",
-//   phone: "0977009000",
-//   room: [103],
-//   checkIn: new Date("12/29/2020"),
-//   length: 1,
-// },
-// {
-//   name: "Hi",
-//   phone: "0977009000",
-//   room: [104],
-//   checkIn: new Date("01/07/2021"),
-//   length: 2,
-// },
-//     ],
-//   };
-
-//   componentDidMount() {
-//     this.fetchAPI();
-//   }
-
-//   fetchAPI = () => {
-//     setTimeout(() => {
-//       this.setState({
-//         loading: false,
-//         refreshing: false,
-//       });
-//     }, 500);
-//   };
-
-//   onRefresh = () => {
-//     this.setState(
-//       {
-//         refreshing: true,
-//       },
-//       () => this.fetchAPI()
-//     );
-//   };
-
-//   getRoomList() {
-//     const { reservedRoom, date } = this.state;
-//     return (
-//       <View>
-//         {reservedRoom.map((r, i) => {
-//           let backgroundColor = null;
-//           if (r.checkIn.getTime() - date.getTime() < 0)
-//             backgroundColor = "#FCB941";
-
-//           return (
-//             <DataTable.Row
-//               key={i}
-//               style={{
-//                 backgroundColor: backgroundColor,
-//                 marginBottom: 3,
-//               }}
-//             >
-//               {r.name && <DataTable.Cell>{r.name}</DataTable.Cell>}
-//               <DataTable.Cell numeric>{r.phone}</DataTable.Cell>
-//               <DataTable.Cell numeric>{r.room.toString()}</DataTable.Cell>
-//               <DataTable.Cell numeric>
-//                 {r.checkIn.toLocaleDateString()}
-//               </DataTable.Cell>
-//               <DataTable.Cell numeric>{r.length}</DataTable.Cell>
-//             </DataTable.Row>
-//           );
-//         })}
-//       </View>
-//     );
-//   }
-
-//   render() {
-//     const { date, loading, refreshing } = this.state;
-//     return (
-// <ScrollView
-//   style={styles.container}
-//   refreshControl={
-//     <RefreshControl
-//       refreshing={refreshing}
-//       onRefresh={this.onRefresh}
-//     ></RefreshControl>
-//   }
-// >
-//   <NavigationEvents
-//     onWillFocus={() => this.setState({ loading: true })}
-//     onDidFocus={this.fetchAPI}
-//   />
-//   <Text style={styles.headerText}> Star Light Resort </Text>
-//   <View style={styles.subHeaderContainer}>
-//     <Text style={styles.branchText}>SK branch</Text>
-//     <Text>{date.toLocaleDateString()}</Text>
-//   </View>
-//   <View style={styles.bodyContainer}>
-//     <Text
-//       style={{
-//         fontSize: 20,
-//         //   borderBottomWidth: 1,
-//         //   borderBottomColor: "red",
-//         textAlign: "center",
-//         marginBottom: 10,
-//       }}
-//     >
-//       Reserved Room
-//     </Text>
-//     <DataTable>
-//       <DataTable.Header>
-//         <DataTable.Title>Name</DataTable.Title>
-//         <DataTable.Title numeric>Phone</DataTable.Title>
-//         <DataTable.Title numeric>Room</DataTable.Title>
-//         <DataTable.Title numeric>Check In</DataTable.Title>
-//         <DataTable.Title numeric>Length</DataTable.Title>
-//       </DataTable.Header>
-
-//       {loading && (
-//         <ActivityIndicator
-//           color="red"
-//           size="large"
-//           style={{ marginTop: 50 }}
-//         ></ActivityIndicator>
-//       )}
-
-//       {!loading && this.getRoomList()}
-//     </DataTable>
-//   </View>
-// </ScrollView>
-//     );
-//   }
-// }
+import { useAuthState } from "../../../context";
 
 const index = () => {
+  const authState = useAuthState();
+  const [dataFetch, setDataFetch] = useState([]);
   const [date, setDate] = useState(new Date());
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
-  const [branch, setBranch] = useState(["hi", "Hello"]);
+  const [branch, setBranch] = useState([]);
   const [selectedBranch, setSelectedBranch] = useState(branch[0]);
-  const [reservedRoom, setReservedRoom] = useState([
-    {
-      name: "Unknown",
-      phone: "012233211",
-      room: [101, 102],
-      checkIn: new Date("12/29/2020"),
-      length: 1,
-    },
-    {
-      name: "Hello",
-      phone: "0977009000",
-      room: [103],
-      checkIn: new Date("12/29/2020"),
-      length: 1,
-    },
-    {
-      name: "Hi",
-      phone: "0977009000",
-      room: [104],
-      checkIn: new Date("01/07/2021"),
-      length: 2,
-    },
-  ]);
+  const [reservedRoom, setReservedRoom] = useState([]);
 
   useEffect(() => {
     fetchAPI();
   }, []);
 
-  const fetchAPI = () => {
-    setTimeout(() => {
+  const fetchAPI = async () => {
+    const res = await fetch(
+      "http://10.0.2.2:5000/api/v1/reservations?status=reserved&sort=endDate",
+      {
+        headers: {
+          Authorization: `Bearer ${authState.token}`,
+        },
+      }
+    ).then((res) => res.json());
+    if (res.success) {
+      let branch = [];
+      res.data.forEach((v) => {
+        const dataReturn = { ...v.room[0].branch, reservation: [{ ...v }] };
+
+        if (branch.length > 0) {
+          const foundIndex = branch.findIndex(
+            (vd) => vd.name === v.room[0].branch.name
+          );
+          if (foundIndex != -1) {
+            branch[foundIndex].reservation.push(v);
+          } else {
+            branch.push(dataReturn);
+          }
+        } else {
+          branch.push(dataReturn);
+        }
+      });
+      // setReservedRoom(res.data);
+      setBranch(branch.map((v) => v.name));
+      setReservedRoom(branch[0].reservation);
+      setDataFetch(branch);
       setLoading(false);
       setRefreshing(false);
-    }, 500);
+    }
   };
 
   const onRefresh = () => {
@@ -206,7 +76,7 @@ const index = () => {
       <View>
         {reservedRoom.map((r, i) => {
           let backgroundColor = null;
-          if (r.checkIn.getTime() - date.getTime() < 0)
+          if (new Date(r.startDate).getTime() - date.getTime() < 0)
             backgroundColor = "#FCB941";
 
           return (
@@ -217,13 +87,19 @@ const index = () => {
                 marginBottom: 3,
               }}
             >
-              {r.name && <DataTable.Cell>{r.name}</DataTable.Cell>}
-              <DataTable.Cell numeric>{r.phone}</DataTable.Cell>
-              <DataTable.Cell numeric>{r.room.toString()}</DataTable.Cell>
+              <DataTable.Cell>{r.customer.name}</DataTable.Cell>
+              <DataTable.Cell numeric>{r.customer.phoneNumber}</DataTable.Cell>
               <DataTable.Cell numeric>
-                {r.checkIn.toLocaleDateString()}
+                {r.room.map((v) => v.number).toString()}
               </DataTable.Cell>
-              <DataTable.Cell numeric>{r.length}</DataTable.Cell>
+              <DataTable.Cell numeric>
+                {new Date(r.startDate).toLocaleDateString()}
+              </DataTable.Cell>
+              <DataTable.Cell numeric>
+                {" "}
+                {(new Date(r.endDate) - new Date(r.startDate)) /
+                  (24 * 60 * 60 * 1000)}
+              </DataTable.Cell>
             </DataTable.Row>
           );
         })}
@@ -247,21 +123,18 @@ const index = () => {
       />
       <Text style={styles.headerText}> Star Light Resort </Text>
       <View style={styles.subHeaderContainer}>
-        <Text>
-          <Picker
-            mode="dropdown"
-            style={{
-              marginTop: -11,
-              marginLeft: -10,
-            }}
-            selectedValue={selectedBranch}
-            onValueChange={(value) => setSelectedBranch(value)}
-          >
-            {branch.map((r, i) => {
-              return <Picker.Item label={r} value={r} key={i} />;
-            })}
-          </Picker>
-        </Text>
+        <Picker
+          mode="dropdown"
+          style={{
+            marginTop: -11,
+          }}
+          selectedValue={selectedBranch}
+          onValueChange={(value) => setSelectedBranch(value)}
+        >
+          {branch.map((r, i) => {
+            return <Picker.Item label={r} value={r} key={i} />;
+          })}
+        </Picker>
         <Text>{date.toLocaleDateString()}</Text>
       </View>
       <View style={styles.bodyContainer}>
