@@ -11,6 +11,7 @@ import {
 } from "react-native";
 
 import { Form, Item, Input, Label, Picker, Icon } from "native-base";
+import { useAuthState } from "../../../context";
 
 import {
   Button,
@@ -20,287 +21,9 @@ import {
   DefaultTheme,
 } from "react-native-paper";
 
-// export default class checkIn extends Component {
-//   constructor(props) {
-//     super(props);
-//     this.state = {
-//       paid: "notPaid",
-//       bookingInfo: props.navigation.state.params.bookingInfo,
-//       dialog: false,
-//       overlayLoading: false,
-//       action: "",
-//     };
-//   }
-
-//   componentDidMount() {
-//     console.log(this.state.bookingInfo);
-//     this.calculateTotal();
-//   }
-
-//   calculateTotal = () => {
-//     const { bookingInfo } = this.state;
-//     this.setState({
-//       bookingInfo: {
-//         ...bookingInfo,
-//         total: bookingInfo.length * bookingInfo.room.length * bookingInfo.price,
-//       },
-//     });
-//   };
-
-//   onPaymentChange = (value) => {
-//     this.setState({
-//       paid: value,
-//     });
-//   };
-
-//   onPrint = () => {
-//     const { bookingInfo } = this.state;
-//     if (this.state.paid === "paid") bookingInfo.deposit = bookingInfo.total;
-//     else bookingInfo.deposit = 0;
-//     bookingInfo.checkInDate = bookingInfo.checkInDate.toLocaleDateString();
-//     bookingInfo.checkOutDate = bookingInfo.checkOutDate.toLocaleDateString();
-//     console.log(this.state.bookingInfo);
-//   };
-
-//   onCheckIn = () => {
-//     const { bookingInfo } = this.state;
-//     if (this.state.paid === "paid") bookingInfo.deposit = bookingInfo.total;
-//     else bookingInfo.deposit = 0;
-//     bookingInfo.checkInDate = bookingInfo.checkInDate.toLocaleDateString();
-//     bookingInfo.checkOutDate = bookingInfo.checkOutDate.toLocaleDateString();
-//     this.setState({
-//       dialog: false,
-//       action: "",
-//     });
-//     console.log(this.state.bookingInfo);
-//   };
-
-//   onCancel = () => {
-//     this.setState(
-//       {
-//         overlayLoading: true,
-//         action: "",
-//         dialog: false,
-//       },
-//       () => {
-//         setTimeout(() => {
-//           this.props.navigation.goBack();
-//         }, 500);
-//       }
-//     );
-//   };
-
-//   onProceed = () => {
-//     if (this.state.action === "cancel") this.onCancel();
-//     else this.onCheckIn();
-//   };
-
-//   onHandleChangeText = (value, nameInput) => {
-//     this.setState({
-//       bookingInfo: {
-//         ...this.state.bookingInfo,
-//         [nameInput]: value,
-//       },
-//     });
-//   };
-
-//   render() {
-//     const { paid, bookingInfo, dialog, overlayLoading } = this.state;
-//  const theme = {
-//    ...DefaultTheme,
-//  };
-
-//     return (
-// <Provider theme={theme}>
-//   <ScrollView style={styles.container}>
-//     <Text style={styles.headerText}> Star Light Resort </Text>
-//     <Text style={styles.branchText}>SK branch</Text>
-//     <View style={styles.bodyContainer}>
-//       <Text
-//         style={{
-//           fontSize: 20,
-//           //   borderBottomWidth: 1,
-//           //   borderBottomColor: "red",
-//           textAlign: "center",
-//         }}
-//       >
-//         Check In Form
-//       </Text>
-//       <Form>
-//         <Item floatingLabel>
-//           <Label>Name</Label>
-//           <Input
-//             value={bookingInfo.name}
-//             onChangeText={(value) =>
-//               this.onHandleChangeText(value, "name")
-//             }
-//           />
-//         </Item>
-//         <Item floatingLabel>
-//           <Label>ID Number</Label>
-//           <Input
-//             value={bookingInfo.id}
-//             onChangeText={(value) => this.onHandleChangeText(value, "id")}
-//           />
-//         </Item>
-//         <Item floatingLabel>
-//           <Label>Phone Number</Label>
-//           <Input
-//             keyboardType="numeric"
-//             value={bookingInfo.phone}
-//             onChangeText={(value) =>
-//               this.onHandleChangeText(value, "phone")
-//             }
-//           />
-//         </Item>
-//         <Item floatingLabel>
-//           <Label>Number of Person</Label>
-//           <Input
-//             keyboardType="numeric"
-//             value={bookingInfo.person}
-//             onChangeText={(value) =>
-//               this.onHandleChangeText(value, "person")
-//             }
-//           />
-//         </Item>
-//         {/* Check In */}
-//         <View style={styles.checkInContainer}>
-//           <Text style={[styles.biggerText, { flex: 1 }]}>Check in :</Text>
-//           <Text style={[styles.biggerText, { flex: 2 }]}>
-//             {bookingInfo.checkInDate.toLocaleDateString()}
-//           </Text>
-//         </View>
-//         {/* Check Out */}
-//         <View style={styles.checkOutContainer}>
-//           <Text style={[styles.biggerText, { flex: 1 }]}>
-//             Check out :
-//           </Text>
-//           <Text style={[styles.biggerText, { flex: 2 }]}>
-//             {bookingInfo.checkOutDate.toLocaleDateString()}
-//           </Text>
-//         </View>
-//         {/* Length */}
-//         <View style={styles.lengthContainer}>
-//           <Text style={[styles.biggerText, { flex: 1 }]}>Length :</Text>
-//           <Text style={[styles.biggerText, { flex: 2 }]}>
-//             {bookingInfo.length}
-//           </Text>
-//         </View>
-//         {/* Total */}
-//         <View style={styles.totalContainer}>
-//           <Text style={[styles.biggerText, { flex: 1 }]}>
-//             Total price :
-//           </Text>
-//           <Text style={[styles.biggerText, { flex: 2 }]}>
-//             $ {bookingInfo.total}
-//           </Text>
-//         </View>
-//         {/* Payment */}
-//         <View style={styles.paymentContainer}>
-//           <Text style={[styles.biggerText, { flex: 1 }]}>Pay :</Text>
-//           <View style={{ flex: 2 }}>
-//             <Picker
-//               mode="dropdown"
-//               iosIcon={<Icon name="arrow-down" />}
-//               style={{
-//                 marginTop: -11,
-//                 marginLeft: -15,
-//               }}
-//               selectedValue={paid}
-//               onValueChange={this.onPaymentChange}
-//             >
-//               <Picker.Item label="Paid" value="paid" />
-//               <Picker.Item label="Not paid" value="notPaid" />
-//             </Picker>
-//           </View>
-//         </View>
-//         {/* Room */}
-//         <View style={styles.roomContainer}>
-//           <Text style={[styles.biggerText, { flex: 1 }]}>Room :</Text>
-//           <Text style={[styles.biggerText, { flex: 2 }]}>
-//             {bookingInfo.room.toString()}
-//           </Text>
-//         </View>
-//       </Form>
-//       <View
-//         style={{
-//           flexDirection: "row",
-//           justifyContent: "space-around",
-//           marginTop: 20,
-//         }}
-//       >
-//         <Button
-//           onPress={() =>
-//             this.setState({ dialog: true, action: "cancel" })
-//           }
-//           uppercase={false}
-//           mode="outlined"
-//           color="#D9534F"
-//           style={{ borderColor: "#D9534F", borderWidth: 1 }}
-//         >
-//           Cancel
-//         </Button>
-//         <Button
-//           mode="outlined"
-//           onPress={this.onPrint}
-//           uppercase={false}
-//           style={{ borderWidth: 1, borderColor: "#AA75F6" }}
-//         >
-//           Print
-//         </Button>
-//         <Button
-//           mode="outlined"
-//           onPress={() =>
-//             this.setState({ dialog: true, action: "checkIn" })
-//           }
-//           uppercase={false}
-//           color="#0275D8"
-//           style={{ borderColor: "#0275D8", borderWidth: 1 }}
-//         >
-//           Check In
-//         </Button>
-//       </View>
-//     </View>
-//   </ScrollView>
-
-//   {/* Dialog */}
-//   <Portal>
-//     <Dialog
-//       visible={dialog}
-//       onDismiss={() => this.setState({ dialog: false, action: "" })}
-//     >
-//       <Dialog.Content>
-//         <Text>Are you sure you want to proceed?</Text>
-//       </Dialog.Content>
-//       <Dialog.Actions style={{ marginTop: -20 }}>
-//         <Button
-//           onPress={() => this.setState({ dialog: false, action: "" })}
-//           uppercase={false}
-//         >
-//           Cancel
-//         </Button>
-//         <Button onPress={this.onProceed} uppercase={false}>
-//           Confirm
-//         </Button>
-//       </Dialog.Actions>
-//     </Dialog>
-//   </Portal>
-//   {/* OverLay Loading */}
-//   <Portal>
-//     <Dialog
-//       visible={overlayLoading}
-//       dismissable={false}
-//       style={{ backgroundColor: "transparent", elevation: 0 }}
-//     >
-//       <ActivityIndicator size="large" color="red"></ActivityIndicator>
-//     </Dialog>
-//   </Portal>
-// </Provider>
-//     );
-//   }
-// }
-
 const index = ({ navigation }) => {
+  const authState = useAuthState();
+
   const [paid, setPaid] = useState("notPaid");
   const [bookingInfo, setBookingInfo] = useState(
     navigation.state.params.bookingInfo
@@ -314,38 +37,97 @@ const index = ({ navigation }) => {
   }, []);
 
   const calculateTotal = () => {
+    let totalPrice = bookingInfo.room.reduce((acc, room) => {
+      return acc + room.price;
+    }, 0);
+    const length =
+      (new Date(bookingInfo.endDate) - new Date(bookingInfo.startDate)) /
+      (24 * 60 * 60 * 1000);
+    totalPrice *= length;
     setBookingInfo({
       ...bookingInfo,
-      total: bookingInfo.length * bookingInfo.room.length * bookingInfo.price,
+      total: totalPrice,
+      length,
     });
   };
 
-  const onPrint = () => {
-    alert("Print");
-    if (paid === "paid") bookingInfo.deposit = bookingInfo.total;
-    else bookingInfo.deposit = 0;
-    //  bookingInfo.checkInDate = bookingInfo.checkInDate.toLocaleDateString();
-    //  bookingInfo.checkOutDate = bookingInfo.checkOutDate.toLocaleDateString();
-    console.log(bookingInfo);
+  const onPrint = async () => {
+    const checkInInfoCustomer = {
+      customer: {},
+      reservation: {},
+    };
+    checkInInfoCustomer.customer = {
+      ...bookingInfo.customer,
+    };
+    checkInInfoCustomer.reservation = {
+      status: "checkIn",
+    };
+    if (paid === "paid")
+      checkInInfoCustomer.reservation.paidPrice = bookingInfo.total;
+    else checkInInfoCustomer.reservation.deposited = bookingInfo.total;
+    const data = await fetch(
+      `http://10.0.2.2:5000/api/v1/reservations/${bookingInfo.id}`,
+      {
+        method: "PUT",
+        headers: {
+          Authorization: `Bearer ${authState.token}`,
+          "Content-Type": "application/json",
+        },
+
+        body: JSON.stringify(checkInInfoCustomer),
+      }
+    ).then((res) => res.json());
+    console.log(data);
+    navigation.pop();
   };
 
-  const onCheckIn = () => {
-    if (paid === "paid") bookingInfo.deposit = bookingInfo.total;
-    else bookingInfo.deposit = 0;
-    //  bookingInfo.checkInDate = bookingInfo.checkInDate.toLocaleDateString();
-    //  bookingInfo.checkOutDate = bookingInfo.checkOutDate.toLocaleDateString();
-    setDialog(false);
-    setAction("");
-    console.log(bookingInfo);
+  const onCheckIn = async () => {
+    const checkInInfoCustomer = {
+      customer: {},
+      reservation: {},
+    };
+    checkInInfoCustomer.customer = {
+      ...bookingInfo.customer,
+    };
+    checkInInfoCustomer.reservation = {
+      status: "checkIn",
+    };
+    if (paid === "paid")
+      checkInInfoCustomer.reservation.paidPrice = bookingInfo.total;
+    else checkInInfoCustomer.reservation.deposited = bookingInfo.total;
+    const data = await fetch(
+      `http://10.0.2.2:5000/api/v1/reservations/${bookingInfo.id}`,
+      {
+        method: "PUT",
+        headers: {
+          Authorization: `Bearer ${authState.token}`,
+          "Content-Type": "application/json",
+        },
+
+        body: JSON.stringify(checkInInfoCustomer),
+      }
+    ).then((res) => res.json());
+    console.log(data);
+    navigation.pop();
   };
 
   const onCancel = () => {
     setOverlayLoading(true);
-    setAction("");
-    setDialog(false);
-    setTimeout(() => {
-      navigation.goBack();
-    }, 500);
+
+    fetch(`http://10.0.2.2:5000/api/v1/reservations/${bookingInfo.id}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${authState.token}`,
+      },
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.success) {
+          navigation.goBack();
+          setAction("");
+          setDialog(false);
+        }
+      });
   };
 
   const onProceed = () => {
@@ -354,9 +136,10 @@ const index = ({ navigation }) => {
   };
 
   const onHandleChangeText = (value, nameInput) => {
-    setBookingInfo({
-      ...bookingInfo,
-      [nameInput]: value,
+    setBookingInfo((v) => {
+      let bookingInfo = { ...v };
+      bookingInfo.customer[nameInput] = value.toString();
+      return bookingInfo;
     });
   };
 
@@ -382,45 +165,47 @@ const index = ({ navigation }) => {
             <Item floatingLabel>
               <Label>Name</Label>
               <Input
-                value={bookingInfo.name}
+                value={bookingInfo.customer.name}
                 onChangeText={(value) => onHandleChangeText(value, "name")}
               />
             </Item>
             <Item floatingLabel>
               <Label>ID Number</Label>
               <Input
-                value={bookingInfo.id}
-                onChangeText={(value) => onHandleChangeText(value, "id")}
+                value={bookingInfo.customer?.cardId?.toString()}
+                onChangeText={(value) => onHandleChangeText(value, "cardId")}
               />
             </Item>
             <Item floatingLabel>
               <Label>Phone Number</Label>
               <Input
                 keyboardType="numeric"
-                value={bookingInfo.phone}
-                onChangeText={(value) => onHandleChangeText(value, "phone")}
+                value={bookingInfo.customer.phoneNumber.toString()}
+                onChangeText={(value) =>
+                  onHandleChangeText(value, "phoneNumber")
+                }
               />
             </Item>
             <Item floatingLabel>
               <Label>Number of Person</Label>
               <Input
                 keyboardType="numeric"
-                value={bookingInfo.person}
-                onChangeText={(value) => onHandleChangeText(value, "person")}
+                value={bookingInfo.customer?.numPerson?.toString()}
+                onChangeText={(value) => onHandleChangeText(value, "numPerson")}
               />
             </Item>
             {/* Check In */}
             <View style={styles.checkInContainer}>
               <Text style={[styles.biggerText, { flex: 1 }]}>Check in :</Text>
               <Text style={[styles.biggerText, { flex: 2 }]}>
-                {bookingInfo.checkInDate.toLocaleDateString()}
+                {new Date(bookingInfo.startDate).toLocaleDateString()}
               </Text>
             </View>
             {/* Check Out */}
             <View style={styles.checkOutContainer}>
               <Text style={[styles.biggerText, { flex: 1 }]}>Check out :</Text>
               <Text style={[styles.biggerText, { flex: 2 }]}>
-                {bookingInfo.checkOutDate.toLocaleDateString()}
+                {new Date(bookingInfo.endDate).toLocaleDateString()}
               </Text>
             </View>
             {/* Length */}
@@ -462,7 +247,7 @@ const index = ({ navigation }) => {
             <View style={styles.roomContainer}>
               <Text style={[styles.biggerText, { flex: 1 }]}>Room :</Text>
               <Text style={[styles.biggerText, { flex: 2 }]}>
-                {bookingInfo.room.toString()}
+                {bookingInfo.room.map((v) => v.number).toString()}
               </Text>
             </View>
           </Form>
