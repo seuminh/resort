@@ -25,7 +25,7 @@ const index = ({ navigation }) => {
   const [refreshing, setRefreshing] = useState(false);
   const { status, data } = useQuery(["rooms", date, refreshing], () => {
     return fetch(
-      `http://10.0.2.2:5000/api/v1/rooms/belong?startDate=${date.toLocaleDateString()}`,
+      `http://resort-api.herokuapp.com/api/v1/rooms/belong?startDate=${date.toLocaleDateString()}`,
       {
         headers: {
           Authorization: `Bearer ${authState.token}`,
@@ -57,7 +57,9 @@ const index = ({ navigation }) => {
       <Text style={styles.headerText}> Star Light Resort </Text>
       <View style={styles.subHeaderContainer}>
         <Text style={styles.branchText}>
-          {status === "success" && data.length > 0 ? authState.user.branch.name : ""}
+          {status === "success" && data.length > 0
+            ? authState.user.branch.name
+            : ""}
         </Text>
         {/* <TouchableOpacity onPress={this.toggleDateModal}> */}
         <TouchableOpacity
@@ -76,11 +78,21 @@ const index = ({ navigation }) => {
         {status == "success" && (
           <View style={styles.cardContainer}>
             {data.map((v) => {
+              console.log(v);
               let status = "available";
+              let customer = {};
               if (v.reservation.length > 0) {
                 status = v.reservation[0].status;
+                customer = v.reservation[0].customer;
               }
-              return <Card status={status} key={v.id} room={v.number}></Card>;
+              return (
+                <Card
+                  status={status}
+                  key={v.id}
+                  room={v.number}
+                  customer={customer}
+                ></Card>
+              );
             })}
           </View>
         )}

@@ -63,7 +63,7 @@ const index = () => {
 
   const fetchAPI = async () => {
     const data = await fetch(
-      "http://10.0.2.2:5000/api/v1/reservations?status=checkIn&sort=endDate",
+      "http://resort-api.herokuapp.com/api/v1/reservations?status=checkIn&sort=endDate",
       {
         headers: {
           Authorization: `Bearer ${authState.token}`,
@@ -85,7 +85,7 @@ const index = () => {
 
   const checkOut = async () => {
     const data = await fetch(
-      `http://10.0.2.2:5000/api/v1/reservations/${checkOutInfo.id}/checkout`,
+      `http://resort-api.herokuapp.com/api/v1/reservations/${checkOutInfo.id}/checkout`,
       {
         method: "PUT",
         headers: {
@@ -96,7 +96,7 @@ const index = () => {
     ).then((res) => res.json());
     if (data.success) {
       setOverlayLoading(false);
-      setRoomList(roomList.filter(v=>v.id!==checkOutInfo.id));
+      setRoomList(roomList.filter((v) => v.id !== checkOutInfo.id));
       setModalCheckOut(false);
     }
   };

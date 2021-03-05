@@ -66,7 +66,7 @@ const index = ({ navigation }) => {
       checkInInfoCustomer.reservation.paidPrice = bookingInfo.total;
     else checkInInfoCustomer.reservation.deposited = bookingInfo.total;
     const data = await fetch(
-      `http://10.0.2.2:5000/api/v1/reservations/${bookingInfo.id}`,
+      `http://resort-api.herokuapp.com/api/v1/reservations/${bookingInfo.id}`,
       {
         method: "PUT",
         headers: {
@@ -96,7 +96,7 @@ const index = ({ navigation }) => {
       checkInInfoCustomer.reservation.paidPrice = bookingInfo.total;
     else checkInInfoCustomer.reservation.deposited = bookingInfo.total;
     const data = await fetch(
-      `http://10.0.2.2:5000/api/v1/reservations/${bookingInfo.id}`,
+      `http://resort-api.herokuapp.com/api/v1/reservations/${bookingInfo.id}`,
       {
         method: "PUT",
         headers: {
@@ -114,12 +114,15 @@ const index = ({ navigation }) => {
   const onCancel = () => {
     setOverlayLoading(true);
 
-    fetch(`http://10.0.2.2:5000/api/v1/reservations/${bookingInfo.id}`, {
-      method: "DELETE",
-      headers: {
-        Authorization: `Bearer ${authState.token}`,
-      },
-    })
+    fetch(
+      `http://resort-api.herokuapp.com/api/v1/reservations/${bookingInfo.id}`,
+      {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${authState.token}`,
+        },
+      }
+    )
       .then((res) => res.json())
       .then((data) => {
         if (data.success) {

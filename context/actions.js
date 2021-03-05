@@ -3,13 +3,16 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export const loginUser = async (dispatch, data) => {
   const { username, password } = data;
-  const returnData = await fetch("http://10.0.2.2:5000/api/v1/auth/login", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ username, password }),
-  }).then((res) => res.json());
+  const returnData = await fetch(
+    "http://resort-api.herokuapp.com/api/v1/auth/login",
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ username, password }),
+    }
+  ).then((res) => res.json());
 
   if (returnData.success) {
     const { user, token, expireDate } = returnData.data;
@@ -24,5 +27,5 @@ export const loginUser = async (dispatch, data) => {
 
 export const logout = async (dispatch) => {
   await AsyncStorage.clear();
-  dispatch({ type:  authConstant.LOGIN_FAIL });
+  dispatch({ type: authConstant.LOGIN_FAIL });
 };

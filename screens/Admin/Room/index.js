@@ -33,7 +33,7 @@ const index = () => {
 
   const fetchRoom = () => {
     fetch(
-      `http://10.0.2.2:5000/api/v1/rooms/belong?startDate=${date.toLocaleDateString()}`,
+      `http://resort-api.herokuapp.com/api/v1/rooms/belong?startDate=${date.toLocaleDateString()}`,
       {
         headers: {
           Authorization: `Bearer ${authState.token}`,

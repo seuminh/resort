@@ -32,7 +32,7 @@ const index = () => {
 
   const fetchAPI = async () => {
     const res = await fetch(
-      "http://10.0.2.2:5000/api/v1/reservations?status=reserved&sort=endDate",
+      "http://resort-api.herokuapp.com/api/v1/reservations?status=reserved&sort=endDate",
       {
         headers: {
           Authorization: `Bearer ${authState.token}`,

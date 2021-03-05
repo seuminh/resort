@@ -148,7 +148,7 @@ const AppNavigator = () => {
               mode="outlined"
               onPress={() => {
                 loginUser(dispatch, {
-                  username: "steve",
+                  username: "admin",
                   password: "123",
                 });
               }}

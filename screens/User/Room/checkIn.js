@@ -59,7 +59,7 @@ const index = ({ navigation }) => {
       setTotal(0);
 
       return fetch(
-        `http://10.0.2.2:5000/api/v1/rooms/belong?startDate=${checkInDate.toLocaleDateString()}&endDate=${checkOutDate.toLocaleDateString()}`,
+        `http://resort-api.herokuapp.com/api/v1/rooms/belong?startDate=${checkInDate.toLocaleDateString()}&endDate=${checkOutDate.toLocaleDateString()}`,
         {
           headers: {
             Authorization: `Bearer ${authState.token}`,
@@ -226,15 +226,18 @@ const index = ({ navigation }) => {
 
       if (paid === "paid") checkInInfoCustomer.reservation.paidPrice = total;
       else checkInInfoCustomer.reservation.deposited = total;
-      const data = await fetch(`http://10.0.2.2:5000/api/v1/reservations`, {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${authState.token}`,
-          "Content-Type": "application/json",
-        },
+      const data = await fetch(
+        `http://resort-api.herokuapp.com/api/v1/reservations`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${authState.token}`,
+            "Content-Type": "application/json",
+          },
 
-        body: JSON.stringify(checkInInfoCustomer),
-      }).then((res) => res.json());
+          body: JSON.stringify(checkInInfoCustomer),
+        }
+      ).then((res) => res.json());
       if (data.success) {
         console.log(data);
         Print.printAsync({
@@ -283,15 +286,18 @@ const index = ({ navigation }) => {
       if (paid === "paid") checkInInfoCustomer.reservation.paidPrice = total;
       else checkInInfoCustomer.reservation.deposited = total;
       console.log({ checkInInfoCustomer });
-      const data = await fetch(`http://10.0.2.2:5000/api/v1/reservations`, {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${authState.token}`,
-          "Content-Type": "application/json",
-        },
+      const data = await fetch(
+        `http://resort-api.herokuapp.com/api/v1/reservations`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${authState.token}`,
+            "Content-Type": "application/json",
+          },
 
-        body: JSON.stringify(checkInInfoCustomer),
-      }).then((res) => res.json());
+          body: JSON.stringify(checkInInfoCustomer),
+        }
+      ).then((res) => res.json());
       console.log(data);
       navigation.pop();
     }
