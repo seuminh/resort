@@ -8,6 +8,7 @@ import {
    FlatList,
    TouchableOpacity,
 } from "react-native";
+import { useAuthState } from "../../../../context";
 
 import { Form, Item, Input, Label, Picker, Icon } from "native-base";
 
@@ -21,38 +22,26 @@ import {
 
 import { Feather } from "@expo/vector-icons";
 
-const index = () => {
+const index = ({ navigation }) => {
+   const authState = useAuthState();
+
    const [overlayLoading, setOverlayLoading] = useState(false);
    const [loadingBranch, setLoadingBranch] = useState(true);
    const [dialog, setDialog] = useState(false);
    const [userInfo, setUserInfo] = useState({
       name: "",
       password: "",
-      confirmPassword: "",
    });
-   const [passwordError, setPasswordError] = useState(false);
-   const [branch, setBranch] = useState(["Unknown", "No Name", "Hello"]);
-   const [selectedBranch, setSelectedBranch] = useState(branch[0]);
+   // const [selectedBranch, setSelectedBranch] = useState(branch[0]);
 
-   useEffect(() => {
-      fetchAPI();
-      console.log(selectedBranch);
-   }, []);
+   const { branch, id } = navigation.state.params;
 
-   useEffect(() => {
-      if (userInfo.password !== userInfo.confirmPassword) {
-         setPasswordError(true);
-      } else {
-         setPasswordError(false);
-      }
-   }, [userInfo]);
-
-   useEffect(() => {
-      setUserInfo({
-         ...userInfo,
-         branch: selectedBranch,
-      });
-   }, [selectedBranch]);
+   // useEffect(() => {
+   //    setUserInfo({
+   //       ...userInfo,
+   //       branch: selectedBranch,
+   //    });
+   // }, [selectedBranch]);
 
    const fetchAPI = () => {
       setTimeout(() => {
@@ -68,29 +57,32 @@ const index = () => {
    };
 
    const onAdd = () => {
-      if (passwordError || userInfo.name.length === 0) {
-         setDialog(false);
-         alert("Can not add!!!");
-         return;
-      } else {
-         setDialog(false);
-         console.log(userInfo);
-         alert("User Add");
-      }
-   };
+      setOverlayLoading(true);
+      setDialog(false);
+      // console.log(userInfo);
 
-   const renderItem = ({ item, index }) => {
-      return (
-         <TouchableOpacity
-            style={styles.branchList}
-            onPress={() => setSelectedBranch(item)}
-         >
-            <Text style={{ fontSize: 17 }}>{item}</Text>
-            {selectedBranch === item && (
-               <Feather name="check" size={20} color="green" />
-            )}
-         </TouchableOpacity>
-      );
+      fetch(`http://resort-api.herokuapp.com/api/v1/branches/${id}/users`, {
+         method: "POST",
+         headers: {
+            Authorization: `Bearer ${authState.token}`,
+            "Content-Type": "application/json",
+         },
+
+         body: JSON.stringify({
+            username: userInfo.name,
+            password: userInfo.password,
+         }),
+      })
+         .then((res) => res.json())
+         .then((data) => {
+            if (!data.success) {
+               alert("Username duplicate");
+               setOverlayLoading(false);
+            } else {
+               alert("User Add");
+               navigation.goBack();
+            }
+         });
    };
 
    const theme = {
@@ -123,51 +115,17 @@ const index = () => {
                      <Item floatingLabel>
                         <Label>Password</Label>
                         <Input
-                           secureTextEntry={true}
                            onChangeText={(value) =>
                               onHandleChangeText(value, "password")
                            }
                         />
                      </Item>
-                     {passwordError && (
-                        <Text style={styles.passwordError}>
-                           Password and Confirm Password does not match.
-                        </Text>
-                     )}
-                  </View>
-                  <View>
-                     <Item floatingLabel last>
-                        <Label>Confirm Password</Label>
-                        <Input
-                           secureTextEntry={true}
-                           onChangeText={(value) =>
-                              onHandleChangeText(value, "confirmPassword")
-                           }
-                        />
-                     </Item>
-                     {passwordError && (
-                        <Text style={styles.passwordError}>
-                           Password and Confirm Password does not match.
-                        </Text>
-                     )}
                   </View>
                   <View style={styles.branchContainer}>
                      <Text style={{ fontSize: 17 }}>Branch :</Text>
-                     {loadingBranch && (
-                        <ActivityIndicator
-                           color="red"
-                           size="large"
-                           style={{ marginLeft: 50 }}
-                        ></ActivityIndicator>
-                     )}
-                     {!loadingBranch && (
-                        <FlatList
-                           style={{ marginTop: -10, paddingLeft: 14 }}
-                           data={branch}
-                           renderItem={renderItem}
-                           keyExtractor={(item) => item.number}
-                        ></FlatList>
-                     )}
+                     <Text style={{ fontSize: 17, marginLeft: 20 }}>
+                        {branch}
+                     </Text>
                   </View>
                </Form>
                <View

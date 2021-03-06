@@ -9,332 +9,39 @@ import {
    ActivityIndicator,
 } from "react-native";
 
-import {
-   DataTable,
-   Provider,
-   Portal,
-   Modal,
-   Dialog,
-   DefaultTheme,
-   Button,
-} from "react-native-paper";
+import { useAuthState } from "../../../../context";
 
-import { AntDesign } from "@expo/vector-icons";
-
-// export default class index extends Component {
-//    constructor(props) {
-//       super(props);
-//       this.state = {
-//          refreshing: false,
-//          loading: true,
-//          overlayLoading: false,
-//          dialog: false,
-//          modalUser: false,
-//          action: "",
-//          userInfo: {
-//             name: "",
-//             branch: "",
-//          },
-//          userList: [
-// {
-//    name: "Kok",
-//    branch: "No where",
-// },
-// {
-//    name: "Hello",
-//    branch: "No Name",
-// },
-// {
-//    name: "Dara",
-//    branch: "No where",
-// },
-//          ],
-//       };
-//    }
-
-//    componentDidMount() {
-//       this.fetchAPI();
-//    }
-
-// fetchAPI = () => {
-//    setTimeout(() => {
-//       this.setState({
-//          loading: false,
-//          refreshing: false,
-//       });
-//    }, 1000);
-// };
-
-// showUserInfo = (r) => {
-//    this.onToggleModalUser();
-//    this.setState({
-//       userInfo: r,
-//    });
-// };
-
-// onRefresh = () => {
-//    this.setState(
-//       {
-//          refreshing: true,
-//       },
-//       () => this.fetchAPI()
-//    );
-// };
-
-//    onToggleModalUser = () => {
-//       this.setState({
-//          modalUser: !this.state.modalUser,
-//       });
-//    };
-
-// onDelete = () => {
-//    this.setState({
-//       dialog: false,
-//       action: "",
-//       modalUser: false,
-//    });
-//    alert("Delete");
-//    console.log(this.state.userInfo);
-// };
-
-// onProceed = () => {
-//    const { action } = this.state;
-//    if (action === "delete") this.onDelete();
-// };
-
-// renderUserList() {
-//    const { userList } = this.state;
-//    return (
-//       <View>
-//          {userList.map((r, i) => {
-//             return (
-//                <TouchableOpacity
-//                   key={i}
-//                   onPress={() => this.showUserInfo(r)}
-//                >
-//                   <DataTable.Row>
-//                      <DataTable.Cell>{r.name}</DataTable.Cell>
-//                      <DataTable.Cell numeric>{r.branch}</DataTable.Cell>
-//                   </DataTable.Row>
-//                </TouchableOpacity>
-//             );
-//          })}
-//       </View>
-//    );
-// }
-
-//    render() {
-//       const {
-//          loading,
-//          refreshing,
-//          overlayLoading,
-//          dialog,
-//          modalUser,
-//          userInfo,
-//       } = this.state;
-// const theme = {
-//    ...DefaultTheme,
-// };
-//       return (
-// <Provider theme={theme}>
-//    <ScrollView
-//       style={styles.container}
-//       refreshControl={
-//          <RefreshControl
-//             refreshing={refreshing}
-//             onRefresh={this.onRefresh}
-//          ></RefreshControl>
-//       }
-//    >
-//       <Text style={styles.headerText}> Star Light Resort </Text>
-
-//       <View style={styles.bodyContainer}>
-//          <Text
-//             style={{
-//                fontSize: 20,
-//                textAlign: "center",
-//                marginBottom: 10,
-//             }}
-//          >
-//             User
-//          </Text>
-//          <DataTable>
-//             <DataTable.Header style={{ color: "red" }}>
-//                <DataTable.Title>Name</DataTable.Title>
-//                <DataTable.Title numeric>Branch</DataTable.Title>
-//             </DataTable.Header>
-
-//             {loading && (
-//                <ActivityIndicator
-//                   color="red"
-//                   size="large"
-//                   style={{ marginTop: 50 }}
-//                ></ActivityIndicator>
-//             )}
-
-//             {!loading && this.renderUserList()}
-//          </DataTable>
-
-//          <Button
-//             mode="outlined"
-//             onPress={() => this.props.navigation.navigate("addUser")}
-//             uppercase={false}
-//             style={{
-//                borderColor: "#AA75F6",
-//                borderWidth: 1,
-//                alignSelf: "center",
-//                marginTop: 20,
-//             }}
-//          >
-//             Add User
-//          </Button>
-//       </View>
-//    </ScrollView>
-
-//    {/* Modal */}
-//    <Portal>
-//       {/* Dialog */}
-//       <Portal>
-//          <Dialog
-//             visible={dialog}
-//             onDismiss={() =>
-//                this.setState({ dialog: false, action: "" })
-//             }
-//          >
-//             <Dialog.Content>
-//                <Text>Are you sure you want to proceed?</Text>
-//             </Dialog.Content>
-//             <Dialog.Actions style={{ marginTop: -20 }}>
-//                <Button
-//                   onPress={() =>
-//                      this.setState({ dialog: false, action: "" })
-//                   }
-//                   uppercase={false}
-//                >
-//                   Cancel
-//                </Button>
-//                <Button onPress={this.onProceed} uppercase={false}>
-//                   Confirm
-//                </Button>
-//             </Dialog.Actions>
-//          </Dialog>
-//       </Portal>
-
-//       {/* Modal User */}
-//       <Modal
-//          visible={modalUser}
-//          onDismiss={this.onToggleModalUser}
-//          contentContainerStyle={styles.modalUser}
-//       >
-//          <TouchableOpacity
-//             onPress={this.onToggleModalUser}
-//             style={{
-//                alignSelf: "flex-end",
-//                marginRight: 15,
-//                marginTop: -10,
-//             }}
-//          >
-//             <AntDesign name="close" size={24} color="black" />
-//          </TouchableOpacity>
-//          <View>
-//             <Text
-//                style={{
-//                   marginBottom: 15,
-//                   textAlign: "center",
-//                   fontSize: 17,
-//                }}
-//             >
-//                User
-//             </Text>
-//             <View>
-//                <View style={styles.nameContainer}>
-//                   <Text style={[styles.biggerText, { flex: 1 }]}>
-//                      Name :
-//                   </Text>
-//                   <Text style={[styles.biggerText, { flex: 2 }]}>
-//                      {userInfo.name}
-//                   </Text>
-//                </View>
-//                <View style={styles.branchContainer}>
-//                   <Text style={[styles.biggerText, { flex: 1 }]}>
-//                      Branch :
-//                   </Text>
-//                   <Text style={[styles.biggerText, { flex: 2 }]}>
-//                      {userInfo.branch}
-//                   </Text>
-//                </View>
-//                <Button
-//                   mode="outlined"
-//                   onPress={() =>
-//                      this.setState({
-//                         dialog: true,
-//                         action: "delete",
-//                      })
-//                   }
-//                   uppercase={false}
-//                   color="#D9534F"
-//                   style={{
-//                      borderColor: "#D9534F",
-//                      width: 150,
-//                      alignSelf: "center",
-//                      marginTop: 20,
-//                   }}
-//                >
-//                   Delete
-//                </Button>
-//             </View>
-//          </View>
-//       </Modal>
-//    </Portal>
-//    {/* OverLay Loading */}
-//    <Portal>
-//       <Dialog
-//          visible={overlayLoading}
-//          dismissable={false}
-//          style={{ backgroundColor: "transparent", elevation: 0 }}
-//       >
-//          <ActivityIndicator
-//             size="large"
-//             color="red"
-//          ></ActivityIndicator>
-//       </Dialog>
-//    </Portal>
-// </Provider>
-//       );
-//    }
-// }
+import { DataTable, Provider, DefaultTheme } from "react-native-paper";
 
 const index = ({ navigation }) => {
+   const authState = useAuthState();
    const [refreshing, setRefreshing] = useState(false);
    const [loading, setLoading] = useState(true);
-   const [overlayLoading, setOverlayLoading] = useState(false);
-   const [dialog, setDialog] = useState(false);
-   const [modalUser, setModalUser] = useState(false);
-   const [userInfo, setUserInfo] = useState({ name: "", branch: "" });
-   const [userList, setUserList] = useState([
-      {
-         name: "Kok",
-         branch: "No where",
-      },
-      {
-         name: "Hello",
-         branch: "No Name",
-      },
-      {
-         name: "Dara",
-         branch: "No where",
-      },
-   ]);
+   const [branchList, setBranchList] = useState([]);
 
    useEffect(() => {
       fetchAPI();
    }, []);
 
    const fetchAPI = () => {
-      setTimeout(() => {
-         setLoading(false);
-         setRefreshing(false);
-      }, 1000);
+      fetch(`http://resort-api.herokuapp.com/api/v1/branches`, {
+         headers: {
+            Authorization: `Bearer ${authState.token}`,
+         },
+      })
+         .then((res) => res.json())
+         .then((data) => {
+            let temp = data.data.map((d) => {
+               return {
+                  branch: d.name,
+                  total: d.users.length,
+                  id: d.id,
+               };
+            });
+            setBranchList(temp);
+            setLoading(false);
+            setRefreshing(false);
+         });
    };
 
    const onRefresh = () => {
@@ -342,27 +49,23 @@ const index = ({ navigation }) => {
       fetchAPI();
    };
 
-   const onDelete = () => {
-      setDialog(false);
-      setModalUser(false);
-      alert("Delete");
-      console.log(userInfo);
-   };
-
-   const showUserInfo = (r) => {
-      setModalUser(true);
-      setUserInfo(r);
-   };
-
-   const renderUserList = () => {
+   const renderBranchList = () => {
       return (
          <View>
-            {userList.map((r, i) => {
+            {branchList.map((r, i) => {
                return (
-                  <TouchableOpacity key={i} onPress={() => showUserInfo(r)}>
+                  <TouchableOpacity
+                     key={i}
+                     onPress={() =>
+                        navigation.navigate("users", {
+                           id: r.id,
+                           branch: r.branch,
+                        })
+                     }
+                  >
                      <DataTable.Row>
-                        <DataTable.Cell>{r.name}</DataTable.Cell>
-                        <DataTable.Cell numeric>{r.branch}</DataTable.Cell>
+                        <DataTable.Cell>{r.branch}</DataTable.Cell>
+                        <DataTable.Cell numeric>{r.total}</DataTable.Cell>
                      </DataTable.Row>
                   </TouchableOpacity>
                );
@@ -396,12 +99,12 @@ const index = ({ navigation }) => {
                      marginBottom: 10,
                   }}
                >
-                  User
+                  Branches
                </Text>
                <DataTable>
                   <DataTable.Header style={{ color: "red" }}>
-                     <DataTable.Title>Name</DataTable.Title>
-                     <DataTable.Title numeric>Branch</DataTable.Title>
+                     <DataTable.Title>Branch</DataTable.Title>
+                     <DataTable.Title numeric>Total user</DataTable.Title>
                   </DataTable.Header>
 
                   {loading && (
@@ -412,120 +115,10 @@ const index = ({ navigation }) => {
                      ></ActivityIndicator>
                   )}
 
-                  {!loading && renderUserList()}
+                  {!loading && renderBranchList()}
                </DataTable>
-
-               <Button
-                  mode="outlined"
-                  onPress={() => navigation.navigate("addUser")}
-                  uppercase={false}
-                  style={{
-                     borderColor: "#AA75F6",
-                     borderWidth: 1,
-                     alignSelf: "center",
-                     marginTop: 20,
-                  }}
-               >
-                  Add User
-               </Button>
             </View>
          </ScrollView>
-
-         {/* Modal */}
-         <Portal>
-            {/* Dialog */}
-            <Portal>
-               <Dialog
-                  visible={dialog}
-                  onDismiss={() => {
-                     setDialog(false);
-                  }}
-               >
-                  <Dialog.Content>
-                     <Text>Are you sure you want to proceed?</Text>
-                  </Dialog.Content>
-                  <Dialog.Actions style={{ marginTop: -20 }}>
-                     <Button onPress={() => setDialog(false)} uppercase={false}>
-                        Cancel
-                     </Button>
-                     <Button onPress={onDelete} uppercase={false}>
-                        Confirm
-                     </Button>
-                  </Dialog.Actions>
-               </Dialog>
-            </Portal>
-
-            {/* Modal User */}
-            <Modal
-               visible={modalUser}
-               onDismiss={() => setModalUser(false)}
-               contentContainerStyle={styles.modalUser}
-            >
-               <TouchableOpacity
-                  onPress={() => setModalUser(false)}
-                  style={{
-                     alignSelf: "flex-end",
-                     marginRight: 15,
-                     marginTop: -10,
-                  }}
-               >
-                  <AntDesign name="close" size={24} color="black" />
-               </TouchableOpacity>
-               <View>
-                  <Text
-                     style={{
-                        marginBottom: 15,
-                        textAlign: "center",
-                        fontSize: 17,
-                     }}
-                  >
-                     User
-                  </Text>
-                  <View>
-                     <View style={styles.nameContainer}>
-                        <Text style={[styles.biggerText, { flex: 1 }]}>
-                           Name :
-                        </Text>
-                        <Text style={[styles.biggerText, { flex: 2 }]}>
-                           {userInfo.name}
-                        </Text>
-                     </View>
-                     <View style={styles.branchContainer}>
-                        <Text style={[styles.biggerText, { flex: 1 }]}>
-                           Branch :
-                        </Text>
-                        <Text style={[styles.biggerText, { flex: 2 }]}>
-                           {userInfo.branch}
-                        </Text>
-                     </View>
-                     <Button
-                        mode="outlined"
-                        onPress={() => setDialog(true)}
-                        uppercase={false}
-                        color="#D9534F"
-                        style={{
-                           borderColor: "#D9534F",
-                           width: 150,
-                           alignSelf: "center",
-                           marginTop: 20,
-                        }}
-                     >
-                        Delete
-                     </Button>
-                  </View>
-               </View>
-            </Modal>
-         </Portal>
-         {/* OverLay Loading */}
-         <Portal>
-            <Dialog
-               visible={overlayLoading}
-               dismissable={false}
-               style={{ backgroundColor: "transparent", elevation: 0 }}
-            >
-               <ActivityIndicator size="large" color="red"></ActivityIndicator>
-            </Dialog>
-         </Portal>
       </Provider>
    );
 };
