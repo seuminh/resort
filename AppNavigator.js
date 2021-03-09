@@ -148,8 +148,10 @@ const AppNavigator = () => {
                      mode="outlined"
                      onPress={() => {
                         loginUser(dispatch, {
-                           username: loginInfo.username,
-                           password: loginInfo.password,
+                           // username: loginInfo.username,
+                           // password: loginInfo.password,
+                           username: "test1",
+                           password: "123",
                         });
                      }}
                      uppercase={false}

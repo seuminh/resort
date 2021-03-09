@@ -150,7 +150,7 @@ const index = () => {
                               <DataTable.Cell>{r.customer.name}</DataTable.Cell>
                            )}
                            <DataTable.Cell numeric>
-                              {r.customer.phoneNumber}
+                              {`0${r.customer.phoneNumber}`}
                            </DataTable.Cell>
                            <DataTable.Cell numeric>
                               {r.room.map((v) => v.number).toString()}
@@ -189,7 +189,7 @@ const index = () => {
                onWillFocus={() => setLoading(true)}
                onDidFocus={fetchAPI}
             />
-            <Text style={styles.headerText}> Star Light Resort </Text>
+            <Text style={styles.headerText}> Star Resort </Text>
             <View style={styles.subHeaderContainer}>
                <Text style={styles.branchText}>
                   {authState.user.branch.name}

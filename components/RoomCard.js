@@ -10,9 +10,9 @@ export default class RoomCard extends Component {
    render() {
       let statusColor =
          this.props.status === "available" || this.props.status === "checkOut"
-            ? "#2CC990"
+            ? "#5489EF"
             : this.props.status === "checkIn"
-            ? "#FC6042"
+            ? "#FE3636"
             : "#FCB941";
 
       return (
@@ -38,8 +38,9 @@ export default class RoomCard extends Component {
                <View style={{ flexDirection: "row", marginBottom: 3 }}>
                   <Text>Phone : </Text>
                   <Text>
-                     {this.props.customer?.phoneNumber ||
-                        RoomCard.defaultProps.phone}
+                     {this.props.customer?.phoneNumber
+                        ? `0${this.props.customer?.phoneNumber}`
+                        : "" || RoomCard.defaultProps.phone}
                   </Text>
                </View>
             </View>
@@ -56,8 +57,10 @@ RoomCard.defaultProps = {
 };
 
 const colors = {
-   available: "#2CC990",
-   busy: "#FC6042",
+   // available: "#2CC990",
+   available: "#5489EF",
+   // busy: "#FC6042",
+   busy: "#FE3636",
    reserved: "#FCB941",
 };
 

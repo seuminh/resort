@@ -17,7 +17,7 @@ import {
 const index = ({ navigation }) => {
    return (
       <ScrollView style={styles.container}>
-         <Text style={styles.title}>Star Light Resort</Text>
+         <Text style={styles.title}>Star Resort</Text>
          {/* Income */}
          <TouchableOpacity
             style={styles.incomeContainer}

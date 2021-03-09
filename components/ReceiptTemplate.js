@@ -15,14 +15,11 @@ const Receipt = (data, branch, total, deposit = 0) => {
    return `
     <html>
         <head>
-            <link rel="preconnect" href="https://fonts.gstatic.com">
-            <link href="https://fonts.googleapis.com/css2?family=Hanuman&display=swap" rel="stylesheet">
             <meta name="viewport" content ="width=device-width,initial-scale=1,user-scalable=yes" />
             <style>
             body {
                 height:78vh;
                 font-size: 0.7em;
-                font-family: 'Hanuman', Arial, Helvetica, sans-serif;
             }
 
             img {
@@ -36,8 +33,8 @@ const Receipt = (data, branch, total, deposit = 0) => {
 
             .container {
                 padding:70px 50px;
-                border-top: 6px solid #E45042;
-                border-bottom: 6px solid #E45042;
+                border-top: 10px solid #E45042;
+                border-bottom: 10px solid #E45042;
                 height: 100%;
             }
 
@@ -62,6 +59,7 @@ const Receipt = (data, branch, total, deposit = 0) => {
             }
         
             #invoice {
+                font-family: Arial, Helvetica, sans-serif;
                 border-collapse: collapse;
                 width: 100%;
                 font-size: 0.7em
@@ -106,7 +104,7 @@ const Receipt = (data, branch, total, deposit = 0) => {
             <div class="container" >
             <header>
                 <div class="logo-container">
-                    <h1>វិក័យប័ត្រ</h1>
+                    <h1>INVOICE</h1>
                     <img src='https://i.imgur.com/l5pQqC4.jpg' width="100" height="100" />
                 </div>
                 <div class="info-container">
@@ -114,16 +112,16 @@ const Receipt = (data, branch, total, deposit = 0) => {
                     <h2 style="border-bottom: 1px solid rgb(109, 101, 101); margin-top: 0;font-size:1em">
                         Bill to
                     </h2>
-                    <p>ឈ្មោះភ្ញៀវ: <strong>${data.customer.name}</strong></p>
-                    <p>លេខទូរស័ព្ទភ្ញៀវ: <strong>${
+                    <p>Guest Name: <strong>${data.customer.name}</strong></p>
+                    <p>Contact Number: <strong>${
                        data.customer.phoneNumber
                     }</strong></p>
                     </div>
                     <div style="text-align: right">
-                    <p>កាលបរិចេ្ឆទ : ${new Date().toLocaleDateString()}</p>
+                    <p>Date : ${new Date().toLocaleDateString()}</p>
                     <p>${branch.name}</p>
                     <p>${branch.address}</p>
-                    <p>010 960099</p>
+                    <p>012 234987</p>
                     </div>
                 </div>
             </header>
@@ -131,10 +129,10 @@ const Receipt = (data, branch, total, deposit = 0) => {
             <div class="table-container">
                 <table id="invoice">
                 <tr>
-                    <th>លេខបន្ទប់</th>
-                    <th>រយៈពេល</th>
-                    <th>តម្លៃឯកតា​​ ($)</th>
-                    <th>សរុប ($)</th>
+                    <th>Room Number</th>
+                    <th>Length</th>
+                    <th>Price per Night</th>
+                    <th>Total ($)</th>
                 </tr>
             
                 ${tableRow}
@@ -143,7 +141,7 @@ const Receipt = (data, branch, total, deposit = 0) => {
                     <td></td>
                     <td></td>
                     <td>
-                    <strong>សរុប</strong>
+                    <strong>Subtotal</strong>
                     </td>
                     <td>
                     <strong>${total}</strong>
@@ -154,7 +152,7 @@ const Receipt = (data, branch, total, deposit = 0) => {
                     <td></td>
                     <td></td>
                     <td>
-                    <strong>បានកក់​</strong>
+                    <strong>Deposited</strong>
                     </td>
                     <td>
                     <strong>${deposit}</strong>
@@ -165,7 +163,7 @@ const Receipt = (data, branch, total, deposit = 0) => {
                     <td></td>
                     <td></td>
                     <td>
-                    <strong>សរុបរួម</strong>
+                    <strong>Total</strong>
                     </td>
                     <td>
                     <strong>${total - deposit}</strong>
@@ -176,10 +174,10 @@ const Receipt = (data, branch, total, deposit = 0) => {
 
             <div class="signature">
                 <div class="customer">
-                    <h3>ហត្ថលេខាភ្ញៀវ</h3>
+                    <h3>Customer's Signature</h3>
                 </div>
                 <div class="cashier">
-                    <h3>ហត្ថលេខាបុគ្គលិក</h3>
+                    <h3>Cashier's Signature</h3>
                 </div>
             </div>
 

@@ -101,7 +101,7 @@ const index = () => {
             onWillFocus={() => setLoading(true)}
             onDidFocus={fetchRoom}
          />
-         <Text style={styles.headerText}> Star Light Resort </Text>
+         <Text style={styles.headerText}> Star Resort </Text>
          <View style={styles.subHeaderContainer}>
             <Picker
                mode="dropdown"

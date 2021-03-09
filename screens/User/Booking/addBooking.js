@@ -263,7 +263,7 @@ const index = ({ navigation }) => {
    return (
       <Provider theme={theme}>
          <ScrollView style={styles.container}>
-            <Text style={styles.headerText}> Star Light Resort </Text>
+            <Text style={styles.headerText}> Star Resort </Text>
             <Text style={styles.branchText}>
                {data?.length > 0 ? data[0].branch.name : ""}
             </Text>

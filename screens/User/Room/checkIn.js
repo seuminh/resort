@@ -128,10 +128,12 @@ const index = ({ navigation }) => {
    const handleCheckInConfirm = (date) => {
       setCheckInDate(date);
       setCheckOutDate(new Date(date.getTime() + 60 * 60 * 24 * 1000));
+      setCheckInDateModal(false);
    };
 
    const handleCheckOutConfirm = (date) => {
       setCheckOutDate(date);
+      setCheckInDateModal(false);
    };
 
    const onCheckboxChange = (item, index) => {
@@ -330,7 +332,7 @@ const index = ({ navigation }) => {
    return (
       <Provider theme={theme}>
          <ScrollView style={styles.container}>
-            <Text style={styles.headerText}> Star Light Resort </Text>
+            <Text style={styles.headerText}> Star Resort </Text>
             <Text style={styles.branchText}>
                {data?.length > 0 ? data[0].branch.name : ""}
             </Text>

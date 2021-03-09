@@ -113,7 +113,7 @@ const index = ({ navigation }) => {
             onWillFocus={() => setLoading(true)}
             onDidFocus={fetchAPI}
          />
-         <Text style={styles.headerText}> Star Light Resort </Text>
+         <Text style={styles.headerText}> Star Resort </Text>
          <View style={styles.subHeaderContainer}>
             <Text style={styles.branchText}>{authState.user.branch.name}</Text>
             <Text>{date.toLocaleDateString()}</Text>
