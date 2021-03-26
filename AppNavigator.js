@@ -18,60 +18,6 @@ import { Checkbox, Button } from "react-native-paper";
 import AdminDrawer from "./routes/Admin/AdminDrawer";
 import UserDrawer from "./routes/User/UserDrawer";
 
-// export default class AppNavigator extends Component {
-//   constructor(props) {
-//     super(props);
-//     this.state = {
-//       isAdmin: false,
-//       isAuthed: false,
-//       modalLogin: true,
-//       loginSuccess: true,
-//       userInput: {
-//         username: "",
-//         password: "",
-//       },
-//     };
-//     this.dispatch = useAuthDispatch();
-//   }
-
-//   login = ({ username, password }) => {
-//     console.log({ username, password });
-//     loginUser(this.dispatch, { username, password });
-//     //  this.setState({
-//     //    modalLogin: false,
-//     //    isAuthed: true,
-//     //  });
-//   };
-
-//   signOut = () => {
-//     this.setState({
-//       modalLogin: true,
-//       isAuthed: false,
-//     });
-//   };
-
-//   renderLogin() {
-//     const { loginSuccess, isAdmin } = this.state;
-
-//     return;
-//   }
-
-//   render() {
-//     const { isAdmin, isAuthed, modalLogin } = this.state;
-//     const authState = useAuthState();
-
-//     console.log(authState);
-
-//     if (!isAuthed && modalLogin) {
-//       return (
-//         <Modal animationType="slide" visible={modalLogin}>
-//           {this.renderLogin()}
-//         </Modal>
-//       );
-//     }
-//   }
-// }
-
 const AppNavigator = () => {
    const authState = useAuthState();
    const dispatch = useAuthDispatch();
@@ -130,28 +76,14 @@ const AppNavigator = () => {
                      />
                   </Item>
 
-                  {/* <View style={{ flexDirection: "row" }}>
-              <Checkbox
-                status={isAdmin ? "checked" : "unchecked"}
-                onPress={() =>
-                  this.setState({
-                    isAdmin: !isAdmin,
-                  })
-                }
-              />
-              <Text style={{ paddingTop: 7 }}>Admin</Text>
-            </View> */}
-                  {/* {!loginSuccess && (
-              <Text style={styles.loginFail}>No user found</Text>
-            )} */}
                   <Button
                      mode="outlined"
                      onPress={() => {
                         loginUser(dispatch, {
-                           // username: loginInfo.username,
-                           // password: loginInfo.password,
-                           username: "test1",
-                           password: "123",
+                           username: loginInfo.username,
+                           password: loginInfo.password,
+                           // username: "test1",
+                           // password: "123",
                         });
                      }}
                      uppercase={false}
