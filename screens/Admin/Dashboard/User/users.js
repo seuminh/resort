@@ -135,8 +135,8 @@ const users = ({ navigation }) => {
                </Text>
                <DataTable>
                   <DataTable.Header style={{ color: "red" }}>
-                     <DataTable.Title>User</DataTable.Title>
-                     <DataTable.Title numeric>Role</DataTable.Title>
+                     <DataTable.Title>ឈ្មោះ</DataTable.Title>
+                     <DataTable.Title numeric>តួនាទី</DataTable.Title>
                   </DataTable.Header>
 
                   {loading && (

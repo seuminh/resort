@@ -67,7 +67,7 @@ const index = ({ navigation }) => {
                   setDateModal(true);
                }}
             >
-               <Text>Select Date</Text>
+               <Text>ជ្រើសរើសកាលបរិច្ឆេទ</Text>
             </TouchableOpacity>
          </View>
          <View style={styles.selectDateButton}>

@@ -122,7 +122,7 @@ const index = ({ navigation }) => {
                      </Item>
                   </View>
                   <View style={styles.branchContainer}>
-                     <Text style={{ fontSize: 17 }}>Branch :</Text>
+                     <Text style={{ fontSize: 17 }}>សាខា :</Text>
                      <Text style={{ fontSize: 17, marginLeft: 20 }}>
                         {branch}
                      </Text>

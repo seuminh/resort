@@ -208,11 +208,11 @@ const index = () => {
                </Text>
                <DataTable>
                   <DataTable.Header style={{ color: "red" }}>
-                     <DataTable.Title>Name</DataTable.Title>
-                     <DataTable.Title numeric>Phone</DataTable.Title>
-                     <DataTable.Title numeric>Room</DataTable.Title>
-                     <DataTable.Title numeric>Check In</DataTable.Title>
-                     <DataTable.Title numeric>Length</DataTable.Title>
+                     <DataTable.Title>ឈ្មោះ</DataTable.Title>
+                     <DataTable.Title numeric>លេខទូរស័ព្ទ</DataTable.Title>
+                     <DataTable.Title numeric>បន្ទប់</DataTable.Title>
+                     <DataTable.Title numeric>ថ្ងៃចូល</DataTable.Title>
+                     <DataTable.Title numeric>រយះពេល</DataTable.Title>
                   </DataTable.Header>
 
                   {loading && (
@@ -291,21 +291,21 @@ const index = () => {
                            Check out information
                         </Text>
                         <View style={styles.modalTextInfoContainer}>
-                           <Text style={styles.modalTextInfo}>Name :</Text>
+                           <Text style={styles.modalTextInfo}>ឈ្មោះ :</Text>
                            <Text style={styles.modalTextInfo}>
                               {checkOutInfo.customer.name}
                            </Text>
                         </View>
                         <View style={styles.modalTextInfoContainer}>
-                           <Text style={styles.modalTextInfo}>Phone :</Text>
+                           <Text style={styles.modalTextInfo}>
+                              លេខទូរស័ព្ទ :
+                           </Text>
                            <Text style={styles.modalTextInfo}>
                               {checkOutInfo.customer.phoneNumber}
                            </Text>
                         </View>
                         <View style={styles.modalTextInfoContainer}>
-                           <Text style={styles.modalTextInfo}>
-                              Check in Date :{" "}
-                           </Text>
+                           <Text style={styles.modalTextInfo}>ថ្ងៃចូល : </Text>
                            <Text style={styles.modalTextInfo}>
                               {new Date(
                                  checkOutInfo.startDate
@@ -313,9 +313,7 @@ const index = () => {
                            </Text>
                         </View>
                         <View style={styles.modalTextInfoContainer}>
-                           <Text style={styles.modalTextInfo}>
-                              Check out Date :{" "}
-                           </Text>
+                           <Text style={styles.modalTextInfo}>ថ្ងៃចេញ : </Text>
                            <Text style={styles.modalTextInfo}>
                               {new Date(
                                  checkOutInfo.endDate
@@ -323,7 +321,7 @@ const index = () => {
                            </Text>
                         </View>
                         <View style={styles.modalTextInfoContainer}>
-                           <Text style={styles.modalTextInfo}>Room :</Text>
+                           <Text style={styles.modalTextInfo}>បន្ទប់ :</Text>
                            <Text style={styles.modalTextInfo}>
                               {checkOutInfo.room
                                  .map((v) => v.number)
@@ -331,14 +329,14 @@ const index = () => {
                            </Text>
                         </View>
                         <View style={styles.modalTextInfoContainer}>
-                           <Text style={styles.modalTextInfo}>Length : </Text>
+                           <Text style={styles.modalTextInfo}>រយះពេល : </Text>
                            <Text style={styles.modalTextInfo}>
                               {checkOutInfo.length}
                            </Text>
                         </View>
                         <View style={styles.modalTextInfoContainer}>
                            <Text style={styles.modalTextInfo}>
-                              Total Price :{" "}
+                              តម្លៃ​សរុប :{" "}
                            </Text>
                            <Text style={styles.modalTextInfo}>
                               $ {checkOutInfo.totalPrice}
@@ -346,7 +344,7 @@ const index = () => {
                         </View>
                         <View style={styles.modalTextInfoContainer}>
                            <Text style={styles.modalTextInfo}>
-                              Total Paid :{" "}
+                              បានទូរទាត់ :{" "}
                            </Text>
                            <Text style={styles.modalTextInfo}>
                               $ {checkOutInfo.paidPrice}

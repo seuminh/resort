@@ -130,11 +130,11 @@ const index = ({ navigation }) => {
             </Text>
             <DataTable>
                <DataTable.Header>
-                  <DataTable.Title>Name</DataTable.Title>
-                  <DataTable.Title numeric>Phone</DataTable.Title>
-                  <DataTable.Title numeric>Room</DataTable.Title>
-                  <DataTable.Title numeric>Check In</DataTable.Title>
-                  <DataTable.Title numeric>Length</DataTable.Title>
+                  <DataTable.Title>ឈ្មោះ</DataTable.Title>
+                  <DataTable.Title numeric>លេខទូរស័ព្ទ</DataTable.Title>
+                  <DataTable.Title numeric>បន្ទប់</DataTable.Title>
+                  <DataTable.Title numeric>ថ្ងៃចូល</DataTable.Title>
+                  <DataTable.Title numeric>រយះពេល</DataTable.Title>
                </DataTable.Header>
 
                {loading && (

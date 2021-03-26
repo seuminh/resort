@@ -192,7 +192,7 @@ const index = ({ navigation }) => {
                </Text>
                <Form>
                   <Item floatingLabel>
-                     <Label>Name</Label>
+                     <Label>ឈ្មោះភ្ញៀវ</Label>
                      <Input
                         value={bookingInfo.customer.name}
                         onChangeText={(value) =>
@@ -201,7 +201,7 @@ const index = ({ navigation }) => {
                      />
                   </Item>
                   <Item floatingLabel>
-                     <Label>ID Number</Label>
+                     <Label>លេខសំគាល់</Label>
                      <Input
                         value={bookingInfo.customer?.cardId?.toString()}
                         onChangeText={(value) =>
@@ -210,7 +210,7 @@ const index = ({ navigation }) => {
                      />
                   </Item>
                   <Item floatingLabel>
-                     <Label>Phone Number</Label>
+                     <Label>លេខទូរស័ព្ទ</Label>
                      <Input
                         keyboardType="numeric"
                         value={bookingInfo.customer.phoneNumber.toString()}
@@ -219,7 +219,7 @@ const index = ({ navigation }) => {
                         }
                      />
                   </Item>
-                  <Item floatingLabel>
+                  {/* <Item floatingLabel>
                      <Label>Number of Person</Label>
                      <Input
                         keyboardType="numeric"
@@ -228,9 +228,9 @@ const index = ({ navigation }) => {
                            onHandleChangeText(value, "numPerson")
                         }
                      />
-                  </Item>
+                  </Item> */}
                   <Item floatingLabel>
-                     <Label>Pay</Label>
+                     <Label>ប្រាក់ត្រូវទូរទាត់</Label>
                      <Input
                         keyboardType="numeric"
                         value={pay.toString()}
@@ -240,7 +240,7 @@ const index = ({ navigation }) => {
                   {/* Check In */}
                   <View style={styles.checkInContainer}>
                      <Text style={[styles.biggerText, { flex: 1 }]}>
-                        Check in :
+                        ថ្ងៃចូល :
                      </Text>
                      <Text style={[styles.biggerText, { flex: 2 }]}>
                         {new Date(bookingInfo.startDate).toLocaleDateString()}
@@ -249,7 +249,7 @@ const index = ({ navigation }) => {
                   {/* Check Out */}
                   <View style={styles.checkOutContainer}>
                      <Text style={[styles.biggerText, { flex: 1 }]}>
-                        Check out :
+                        ថ្ងៃចេញ :
                      </Text>
                      <Text style={[styles.biggerText, { flex: 2 }]}>
                         {new Date(bookingInfo.endDate).toLocaleDateString()}
@@ -258,7 +258,7 @@ const index = ({ navigation }) => {
                   {/* Length */}
                   <View style={styles.lengthContainer}>
                      <Text style={[styles.biggerText, { flex: 1 }]}>
-                        Length :
+                        រយះពេល :
                      </Text>
                      <Text style={[styles.biggerText, { flex: 2 }]}>
                         {bookingInfo.length}
@@ -267,7 +267,7 @@ const index = ({ navigation }) => {
                   {/* Total */}
                   <View style={styles.totalContainer}>
                      <Text style={[styles.biggerText, { flex: 1 }]}>
-                        Total price :
+                        តម្លៃ​សរុប :
                      </Text>
                      <Text style={[styles.biggerText, { flex: 2 }]}>
                         $ {bookingInfo.total}
@@ -295,7 +295,7 @@ const index = ({ navigation }) => {
                   {/* Room */}
                   <View style={styles.depositdContainer}>
                      <Text style={[styles.biggerText, { flex: 1 }]}>
-                        Deposited :
+                        ប្រាក់កក់ :
                      </Text>
                      <Text style={[styles.biggerText, { flex: 2 }]}>
                         $ {bookingInfo.paidPrice}
@@ -303,7 +303,7 @@ const index = ({ navigation }) => {
                   </View>
                   <View style={styles.roomContainer}>
                      <Text style={[styles.biggerText, { flex: 1 }]}>
-                        Room :
+                        បន្ទប់ :
                      </Text>
                      <Text style={[styles.biggerText, { flex: 2 }]}>
                         {bookingInfo.room.map((v) => v.number).toString()}

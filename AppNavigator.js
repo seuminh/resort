@@ -8,15 +8,24 @@ import {
    KeyboardAvoidingView,
    Modal,
    TouchableOpacity,
+   ActivityIndicator,
    Image,
 } from "react-native";
 
 import { Form, Item, Input, Label, Spinner } from "native-base";
-import { Checkbox, Button } from "react-native-paper";
+import {
+   Checkbox,
+   Button,
+   Provider,
+   Portal,
+   Dialog,
+   DefaultTheme,
+} from "react-native-paper";
 
 // import Drawer
 import AdminDrawer from "./routes/Admin/AdminDrawer";
 import UserDrawer from "./routes/User/UserDrawer";
+import { set } from "react-native-reanimated";
 
 const AppNavigator = () => {
    const authState = useAuthState();
@@ -34,72 +43,98 @@ const AppNavigator = () => {
    //   ></AdminDrawer>
    // );
 
+   const theme = {
+      ...DefaultTheme,
+   };
+
    if (!authState.user) {
       return (
-         <Modal animationType="slide" visible={true}>
-            <KeyboardAvoidingView
-               style={styles.containerLogin}
-               behavior="padding"
-               keyboardVerticalOffset={Platform.OS === "android" ? -500 : 0}
-            >
-               <View style={styles.logoContainer}>
-                  <Image
-                     source={require("./assets/logo.jpg")}
-                     style={styles.logo}
-                  ></Image>
-               </View>
-               <Form style={styles.formLoginContainer}>
-                  <Item floatingLabel>
-                     <Label>Username</Label>
-                     <Input
-                        style={styles.usernameInput}
-                        onChangeText={(v) => {
+         <Provider theme={theme}>
+            {/* <Modal animationType="slide" visible={true}> */}
+            <View style={{ flex: 1 }}>
+               <KeyboardAvoidingView
+                  style={styles.containerLogin}
+                  behavior="padding"
+                  keyboardVerticalOffset={Platform.OS === "android" ? -500 : 0}
+               >
+                  <View style={styles.logoContainer}>
+                     <Image
+                        source={require("./assets/logo.jpg")}
+                        style={styles.logo}
+                     ></Image>
+                  </View>
+                  <Form style={styles.formLoginContainer}>
+                     <Item floatingLabel>
+                        <Label>Username</Label>
+                        <Input
+                           style={styles.usernameInput}
+                           onChangeText={(v) => {
+                              setLoginInfo({
+                                 ...loginInfo,
+                                 username: v,
+                              });
+                           }}
+                        />
+                     </Item>
+
+                     <Item floatingLabel>
+                        <Label>Password</Label>
+                        <Input
+                           style={styles.passwordInput}
+                           secureTextEntry={true}
+                           onChangeText={(v) => {
+                              setLoginInfo({
+                                 ...loginInfo,
+                                 password: v,
+                              });
+                           }}
+                        />
+                     </Item>
+
+                     <Button
+                        mode="outlined"
+                        onPress={() => {
+                           loginUser(dispatch, {
+                              username: loginInfo.username,
+                              password: loginInfo.password,
+                              // username: "test1",
+                              // password: "123",
+                           });
                            setLoginInfo({
-                              ...loginInfo,
-                              username: v,
+                              username: "",
+                              password: "",
                            });
                         }}
-                     />
-                  </Item>
-
-                  <Item floatingLabel>
-                     <Label>Password</Label>
-                     <Input
-                        style={styles.passwordInput}
-                        secureTextEntry={true}
-                        onChangeText={(v) => {
-                           setLoginInfo({
-                              ...loginInfo,
-                              password: v,
-                           });
+                        uppercase={false}
+                        style={{
+                           borderColor: "#AA75F6",
+                           borderWidth: 1,
+                           alignSelf: "center",
+                           marginTop: 20,
+                           width: 160,
                         }}
-                     />
-                  </Item>
+                     >
+                        Login
+                     </Button>
+                  </Form>
+               </KeyboardAvoidingView>
+               {/* </Modal> */}
+            </View>
 
-                  <Button
-                     mode="outlined"
-                     onPress={() => {
-                        loginUser(dispatch, {
-                           username: loginInfo.username,
-                           password: loginInfo.password,
-                           // username: "test1",
-                           // password: "123",
-                        });
-                     }}
-                     uppercase={false}
-                     style={{
-                        borderColor: "#AA75F6",
-                        borderWidth: 1,
-                        alignSelf: "center",
-                        marginTop: 20,
-                        width: 160,
-                     }}
-                  >
-                     Login
-                  </Button>
-               </Form>
-            </KeyboardAvoidingView>
-         </Modal>
+            {/* OverLay Loading */}
+            <Portal>
+               <Dialog
+                  visible={authState.loading}
+                  dismissable={false}
+                  style={{ backgroundColor: "transparent", elevation: 0 }}
+               >
+                  <ActivityIndicator
+                     size="large"
+                     color="red"
+                  ></ActivityIndicator>
+               </Dialog>
+            </Portal>
+         </Provider>
       );
    }
    console.log(authState.user);

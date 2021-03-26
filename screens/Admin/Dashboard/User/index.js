@@ -103,8 +103,8 @@ const index = ({ navigation }) => {
                </Text>
                <DataTable>
                   <DataTable.Header style={{ color: "red" }}>
-                     <DataTable.Title>Branch</DataTable.Title>
-                     <DataTable.Title numeric>Total user</DataTable.Title>
+                     <DataTable.Title>សាខា</DataTable.Title>
+                     <DataTable.Title numeric>ចំនួន User</DataTable.Title>
                   </DataTable.Header>
 
                   {loading && (

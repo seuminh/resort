@@ -227,7 +227,8 @@ const index = ({ navigation }) => {
             cardId: checkInInfo.id,
             name: checkInInfo.name,
             phoneNumber: checkInInfo.phone,
-            numPerson: checkInInfo.person,
+            // numPerson: checkInInfo.person,
+            numPerson: 0,
          };
          checkInInfoCustomer.reservation = {
             startDate: checkInDate.toLocaleDateString(),
@@ -279,7 +280,8 @@ const index = ({ navigation }) => {
             cardId: checkInInfo.id,
             name: checkInInfo.name,
             phoneNumber: checkInInfo.phone,
-            numPeople: checkInInfo.person,
+            // numPeople: checkInInfo.person,
+            numPerson: 0,
          };
          checkInInfoCustomer.reservation = {
             startDate: checkInDate.toLocaleDateString(),
@@ -347,7 +349,7 @@ const index = ({ navigation }) => {
                </Text>
                <Form>
                   <Item floatingLabel>
-                     <Label>Name</Label>
+                     <Label>ឈ្មោះភ្ញៀវ</Label>
                      <Input
                         value={checkInInfo.name}
                         onChangeText={(value) =>
@@ -356,7 +358,7 @@ const index = ({ navigation }) => {
                      />
                   </Item>
                   <Item floatingLabel>
-                     <Label>ID Number</Label>
+                     <Label>លេខសំគាល់</Label>
                      <Input
                         keyboardType="numeric"
                         value={checkInInfo.id}
@@ -366,7 +368,7 @@ const index = ({ navigation }) => {
                      />
                   </Item>
                   <Item floatingLabel>
-                     <Label>Phone Number</Label>
+                     <Label>លេខទូរស័ព្ទ</Label>
                      <Input
                         keyboardType="numeric"
                         value={checkInInfo.phone}
@@ -375,7 +377,7 @@ const index = ({ navigation }) => {
                         }
                      />
                   </Item>
-                  <Item floatingLabel last>
+                  {/* <Item floatingLabel last>
                      <Label>Number of Guest</Label>
                      <Input
                         keyboardType="numeric"
@@ -384,11 +386,11 @@ const index = ({ navigation }) => {
                            onHandleChangeText(value, "person")
                         }
                      />
-                  </Item>
+                  </Item> */}
                   {/* Check In */}
                   <View style={styles.checkInContainer}>
                      <Text style={[styles.biggerText, { flex: 1 }]}>
-                        Check in :
+                        ថ្ងៃចូល :
                      </Text>
                      <TouchableOpacity
                         onPress={() => setCheckInDateModal(true)}
@@ -402,7 +404,7 @@ const index = ({ navigation }) => {
                   {/* Check Out */}
                   <View style={styles.checkOutContainer}>
                      <Text style={[styles.biggerText, { flex: 1 }]}>
-                        Check out :
+                        ថ្ងៃចេញ :
                      </Text>
                      <TouchableOpacity
                         onPress={() => setCheckOutDateModal(true)}
@@ -416,7 +418,7 @@ const index = ({ navigation }) => {
                   {/* Length */}
                   <View style={styles.lengthContainer}>
                      <Text style={[styles.biggerText, { flex: 1 }]}>
-                        Length :
+                        រយះពេល :
                      </Text>
                      <Text style={[styles.biggerText, { flex: 2 }]}>
                         {length}
@@ -425,7 +427,7 @@ const index = ({ navigation }) => {
                   {/* Total */}
                   <View style={styles.totalContainer}>
                      <Text style={[styles.biggerText, { flex: 1 }]}>
-                        Total price :
+                        តម្លៃ​សរុប :
                      </Text>
                      <Text style={[styles.biggerText, { flex: 2 }]}>
                         $ {total}
@@ -433,7 +435,9 @@ const index = ({ navigation }) => {
                   </View>
                   {/* Payment */}
                   <View style={styles.paymentContainer}>
-                     <Text style={[styles.biggerText, { flex: 1 }]}>Pay :</Text>
+                     <Text style={[styles.biggerText, { flex: 1 }]}>
+                        ទូរទាត់ :
+                     </Text>
                      <View style={{ flex: 2 }}>
                         <Picker
                            mode="dropdown"
@@ -445,14 +449,17 @@ const index = ({ navigation }) => {
                            selectedValue={paid}
                            onValueChange={(value) => setPaid(value)}
                         >
-                           <Picker.Item label="Paid" value="paid" />
-                           <Picker.Item label="Not pay" value="notPaid" />
+                           <Picker.Item label="ទូរទាត់រួច" value="paid" />
+                           <Picker.Item
+                              label="មិនទាន់ទូរទាត់"
+                              value="notPaid"
+                           />
                         </Picker>
                      </View>
                   </View>
                   {/* Room */}
                   <View style={styles.roomContainer}>
-                     <Text style={styles.biggerText}>Room :</Text>
+                     <Text style={styles.biggerText}>បន្ទប់ :</Text>
                      {loadingRooms && (
                         <ActivityIndicator
                            color="red"
