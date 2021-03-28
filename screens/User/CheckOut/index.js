@@ -426,7 +426,7 @@ const styles = StyleSheet.create({
       paddingHorizontal: 20,
       marginTop: -100,
       borderRadius: 20,
-      height: 450,
+      height: 500,
    },
    modalTextInfo: {
       fontSize: 15,
