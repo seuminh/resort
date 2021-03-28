@@ -115,7 +115,7 @@ const Receipt = (data, branch, total, deposit = 0) => {
                         Bill to
                     </h2>
                     <p>ឈ្មោះភ្ញៀវ: <strong>${data.customer.name}</strong></p>
-                    <p>លេខទូរស័ព្ទភ្ញៀវ: <strong>${
+                    <p>លេខទូរស័ព្ទភ្ញៀវ: <strong>0${
                        data.customer.phoneNumber
                     }</strong></p>
                     </div>
